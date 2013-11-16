@@ -1,7 +1,7 @@
 {
-    "name": "binarta.basket.angular",
-    "version": "0.0.0",
-    "main": "./src/basket.js",
+    "name": "binarta.purchase.orders.angular.js",
+    "version": "0.0.1",
+    "main": "./src/main/js/purchase.orders.js",
     "dependencies": {
         "angular": "1.0.7"
     },
