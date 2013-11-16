@@ -1,5 +1,5 @@
 {
-    "name": "binarta.purchase.orders.angular.js",
+    "name": "binarta.purchase.orders.angular",
     "version": "0.0.1",
     "main": "./src/main/js/purchase.orders.js",
     "dependencies": {
