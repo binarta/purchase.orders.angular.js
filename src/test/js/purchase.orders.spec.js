@@ -5,15 +5,19 @@ describe('purchase.orders.angular', function() {
     var presenter = {};
     var rest;
     var config = {};
+    var location;
 
     beforeEach(module('purchase.orders'));
     beforeEach(module('angular.usecase.adapter'));
     beforeEach(module('rest.client'));
-    beforeEach(inject(function($rootScope, usecaseAdapterFactory, restServiceHandler) {
+    beforeEach(module('web.storage'));
+    beforeEach(module('notifications'));
+    beforeEach(inject(function($rootScope, usecaseAdapterFactory, restServiceHandler, $location) {
         scope = $rootScope.$new();
         usecaseAdapter = usecaseAdapterFactory;
         usecaseAdapter.andReturn(presenter);
         rest = restServiceHandler;
+        location = $location;
     }));
 
     describe('ListPurchaseOrdersController', function() {
@@ -57,4 +61,164 @@ describe('purchase.orders.angular', function() {
             });
         });
     });
+
+    describe('purchase order addresses', function() {
+        var address = {
+            label: 'label',
+            addressee: 'addressee'
+        };
+
+        describe('addressSelection', function() {
+            var service;
+            var registryMock;
+
+            beforeEach(inject(function(localStorage, topicRegistry, topicRegistryMock) {
+                registryMock = topicRegistryMock;
+                service = LocalStorageAddressSelectionFactory(localStorage, topicRegistry);
+            }));
+
+            it('retrieves all selected addresses', function() {
+                expect(service.all()).toEqual({});
+            });
+
+            describe('when adding', function() {
+                describe('an address', function() {
+                    it('it gets stored in local storage', inject(function(localStorage) {
+                        service.add('type', address);
+
+                        expect(localStorage.addresses).toEqual(JSON.stringify({type:address}))
+                    }));
+                });
+
+                describe('an undefined address', function() {
+                    it('an empty map gets stored in local storage', inject(function(localStorage) {
+                        service.add('type', undefined);
+
+                        expect(localStorage.addresses).toEqual(JSON.stringify({type:{}}));
+                    }));
+                });
+            });
+
+            it('address can be retrieve from local storage', function() {
+                service.add('type', address);
+
+                expect(service.view('type')).toEqual(address);
+            });
+        });
+
+        describe('AddressSelectionController', function() {
+            var addressSelection = jasmine.createSpyObj('addressSelection', ['add', 'view']);
+            var viewCustomerAddress = jasmine.createSpy('viewCustomerAddress');
+
+            beforeEach(inject(function($controller) {
+                ctrl = $controller(AddressSelectionController, {$scope: scope, addressSelection: addressSelection, $location: location, viewCustomerAddress: viewCustomerAddress});
+                scope.type = address;
+            }));
+
+            describe('on init', function() {
+                beforeEach(inject(function() {
+                    addressSelection.view.andReturn({label: 'label'});
+                }));
+
+                describe('without type param in search', function() {
+                    beforeEach(inject(function() {
+                        scope.init('type');
+                    }));
+
+                    it('view from address selection', function() {
+                        expect(addressSelection.view.mostRecentCall.args[0]).toEqual('type');
+                        expect(scope.type.label).toEqual('label');
+                    });
+                });
+                describe('with type param in search', function() {
+                    beforeEach(inject(function() {
+                        location.search({type: 'alt-label'});
+                        scope.init('type');
+                    }));
+
+                    it('overwrites address label with route param', function() {
+                        expect(scope.type.label).toEqual('alt-label');
+                    });
+                });
+            });
+
+            describe('on select', function() {
+                beforeEach(inject(function() {
+                    scope.select('type');
+                }));
+                it('delegates to address selection', function() {
+                    expect(addressSelection.add.mostRecentCall.args[0]).toEqual('type');
+                    expect(addressSelection.add.mostRecentCall.args[1]).toEqual(scope.type);
+                });
+            });
+
+            describe('on view', function() {
+                describe('with address in address selection', function() {
+                    describe('with addressee', function() {
+                        beforeEach(inject(function() {
+                            addressSelection.view.andReturn({label:'label', addressee:'addressee'});
+                            scope.view('type');
+                        }));
+
+                        it('view from address selection', function() {
+                            expect(addressSelection.view.mostRecentCall.args[0]).toEqual('type');
+                        });
+
+                        it('passes label', function() {
+                            expect(viewCustomerAddress.mostRecentCall.args[0]).toEqual({label: 'label'})
+                        });
+
+                        describe('on successfull view customer address', function() {
+                            var payload = {label:'label', addressee:'alt-addressee'};
+                            beforeEach(inject(function() {
+                                viewCustomerAddress.mostRecentCall.args[1](payload);
+                            }));
+
+                            it('puts payload on scope as type', function() {
+                                expect(scope.type).toEqual(payload);
+                            });
+
+                            it('puts selected address addressee on scope', function() {
+                                expect(scope.type.addressee).toEqual('addressee');
+                            });
+                        });
+                    });
+
+                    describe('without addressee', function() {
+                        beforeEach(inject(function() {
+                            addressSelection.view.andReturn({label:'label'});
+                            scope.view('type');
+                        }));
+
+                        describe('on successfull view customer address', function() {
+                            var payload = {label:'label', addressee:'alt-addressee'};
+                            beforeEach(inject(function() {
+                                viewCustomerAddress.mostRecentCall.args[1](payload);
+                            }));
+
+                            it('puts addressee from view on scope', function() {
+                                expect(scope.type.addressee).toEqual('alt-addressee');
+                            });
+                        });
+                    });
+
+                });
+
+                describe('without address in address selection', function() {
+                    beforeEach(inject(function() {
+                        addressSelection.view.andReturn(undefined);
+                        viewCustomerAddress.reset();
+                        scope.view('type');
+                    }));
+
+                    it('view customer address is not called', function() {
+                        expect(viewCustomerAddress.calls[0]).toBeUndefined();
+                    });
+                });
+
+            });
+        });
+    });
+
+
 });

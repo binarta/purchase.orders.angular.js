@@ -1,5 +1,7 @@
 angular.module('purchase.orders', [])
-    .controller('ListPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', ListPurchaseOrderController]);
+    .controller('ListPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', ListPurchaseOrderController])
+    .factory('addressSelection', ['localStorage', LocalStorageAddressSelectionFactory])
+    .controller('AddressSelectionController', ['$scope', 'addressSelection', 'viewCustomerAddress', '$location', AddressSelectionController]);
 
 function ListPurchaseOrderController($scope, usecaseAdapterFactory, restServiceHandler, config) {
     $scope.init = function() {
@@ -19,5 +21,65 @@ function ListPurchaseOrderController($scope, usecaseAdapterFactory, restServiceH
             withCredentials:true
         };
         restServiceHandler(presenter);
+    }
+}
+
+function LocalStorageAddressSelectionFactory(localStorage) {
+    var addresses;
+
+    function flush() {
+        localStorage.addresses = JSON.stringify(addresses);
+    }
+
+    function hydrate() {
+        addresses = JSON.parse(localStorage.addresses);
+    }
+
+    return new function() {
+        if (!localStorage.addresses) {
+            addresses = {};
+            flush();
+        }
+        hydrate();
+        this.all = function() {
+            return addresses;
+        };
+        this.add = function(type, data) {
+            if (data) addresses[type] = {label: data.label, addressee: data.addressee};
+            else addresses[type] = {};
+            flush();
+        };
+        this.view = function(type) {
+            return addresses[type];
+        };
+    };
+}
+
+function AddressSelectionController($scope, addressSelection, viewCustomerAddress, $location) {
+    $scope.init = function(type) {
+        $scope[type] = addressSelection.view(type);
+        if ($location.search()[type]) $scope[type].label = $location.search()[type];
+    };
+    $scope.select = function(type) {
+        addressSelection.add(type, $scope[type]);
+    };
+
+    $scope.blabli = function(type) {
+        var ctx = addressSelection.view(type);
+        var addressee = ctx ? ctx.addressee : undefined;
+        var onSuccess = function(payload) {
+            $scope[type] = payload;
+            if (addressee) $scope[type].addressee = addressee;
+        };
+        if (ctx) viewCustomerAddress({label: ctx.label}, onSuccess);
+    };
+
+    $scope.view = function(type) {
+        var ctx = addressSelection.view(type);
+        var onSuccess = function(payload) {
+            $scope[type] = payload;
+            if (ctx.addressee) $scope[type].addressee = ctx.addressee;
+        };
+        if (ctx) viewCustomerAddress({label: ctx.label}, onSuccess);
     }
 }
