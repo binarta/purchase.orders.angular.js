@@ -104,6 +104,18 @@ describe('purchase.orders.angular', function() {
 
                 expect(service.view('type')).toEqual(address);
             });
+
+            describe('clearing', function() {
+                beforeEach(inject(function() {
+                    service.add('type', address);
+                    service.clear();
+                }));
+
+                it('test', inject(function(localStorage) {
+                    expect(service.all()).toEqual({});
+                    expect(localStorage.addresses).toEqual(JSON.stringify({}));
+                }));
+            });
         });
 
         describe('AddressSelectionController', function() {

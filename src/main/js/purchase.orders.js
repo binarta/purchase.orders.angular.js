@@ -52,6 +52,10 @@ function LocalStorageAddressSelectionFactory(localStorage) {
         this.view = function(type) {
             return addresses[type];
         };
+        this.clear = function() {
+            addresses = {};
+            flush();
+        }
     };
 }
 
