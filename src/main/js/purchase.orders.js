@@ -50,7 +50,7 @@ function LocalStorageAddressSelectionFactory(localStorage) {
             flush();
         };
         this.view = function(type) {
-            return addresses[type];
+            return addresses[type] || {};
         };
         this.clear = function() {
             addresses = {};

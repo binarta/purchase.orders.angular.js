@@ -99,11 +99,24 @@ describe('purchase.orders.angular', function() {
                 });
             });
 
-            it('address can be retrieve from local storage', function() {
-                service.add('type', address);
+            describe('viewing', function() {
+                describe('with address', function() {
+                    beforeEach(inject(function() {
+                        service.add('type', address);
+                    }));
 
-                expect(service.view('type')).toEqual(address);
+                    it('address can be retrieve from local storage', function() {
+                        expect(service.view('type')).toEqual(address);
+                    });
+                });
+
+                describe('without address', function() {
+                    it('test', function() {
+                        expect(service.view('type')).toEqual({});
+                    });
+                });
             });
+
 
             describe('clearing', function() {
                 beforeEach(inject(function() {
