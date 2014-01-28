@@ -60,22 +60,19 @@ function LocalStorageAddressSelectionFactory(localStorage) {
 }
 
 function AddressSelectionController($scope, addressSelection, viewCustomerAddress, $location) {
+    var self = this;
+
     $scope.init = function(type) {
         $scope[type] = addressSelection.view(type);
         if ($location.search()[type]) $scope[type].label = $location.search()[type];
     };
-    $scope.select = function(type) {
-        addressSelection.add(type, $scope[type]);
+
+    $scope.fallbackTo = function(fallbackAddressType) {
+        self.fallbackAddressType = fallbackAddressType;
     };
 
-    $scope.blabli = function(type) {
-        var ctx = addressSelection.view(type);
-        var addressee = ctx ? ctx.addressee : undefined;
-        var onSuccess = function(payload) {
-            $scope[type] = payload;
-            if (addressee) $scope[type].addressee = addressee;
-        };
-        if (ctx) viewCustomerAddress({label: ctx.label}, onSuccess);
+    $scope.select = function(type) {
+        addressSelection.add(type, $scope[type].addressee ? $scope[type] : $scope[self.fallbackAddressType]);
     };
 
     $scope.view = function(type) {
