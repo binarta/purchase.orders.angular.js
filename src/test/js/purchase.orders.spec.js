@@ -217,6 +217,22 @@ describe('purchase.orders.angular', function () {
                                     });
                                 });
                             });
+
+                            describe('given ' + ctx.addressTypeToFallbackWith + ' address is the same as ' + ctx.fallbackAddressType, function() {
+                                beforeEach(function() {
+                                    scope[ctx.addressTypeToFallbackWith] = scope[ctx.fallbackAddressType];
+                                });
+
+                                describe('on reset to same as fallback option', function() {
+                                    beforeEach(function() {
+                                        scope.resetIfSameAsFallback(ctx.addressTypeToFallbackWith);
+                                    });
+
+                                    it('then...', function() {
+                                        expect(scope[ctx.addressTypeToFallbackWith]).toEqual({});
+                                    });
+                                });
+                            });
                         });
                     });
                 });

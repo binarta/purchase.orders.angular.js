@@ -71,6 +71,11 @@ function AddressSelectionController($scope, addressSelection, viewCustomerAddres
         self.fallbackAddressType = fallbackAddressType;
     };
 
+    $scope.resetIfSameAsFallback = function(type) {
+        if($scope[type].label == $scope[self.fallbackAddressType].label)
+            $scope[type] = {};
+    };
+
     $scope.select = function(type) {
         addressSelection.add(type, $scope[type].label ? $scope[type] : $scope[self.fallbackAddressType]);
     };
