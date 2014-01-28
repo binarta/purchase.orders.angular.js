@@ -201,7 +201,10 @@ describe('purchase.orders.angular', function () {
 
                             describe('given for ' + ctx.addressTypeToFallbackWith + ' addresses the same-as-' + ctx.fallbackAddressType + ' option is selected', function () {
                                 beforeEach(function () {
-                                    scope[ctx.addressTypeToFallbackWith] = {}
+                                    scope[ctx.addressTypeToFallbackWith] = {
+                                        label: undefined,
+                                        addressee: 'may-be-populated-from-local-storage'
+                                    }
                                 });
 
                                 describe('on select ' + ctx.addressTypeToFallbackWith + ' address', function () {

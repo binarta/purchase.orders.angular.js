@@ -72,7 +72,7 @@ function AddressSelectionController($scope, addressSelection, viewCustomerAddres
     };
 
     $scope.select = function(type) {
-        addressSelection.add(type, $scope[type].addressee ? $scope[type] : $scope[self.fallbackAddressType]);
+        addressSelection.add(type, $scope[type].label ? $scope[type] : $scope[self.fallbackAddressType]);
     };
 
     $scope.view = function(type) {
