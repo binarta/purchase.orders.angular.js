@@ -1,7 +1,16 @@
 angular.module('purchase.orders', [])
     .controller('ListPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', ListPurchaseOrderController])
     .factory('addressSelection', ['localStorage', LocalStorageAddressSelectionFactory])
-    .controller('AddressSelectionController', ['$scope', 'addressSelection', 'viewCustomerAddress', '$location', AddressSelectionController]);
+    .controller('AddressSelectionController', ['$scope', 'addressSelection', 'viewCustomerAddress', '$location', AddressSelectionController])
+    .controller('SelectPaymentProviderController', ['$scope', 'localStorage', 'config', SelectPaymentProviderController])
+    .controller('CancelPaymentController', ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', '$location', 'topicMessageDispatcher', CancelPaymentController])
+    .config(['$routeProvider', function ($routeProvider) {
+        $routeProvider
+            .when('/payment/:id/confirm', {templateUrl: 'partials/shop/confirm-payment.html', controller: 'ConfirmPaymentController'})
+            .when('payment/:id/cancel', {templateUrl: 'partials/shop/cancel-payment.html', controller: 'CancelPaymentController'})
+            .when('/:locale/payment/:id/confirm', {templateUrl: 'partials/shop/confirm-payment.html', controller: 'ConfirmPaymentController'})
+            .when('/:locale/payment/:id/cancel', {templateUrl: 'partials/shop/cancel-payment.html', controller: 'CancelPaymentController'})
+    }]);
 
 function ListPurchaseOrderController($scope, usecaseAdapterFactory, restServiceHandler, config) {
     $scope.init = function() {
@@ -87,5 +96,65 @@ function AddressSelectionController($scope, addressSelection, viewCustomerAddres
             if (ctx.addressee) $scope[type].addressee = ctx.addressee;
         };
         if (ctx) viewCustomerAddress({label: ctx.label}, onSuccess);
+    }
+}
+
+function SelectPaymentProviderController($scope, localStorage, config) {
+    $scope.init = function() {
+        if (localStorage.provider == null && config.defaultPaymentProvider != null) {
+            $scope.provider = config.defaultPaymentProvider;
+            $scope.flush();
+        } else {
+            $scope.provider = localStorage.provider;
+        }
+    };
+
+    $scope.flush = function() {
+        localStorage.provider = $scope.provider;
+    }
+}
+
+function ConfirmPaymentController($scope, usecaseAdapterFactory, $location, $routeParams, restServiceHandler, config, topicMessageDispatcher) {
+    $scope.init = function() {
+        var ctx = usecaseAdapterFactory($scope);
+        ctx.params = {
+            method: 'POST',
+            url: (config.baseUri || '') + 'purchase-order-payment/' + $routeParams.id + '/confirm',
+            withCredentials: true,
+            data: {
+                transaction: $location.search().PayerID
+            }
+
+        };
+        ctx.success = function() {
+            $location.search('PayerID', null);
+            $location.search('token', null);
+            $location.path(($scope.locale || '') + '/');
+            topicMessageDispatcher.fire('system.success', {
+                code:'purchase.order.add.success',
+                default: 'Order was successfully placed and paid'
+            })
+        };
+        restServiceHandler(ctx);
+    }
+}
+
+function CancelPaymentController($scope, usecaseAdapterFactory, $routeParams, config, restServiceHandler, $location, topicMessageDispatcher) {
+    $scope.init = function() {
+        var ctx = usecaseAdapterFactory($scope);
+        ctx.params = {
+            method: 'POST',
+            url: (config.baseUri || '') + 'purchase-order-payment/' + $routeParams.id + '/cancel',
+            withCredentials: true
+        };
+        ctx.success = function() {
+            $location.search('token', null);
+            $location.path(($scope.locale || '') + '/');
+            topicMessageDispatcher.fire('system.info', {
+                code: 'purchase.order.cancel.success',
+                default: 'Your purchase order was cancelled'
+            })
+        };
+        restServiceHandler(ctx);
     }
 }

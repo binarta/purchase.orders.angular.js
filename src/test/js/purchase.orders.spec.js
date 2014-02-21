@@ -6,19 +6,26 @@ describe('purchase.orders.angular', function () {
     var rest;
     var config = {};
     var location;
+    var self = this;
 
     beforeEach(module('purchase.orders'));
     beforeEach(module('angular.usecase.adapter'));
     beforeEach(module('rest.client'));
     beforeEach(module('web.storage'));
     beforeEach(module('notifications'));
-    beforeEach(inject(function ($rootScope, usecaseAdapterFactory, restServiceHandler, $location) {
+    beforeEach(inject(function ($rootScope, usecaseAdapterFactory, restServiceHandler, $location, topicMessageDispatcherMock) {
         scope = $rootScope.$new();
         usecaseAdapter = usecaseAdapterFactory;
         usecaseAdapter.andReturn(presenter);
         rest = restServiceHandler;
         location = $location;
+        self.topicMessageDispatcherMock = topicMessageDispatcherMock;
     }));
+
+    afterEach(function () {
+        config = {};
+        presenter = {};
+    });
 
     describe('ListPurchaseOrdersController', function () {
         beforeEach(inject(function ($controller) {
@@ -218,17 +225,17 @@ describe('purchase.orders.angular', function () {
                                 });
                             });
 
-                            describe('given ' + ctx.addressTypeToFallbackWith + ' address is the same as ' + ctx.fallbackAddressType, function() {
-                                beforeEach(function() {
+                            describe('given ' + ctx.addressTypeToFallbackWith + ' address is the same as ' + ctx.fallbackAddressType, function () {
+                                beforeEach(function () {
                                     scope[ctx.addressTypeToFallbackWith] = scope[ctx.fallbackAddressType];
                                 });
 
-                                describe('on reset to same as fallback option', function() {
-                                    beforeEach(function() {
+                                describe('on reset to same as fallback option', function () {
+                                    beforeEach(function () {
                                         scope.resetIfSameAsFallback(ctx.addressTypeToFallbackWith);
                                     });
 
-                                    it('then...', function() {
+                                    it('then...', function () {
                                         expect(scope[ctx.addressTypeToFallbackWith]).toEqual({});
                                     });
                                 });
@@ -305,5 +312,239 @@ describe('purchase.orders.angular', function () {
         });
     });
 
+    describe('SelectPaymentProviderController', function () {
+        var local;
 
+        beforeEach(inject(function ($controller, localStorage) {
+            $controller(SelectPaymentProviderController, {$scope: scope, config: config});
+            local = localStorage;
+        }));
+
+        describe('given no payment provider', function () {
+            beforeEach(function () {
+                scope.provider = null;
+                delete local['provider'];
+            });
+
+            describe('with a configured default provider', function () {
+                beforeEach(function () {
+                    config.defaultPaymentProvider = 'default-provider';
+                });
+
+                describe('on init', function () {
+                    beforeEach(function () {
+                        scope.init();
+                    });
+
+                    it('provider is set to default provider', function () {
+                        expect(scope.provider).toEqual('default-provider');
+                        expect(local.provider).toEqual('default-provider');
+                    });
+                });
+            });
+
+            describe('without a configured default provider', function () {
+                beforeEach(function () {
+                    config.defaultPaymentProvider = null;
+                });
+
+                describe('on init', function () {
+                    beforeEach(function () {
+                        scope.init();
+                    });
+
+                    it('provider is not set', function () {
+                        expect(scope.provider).toBeUndefined();
+                        expectKeyIsNotPresent(local, 'provider');
+                    });
+
+                    function expectKeyIsNotPresent(obj, key) {
+                        expect(obj.hasOwnProperty(key)).toBeFalsy();
+                    }
+                });
+            });
+        });
+
+        describe('given a remembered payment provider', function () {
+            beforeEach(function () {
+                local.provider = 'selected-provider';
+            });
+
+            describe('on init', function () {
+                beforeEach(function () {
+                    scope.init();
+                });
+
+                it('then remembered provider gets selected', function () {
+                    expect(scope.provider).toEqual('selected-provider');
+                });
+            });
+
+            describe('and a selected provider', function () {
+                beforeEach(function () {
+                    scope.provider = 'selected-provider';
+                });
+
+                describe('when selecting new provider', function () {
+                    beforeEach(function () {
+                        scope.provider = 'new-provider';
+                        scope.flush();
+                    });
+
+                    it('the new provider gets stored in localstorage', function () {
+                        expect(local.provider).toEqual('new-provider');
+                    });
+                });
+            });
+
+
+        });
+    });
+
+    describe('ConfirmPaymentController', function () {
+        beforeEach(inject(function ($controller) {
+            ctrl = $controller(ConfirmPaymentController, {$scope: scope, config: config});
+        }));
+
+        describe('given payment params', function () {
+            beforeEach(inject(function ($routeParams) {
+                $routeParams.id = 'payment-id';
+                location.search('PayerID', 'transaction-id');
+            }));
+
+            [null, 'base-uri/'].forEach(function (baseUri) {
+                describe('with base uri = ' + baseUri, function () {
+                    beforeEach(function () {
+                        config.baseUri = baseUri;
+                    });
+
+                    describe('on init', function () {
+                        beforeEach(function () {
+                            scope.init();
+                        });
+
+                        it('then context is created', function () {
+                            expect(usecaseAdapter.mostRecentCall.args[0]).toEqual(scope);
+                        });
+
+                        it('then a POST request is configured', function () {
+                            expect(presenter.params.method).toEqual('POST');
+                        });
+
+                        it('context is configured to pass along credentials', function () {
+                            expect(presenter.params.withCredentials).toBeTruthy();
+                        });
+
+                        it('payer id is passed along as transaction', function () {
+                            expect(presenter.params.data).toEqual({transaction: 'transaction-id'});
+                        });
+
+                        it('destination url takes route params id', function () {
+                            expect(presenter.params.url).toEqual((baseUri || '') + 'purchase-order-payment/payment-id/confirm')
+                        });
+
+                        it('context is passed to rest service handler', function () {
+                            expect(rest.mostRecentCall.args[0]).toEqual(presenter);
+                        });
+
+                        [null, 'locale'].forEach(function (locale) {
+                            describe('with locale = ' + locale, function () {
+                                beforeEach(function () {
+                                    scope.locale = locale;
+                                });
+
+                                describe('on success', function () {
+                                    beforeEach(function () {
+                                        presenter.success();
+                                    });
+
+                                    it('redirect to home', function () {
+                                        expect(location.path()).toEqual((locale != null ? '/' + locale : '') + '/');
+                                        expect(location.search().PayerID).toBeUndefined();
+                                        expect(location.search().token).toBeUndefined();
+                                    });
+
+                                    it('fire notification for success', inject(function (topicMessageDispatcherMock) {
+                                        expect(topicMessageDispatcherMock['system.success']).toEqual({
+                                            code: 'purchase.order.add.success',
+                                            default: 'Order was successfully placed and paid'
+                                        })
+                                    }));
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    describe('CancelPaymentController', function() {
+        beforeEach(inject(function($controller, $routeParams) {
+            ctrl = $controller(CancelPaymentController, {$scope: scope, config: config});
+            $routeParams.id = 'payment-id';
+        }));
+
+        describe('on init', function() {
+            beforeEach(function() {
+                scope.init();
+            });
+
+            it('creates context', function() {
+                expect(usecaseAdapter.mostRecentCall.args[0]).toEqual(scope);
+            });
+
+            it('sets up the context for a rest call', function() {
+                expect(presenter.params.method).toEqual('POST');
+                expect(presenter.params.url).toEqual('purchase-order-payment/payment-id/cancel');
+                expect(presenter.params.withCredentials).toBeTruthy();
+            });
+
+            describe('with a configured base uri', function() {
+                beforeEach(function() {
+                    config.baseUri = 'base-uri/';
+                    scope.init();
+                });
+
+                it('prefixes base uri', function() {
+                    expect(presenter.params.url).toEqual('base-uri/purchase-order-payment/payment-id/cancel');
+                });
+            });
+
+            it('hands context to rest service', function() {
+                expect(rest.mostRecentCall.args[0]).toEqual(presenter);
+            });
+
+            describe('on success', function() {
+                beforeEach(function() {
+                    location.search('token', 'payment-token');
+                    presenter.success();
+                });
+
+                it('redirects to home page', function() {
+                    expect(location.path()).toEqual('/');
+                    expect(location.search().token).toBeUndefined();
+                });
+
+                describe('with a locale', function() {
+                    beforeEach(function() {
+                        scope.locale = 'locale';
+                        presenter.success();
+                    });
+
+                    it('redirects to localized home page', function() {
+                        expect(location.path()).toEqual('/locale/');
+                    });
+                });
+
+                it ('fires a notification', inject(function(topicMessageDispatcherMock) {
+                    expect(topicMessageDispatcherMock['system.info']).toEqual({
+                        code: 'purchase.order.cancel.success',
+                        default: 'Your purchase order was cancelled'
+                    });
+                }));
+            });
+        });
+
+    });
 });
