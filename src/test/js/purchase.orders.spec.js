@@ -401,9 +401,9 @@ describe('purchase.orders.angular', function () {
         });
     });
 
-    describe('ConfirmPaymentController', function () {
+    describe('ApprovePaymentController', function () {
         beforeEach(inject(function ($controller) {
-            ctrl = $controller(ConfirmPaymentController, {$scope: scope, config: config});
+            ctrl = $controller(ApprovePaymentController, {$scope: scope, config: config});
         }));
 
         describe('given payment params', function () {
@@ -435,12 +435,12 @@ describe('purchase.orders.angular', function () {
                             expect(presenter.params.withCredentials).toBeTruthy();
                         });
 
-                        it('payer id is passed along as transaction', function () {
-                            expect(presenter.params.data).toEqual({transaction: 'transaction-id'});
-                        });
+                        it('payer id is passed along as transaction', inject(function ($routeParams) {
+                            expect(presenter.params.data).toEqual($routeParams);
+                        }));
 
                         it('destination url takes route params id', function () {
-                            expect(presenter.params.url).toEqual((baseUri || '') + 'purchase-order-payment/payment-id/confirm')
+                            expect(presenter.params.url).toEqual((baseUri || '') + 'purchase-order-payment/payment-id/approve')
                         });
 
                         it('context is passed to rest service handler', function () {
@@ -459,17 +459,9 @@ describe('purchase.orders.angular', function () {
                                     });
 
                                     it('redirect to home', function () {
-                                        expect(location.path()).toEqual((locale != null ? '/' + locale : '') + '/');
                                         expect(location.search().PayerID).toBeUndefined();
                                         expect(location.search().token).toBeUndefined();
                                     });
-
-                                    it('fire notification for success', inject(function (topicMessageDispatcherMock) {
-                                        expect(topicMessageDispatcherMock['system.success']).toEqual({
-                                            code: 'purchase.order.add.success',
-                                            default: 'Order was successfully placed and paid'
-                                        })
-                                    }));
                                 });
                             });
                         });

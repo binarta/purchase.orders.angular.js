@@ -3,12 +3,13 @@ angular.module('purchase.orders', [])
     .factory('addressSelection', ['localStorage', LocalStorageAddressSelectionFactory])
     .controller('AddressSelectionController', ['$scope', 'addressSelection', 'viewCustomerAddress', '$location', AddressSelectionController])
     .controller('SelectPaymentProviderController', ['$scope', 'localStorage', 'config', SelectPaymentProviderController])
+    .controller('ApprovePaymentController', ['$scope', 'usecaseAdapterFactory', '$location', '$routeParams', 'restServiceHandler', 'config'])
     .controller('CancelPaymentController', ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', '$location', 'topicMessageDispatcher', CancelPaymentController])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
-            .when('/payment/:id/confirm', {templateUrl: 'partials/shop/confirm-payment.html', controller: 'ConfirmPaymentController'})
+            .when('/payment/:id/approve', {templateUrl: 'partials/shop/approve-payment.html', controller: 'ApprovePaymentController'})
             .when('payment/:id/cancel', {templateUrl: 'partials/shop/cancel-payment.html', controller: 'CancelPaymentController'})
-            .when('/:locale/payment/:id/confirm', {templateUrl: 'partials/shop/confirm-payment.html', controller: 'ConfirmPaymentController'})
+            .when('/:locale/payment/:id/approve', {templateUrl: 'partials/shop/approve-payment.html', controller: 'ApprovePaymentController'})
             .when('/:locale/payment/:id/cancel', {templateUrl: 'partials/shop/cancel-payment.html', controller: 'CancelPaymentController'})
     }]);
 
@@ -109,31 +110,28 @@ function SelectPaymentProviderController($scope, localStorage, config) {
         }
     };
 
+    $scope.select = function(provider) {
+        $scope.provider = provider;
+        $scope.flush();
+    };
+
     $scope.flush = function() {
         localStorage.provider = $scope.provider;
     }
 }
 
-function ConfirmPaymentController($scope, usecaseAdapterFactory, $location, $routeParams, restServiceHandler, config, topicMessageDispatcher) {
+function ApprovePaymentController($scope, usecaseAdapterFactory, $location, $routeParams, restServiceHandler, config) {
     $scope.init = function() {
         var ctx = usecaseAdapterFactory($scope);
         ctx.params = {
             method: 'POST',
-            url: (config.baseUri || '') + 'purchase-order-payment/' + $routeParams.id + '/confirm',
+            url: (config.baseUri || '') + 'purchase-order-payment/' + $routeParams.id + '/approve',
             withCredentials: true,
-            data: {
-                transaction: $location.search().PayerID
-            }
+            data: $routeParams
 
         };
         ctx.success = function() {
-            $location.search('PayerID', null);
-            $location.search('token', null);
-            $location.path(($scope.locale || '') + '/');
-            topicMessageDispatcher.fire('system.success', {
-                code:'purchase.order.add.success',
-                default: 'Order was successfully placed and paid'
-            })
+            $location.$$search = {};
         };
         restServiceHandler(ctx);
     }
