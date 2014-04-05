@@ -3,7 +3,7 @@ angular.module('purchase.orders', [])
     .factory('addressSelection', ['localStorage', LocalStorageAddressSelectionFactory])
     .controller('AddressSelectionController', ['$scope', 'addressSelection', 'viewCustomerAddress', '$location', AddressSelectionController])
     .controller('SelectPaymentProviderController', ['$scope', 'localStorage', 'config', SelectPaymentProviderController])
-    .controller('ApprovePaymentController', ['$scope', 'usecaseAdapterFactory', '$location', '$routeParams', 'restServiceHandler', 'config'])
+    .controller('ApprovePaymentController', ['$scope', 'usecaseAdapterFactory', '$location', '$routeParams', 'restServiceHandler', 'config', ApprovePaymentController])
     .controller('CancelPaymentController', ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', '$location', 'topicMessageDispatcher', CancelPaymentController])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
