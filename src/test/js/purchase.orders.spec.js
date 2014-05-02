@@ -486,11 +486,18 @@ describe('purchase.orders.angular', function () {
                 expect(usecaseAdapter.mostRecentCall.args[0]).toEqual(scope);
             });
 
-            it('sets up the context for a rest call', function() {
+            it('sets up the context for a rest call', inject(function($routeParams) {
                 expect(presenter.params.method).toEqual('POST');
-                expect(presenter.params.url).toEqual('purchase-order-payment/payment-id/cancel');
+                expect(presenter.params.url).toEqual('api/entity/purchase-order');
+                expect(presenter.params.data).toEqual({
+                    status:'canceled',
+                    context:'updateStatusAsCustomer',
+                    id: {
+                        id: $routeParams.id
+                    }
+                });
                 expect(presenter.params.withCredentials).toBeTruthy();
-            });
+            }));
 
             describe('with a configured base uri', function() {
                 beforeEach(function() {
@@ -499,7 +506,7 @@ describe('purchase.orders.angular', function () {
                 });
 
                 it('prefixes base uri', function() {
-                    expect(presenter.params.url).toEqual('base-uri/purchase-order-payment/payment-id/cancel');
+                    expect(presenter.params.url).toEqual('base-uri/api/entity/purchase-order');
                 });
             });
 
@@ -535,6 +542,15 @@ describe('purchase.orders.angular', function () {
                         default: 'Your purchase order was cancelled'
                     });
                 }));
+            });
+            describe('on not found', function() {
+                beforeEach(function() {
+                    presenter.notFound();
+                });
+
+                it('redirect to 404 page', function() {
+                    expect(location.path()).toEqual('/404')
+                })
             });
         });
 

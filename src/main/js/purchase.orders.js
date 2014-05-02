@@ -142,7 +142,14 @@ function CancelPaymentController($scope, usecaseAdapterFactory, $routeParams, co
         var ctx = usecaseAdapterFactory($scope);
         ctx.params = {
             method: 'POST',
-            url: (config.baseUri || '') + 'purchase-order-payment/' + $routeParams.id + '/cancel',
+            url: (config.baseUri || '') + 'api/entity/purchase-order',
+            data: {
+                status: 'canceled',
+                context: 'updateStatusAsCustomer',
+                id: {
+                    id: $routeParams.id
+                }
+            },
             withCredentials: true
         };
         ctx.success = function() {
@@ -152,6 +159,9 @@ function CancelPaymentController($scope, usecaseAdapterFactory, $routeParams, co
                 code: 'purchase.order.cancel.success',
                 default: 'Your purchase order was cancelled'
             })
+        };
+        ctx.notFound = function() {
+            $location.path('/404')
         };
         restServiceHandler(ctx);
     }
