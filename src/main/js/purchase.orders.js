@@ -1,5 +1,6 @@
 angular.module('purchase.orders', [])
     .controller('ListPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', ListPurchaseOrderController])
+    .controller('ViewPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', '$routeParams', ViewPurchaseOrderController])
     .factory('addressSelection', ['localStorage', LocalStorageAddressSelectionFactory])
     .controller('AddressSelectionController', ['$scope', 'addressSelection', 'viewCustomerAddress', '$location', AddressSelectionController])
     .controller('SelectPaymentProviderController', ['$scope', 'localStorage', 'config', SelectPaymentProviderController])
@@ -11,26 +12,91 @@ angular.module('purchase.orders', [])
             .when('payment/:id/cancel', {templateUrl: 'partials/shop/cancel-payment.html', controller: 'CancelPaymentController'})
             .when('/:locale/payment/:id/approve', {templateUrl: 'partials/shop/approve-payment.html', controller: 'ApprovePaymentController'})
             .when('/:locale/payment/:id/cancel', {templateUrl: 'partials/shop/cancel-payment.html', controller: 'CancelPaymentController'})
+            .when('/order/:id', {templateUrl: 'partials/shop/order-details.html', controller: 'ViewPurchaseOrderController'})
     }]);
 
 function ListPurchaseOrderController($scope, usecaseAdapterFactory, restServiceHandler, config) {
+    var request = usecaseAdapterFactory($scope);
+    var defaultSubset = {offset:0, count: 10};
+    $scope.orders = [];
+
+    function sendRequest() {
+        restServiceHandler(request);
+    }
+
+    $scope.init = function(args) {
+        new Initializer(args || {}).execute();
+    };
+
+    $scope.searchForMore = sendRequest;
+
+    function Initializer(args) {
+        this.execute = function() {
+            overrideSubset();
+            prepareRestQuery();
+            sendRequest();
+        };
+
+        function overrideSubset() {
+            if (args.subset) {
+                defaultSubset.offset = args.subset.offset;
+                defaultSubset.count = args.subset.count;
+            }
+        }
+
+        function prepareRestQuery() {
+            request.params = {
+                method:'POST',
+                data: {
+                    args: {
+                        subset: {offset:defaultSubset.offset, count: defaultSubset.count},
+                        sortings: args.sortings || []
+                    }
+                },
+                url:(config.baseUri || '') + 'api/query/purchase-order/findByPrincipal',
+                withCredentials:true
+            };
+            request.success = exposeResults;
+        }
+
+        function exposeResults(payload) {
+            incrementOffsetWith(payload.length);
+            payload.forEach(addOrderToScope);
+        }
+
+        function addOrderToScope(order) {
+            $scope.orders.push(order);
+        }
+
+        function incrementOffsetWith(size) {
+            request.params.data.args.subset.offset += size;
+        }
+    }
+}
+
+function ViewPurchaseOrderController($scope, usecaseAdapterFactory, restServiceHandler, config, $routeParams) {
+    var request = usecaseAdapterFactory($scope);
+
     $scope.init = function() {
-        var baseUri = config.baseUri || '';
-        var onSuccess = function(payload) {
-            $scope.orders = payload;
-        };
-        var presenter = usecaseAdapterFactory($scope, onSuccess);
-        presenter.params = {
-            method:'POST',
-            data: {
-                args: {
-                    dummy:'dummy'
-                }
+        prepareRestCall();
+        restServiceHandler(request);
+    };
+
+    function prepareRestCall() {
+        request.success = exposeOrderOnScope;
+        request.params = {
+            method: 'GET',
+            params: {
+                id: $routeParams.id,
+                treatInputAsId: true
             },
-            url:baseUri + 'api/query/purchase-order/findByPrincipal',
-            withCredentials:true
+            url: (config.baseUri || '') + 'api/entity/purchase-order',
+            withCredentials: true
         };
-        restServiceHandler(presenter);
+    }
+
+    function exposeOrderOnScope(payload) {
+        $scope.order = payload;
     }
 }
 

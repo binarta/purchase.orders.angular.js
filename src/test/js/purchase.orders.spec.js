@@ -27,48 +27,136 @@ describe('purchase.orders.angular', function () {
         presenter = {};
     });
 
+    function request() {
+        return rest.calls[0].args[0];
+    }
+
     describe('ListPurchaseOrdersController', function () {
         beforeEach(inject(function ($controller) {
             ctrl = $controller(ListPurchaseOrderController, {$scope: scope, config: config});
         }));
 
         describe('on init', function () {
-            [
-                {baseUri: 'base-uri/', text: 'with base uri'},
-                {baseUri: null, text: 'without base uri'}
-            ].forEach(function (spec) {
-                    describe(spec.text, function () {
+            beforeEach(function () {
+                config.baseUri = 'base-uri/';
+                scope.init();
+            });
+
+            it('presenter is created', function () {
+                expect(usecaseAdapter.calls[0].args[0]).toEqual(scope);
+            });
+
+            it('params are populated', function () {
+                expect(request().params.method).toEqual('POST');
+                expect(request().params.data).toEqual({args: {subset: {offset: 0, count: 10}, sortings: []}});
+                expect(request().params.url).toEqual('base-uri/api/query/purchase-order/findByPrincipal');
+                expect(request().params.withCredentials).toBeTruthy();
+            });
+
+            it('rest service is called with presenter', function () {
+                expect(request()).toEqual(presenter);
+            });
+
+            it('different subset can be provided on init', inject(function () {
+                scope.init({subset: {offset: 0, count: 5}});
+                expect(request().params.data.args.subset).toEqual({offset: 0, count: 5});
+            }));
+
+            it('sortings can be provided on init', inject(function () {
+                scope.init({sortings: ['sortings']});
+                expect(request().params.data.args.sortings).toEqual(['sortings']);
+            }));
+
+            describe('when results are found', function () {
+                var results = [];
+
+                beforeEach(function () {
+                    results = [
+                        {id: '1'}
+                    ];
+                    presenter.success(results);
+                });
+
+                it('results are exposed on scope', inject(function () {
+                    expect(scope.orders).toEqual(results);
+                }));
+
+                describe('and searching for more', function () {
+                    beforeEach(function () {
+                        rest.reset();
+                        scope.searchForMore();
+                    });
+
+                    it('increment offset with count', inject(function () {
+                        expect(request().params.data.args.subset).toEqual({offset: 1, count: 10});
+                    }));
+
+                    describe('and more results found', function () {
                         beforeEach(function () {
-                            config.baseUri = spec.baseUri;
-                            scope.init();
+                            request().success([
+                                {id: '2'}
+                            ])
                         });
 
-                        it('presenter is created', function () {
-                            expect(usecaseAdapter.calls[0].args[0]).toEqual(scope);
-                        });
-
-                        it('params are populated', function () {
-                            expect(presenter.params.method).toEqual('POST');
-                            expect(presenter.params.data).toEqual({args: {dummy: 'dummy'}});
-                            expect(presenter.params.url).toEqual((spec.baseUri || '') + 'api/query/purchase-order/findByPrincipal');
-                            expect(presenter.params.withCredentials).toBeTruthy();
-                        });
-
-                        it('rest service is called with presenter', function () {
-                            expect(rest.calls[0].args[0]).toEqual(presenter);
-                        });
-
-                        it('on success payload is put on scope', function () {
-                            var payload = [
+                        it('results are added to scope', inject(function () {
+                            expect(scope.orders).toEqual([
                                 {id: '1'},
                                 {id: '2'}
-                            ];
-                            usecaseAdapter.calls[0].args[1](payload);
+                            ])
+                        }));
+                    });
 
-                            expect(scope.orders).toEqual(payload);
+                    describe('and searching for more', function () {
+                        beforeEach(function () {
+                            request().success([]);
+                            rest.reset();
+                            scope.searchForMore();
                         });
+
+                        it('offset gets incremented', inject(function () {
+                            expect(request().params.data.args.subset).toEqual({offset: 1, count: 10});
+                        }));
                     });
                 });
+            });
+        });
+    });
+
+    describe('ViewPurchaseOrderController', function () {
+        beforeEach(inject(function ($controller) {
+            ctrl = $controller(ViewPurchaseOrderController, {$scope: scope, config: config});
+            config.baseUri = 'base-uri/';
+        }));
+
+        describe('on init with route params', function () {
+            beforeEach(inject(function($routeParams) {
+                $routeParams.id = 'id';
+                scope.init();
+            }));
+
+            it('request is sent', inject(function () {
+                expect(request().params).toEqual({
+                    method: 'GET',
+                    params: {
+                        id: 'id',
+                        treatInputAsId: true
+                    },
+                    url: config.baseUri + 'api/entity/purchase-order',
+                    withCredentials: true
+                })
+            }));
+
+            describe('and order is found', function() {
+                var order = {};
+
+                beforeEach(function() {
+                    request().success(order);
+                });
+
+                it('payload is exposed on scope as order', inject(function() {
+                    expect(scope.order).toEqual(order);
+                }));
+            });
         });
     });
 
@@ -471,27 +559,27 @@ describe('purchase.orders.angular', function () {
         });
     });
 
-    describe('CancelPaymentController', function() {
-        beforeEach(inject(function($controller, $routeParams) {
+    describe('CancelPaymentController', function () {
+        beforeEach(inject(function ($controller, $routeParams) {
             ctrl = $controller(CancelPaymentController, {$scope: scope, config: config});
             $routeParams.id = 'payment-id';
         }));
 
-        describe('on init', function() {
-            beforeEach(function() {
+        describe('on init', function () {
+            beforeEach(function () {
                 scope.init();
             });
 
-            it('creates context', function() {
+            it('creates context', function () {
                 expect(usecaseAdapter.mostRecentCall.args[0]).toEqual(scope);
             });
 
-            it('sets up the context for a rest call', inject(function($routeParams) {
+            it('sets up the context for a rest call', inject(function ($routeParams) {
                 expect(presenter.params.method).toEqual('POST');
                 expect(presenter.params.url).toEqual('api/entity/purchase-order');
                 expect(presenter.params.data).toEqual({
-                    status:'canceled',
-                    context:'updateStatusAsCustomer',
+                    status: 'canceled',
+                    context: 'updateStatusAsCustomer',
                     id: {
                         id: $routeParams.id
                     }
@@ -499,56 +587,56 @@ describe('purchase.orders.angular', function () {
                 expect(presenter.params.withCredentials).toBeTruthy();
             }));
 
-            describe('with a configured base uri', function() {
-                beforeEach(function() {
+            describe('with a configured base uri', function () {
+                beforeEach(function () {
                     config.baseUri = 'base-uri/';
                     scope.init();
                 });
 
-                it('prefixes base uri', function() {
+                it('prefixes base uri', function () {
                     expect(presenter.params.url).toEqual('base-uri/api/entity/purchase-order');
                 });
             });
 
-            it('hands context to rest service', function() {
+            it('hands context to rest service', function () {
                 expect(rest.mostRecentCall.args[0]).toEqual(presenter);
             });
 
-            describe('on success', function() {
-                beforeEach(function() {
+            describe('on success', function () {
+                beforeEach(function () {
                     location.search('token', 'payment-token');
                     presenter.success();
                 });
 
-                it('redirects to home page', function() {
+                it('redirects to home page', function () {
                     expect(location.path()).toEqual('/');
                     expect(location.search().token).toBeUndefined();
                 });
 
-                describe('with a locale', function() {
-                    beforeEach(function() {
+                describe('with a locale', function () {
+                    beforeEach(function () {
                         scope.locale = 'locale';
                         presenter.success();
                     });
 
-                    it('redirects to localized home page', function() {
+                    it('redirects to localized home page', function () {
                         expect(location.path()).toEqual('/locale/');
                     });
                 });
 
-                it ('fires a notification', inject(function(topicMessageDispatcherMock) {
+                it('fires a notification', inject(function (topicMessageDispatcherMock) {
                     expect(topicMessageDispatcherMock['system.info']).toEqual({
                         code: 'purchase.order.cancel.success',
                         default: 'Your purchase order was cancelled'
                     });
                 }));
             });
-            describe('on not found', function() {
-                beforeEach(function() {
+            describe('on not found', function () {
+                beforeEach(function () {
                     presenter.notFound();
                 });
 
-                it('redirect to 404 page', function() {
+                it('redirect to 404 page', function () {
                     expect(location.path()).toEqual('/404')
                 })
             });
