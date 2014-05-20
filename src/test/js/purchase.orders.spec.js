@@ -181,6 +181,7 @@ describe('purchase.orders.angular', function () {
         describe('on init with route params', function () {
             beforeEach(inject(function($routeParams) {
                 $routeParams.id = 'id';
+                $routeParams.owner = 'owner';
                 scope.init();
             }));
 
@@ -189,6 +190,7 @@ describe('purchase.orders.angular', function () {
                     method: 'GET',
                     params: {
                         id: 'id',
+                        owner: 'owner',
                         treatInputAsId: true
                     },
                     url: config.baseUri + 'api/entity/purchase-order',

@@ -109,6 +109,7 @@ function ViewPurchaseOrderController($scope, usecaseAdapterFactory, restServiceH
             method: 'GET',
             params: {
                 id: $routeParams.id,
+                owner: $routeParams.owner,
                 treatInputAsId: true
             },
             url: (config.baseUri || '') + 'api/entity/purchase-order',
