@@ -7,6 +7,12 @@ describe('purchase.orders.angular', function () {
     var config = {};
     var location;
     var self = this;
+    var fetchAccountMetadata = function(it) {
+        if (authorized) it.ok(accountMetadata);
+        else it.unauthorized();
+    };
+    var authorized = true;
+    var accountMetadata = {principal:'principal'};
 
     beforeEach(module('purchase.orders'));
     beforeEach(module('angular.usecase.adapter'));
@@ -33,7 +39,7 @@ describe('purchase.orders.angular', function () {
 
     describe('ListPurchaseOrdersController', function () {
         beforeEach(inject(function ($controller) {
-            ctrl = $controller(ListPurchaseOrderController, {$scope: scope, config: config});
+            ctrl = $controller(ListPurchaseOrderController, {$scope: scope, config: config, fetchAccountMetadata:fetchAccountMetadata});
         }));
 
         describe('on init', function () {
@@ -49,7 +55,7 @@ describe('purchase.orders.angular', function () {
             it('params are populated', function () {
                 expect(request().params.method).toEqual('POST');
                 expect(request().params.data).toEqual({args: {subset: {offset: 0, count: 10}, sortings: []}});
-                expect(request().params.url).toEqual('base-uri/api/query/purchase-order/findByPrincipal');
+                expect(request().params.url).toEqual('base-uri/api/query/purchase-order/findAll');
                 expect(request().params.withCredentials).toBeTruthy();
             });
 
@@ -66,6 +72,33 @@ describe('purchase.orders.angular', function () {
                 scope.init({sortings: ['sortings']});
                 expect(request().params.data.args.sortings).toEqual(['sortings']);
             }));
+            
+            describe('with use current user flag enabled', function() {
+                beforeEach(function() {
+                    rest.reset();
+                });
+
+                describe('and user is authorized', function() {
+                    beforeEach(function() {
+                        scope.init({useCurrentUser:true})
+                    });
+
+                    it('principal is put on request', inject(function() {
+                        expect(request().params.data.args.owner).toEqual('principal');
+                    }));
+                });
+
+                describe('and user is not authorized', function() {
+                    beforeEach(function() {
+                        authorized = false;
+                        scope.init({useCurrentUser:true});
+                    });
+
+                    it('owner on request is undefined', inject(function() {
+                        expect(request().params.data.args.owner).toBeUndefined();
+                    }));
+                });
+            });
 
             describe('when results are found', function () {
                 var results = [];
@@ -80,6 +113,23 @@ describe('purchase.orders.angular', function () {
                 it('results are exposed on scope', inject(function () {
                     expect(scope.orders).toEqual(results);
                 }));
+
+                describe('and performing new search', function() {
+                    beforeEach(function() {
+                        rest.reset();
+                        scope.owner = 'owner';
+                        scope.search();
+                    });
+
+                    it('orders are reset', inject(function() {
+                        expect(scope.orders).toEqual([]);
+                    }));
+
+                    it('new request is sent', inject(function() {
+                        expect(request().params.data.args.subset.offset).toEqual(0);
+                        expect(request().params.data.args.owner).toEqual(scope.owner);
+                    }));
+                });
 
                 describe('and searching for more', function () {
                     beforeEach(function () {

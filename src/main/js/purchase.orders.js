@@ -1,5 +1,5 @@
 angular.module('purchase.orders', [])
-    .controller('ListPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', ListPurchaseOrderController])
+    .controller('ListPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', 'fetchAccountMetadata', ListPurchaseOrderController])
     .controller('ViewPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', '$routeParams', ViewPurchaseOrderController])
     .factory('addressSelection', ['localStorage', LocalStorageAddressSelectionFactory])
     .controller('AddressSelectionController', ['$scope', 'addressSelection', 'viewCustomerAddress', '$location', AddressSelectionController])
@@ -15,10 +15,21 @@ angular.module('purchase.orders', [])
             .when('/order/:id', {templateUrl: 'partials/shop/order-details.html', controller: 'ViewPurchaseOrderController'})
     }]);
 
-function ListPurchaseOrderController($scope, usecaseAdapterFactory, restServiceHandler, config) {
+function ListPurchaseOrderController($scope, usecaseAdapterFactory, restServiceHandler, config, fetchAccountMetadata) {
     var request = usecaseAdapterFactory($scope);
     var defaultSubset = {offset:0, count: 10};
     $scope.orders = [];
+
+    $scope.search = function() {
+        reset();
+        sendRequest();
+    };
+
+    function reset() {
+        $scope.orders = [];
+        request.params.data.args.subset.offset = 0;
+        request.params.data.args.owner = $scope.owner;
+    }
 
     function sendRequest() {
         restServiceHandler(request);
@@ -34,8 +45,18 @@ function ListPurchaseOrderController($scope, usecaseAdapterFactory, restServiceH
         this.execute = function() {
             overrideSubset();
             prepareRestQuery();
-            sendRequest();
+            args.useCurrentUser ? useCurrentUser() : sendRequest();
         };
+
+        function useCurrentUser() {
+            fetchAccountMetadata({
+                ok:function(it) {
+                    request.params.data.args.owner = it.principal;
+                    sendRequest();
+                },
+                unauthorized: sendRequest
+            });
+        }
 
         function overrideSubset() {
             if (args.subset) {
@@ -53,7 +74,7 @@ function ListPurchaseOrderController($scope, usecaseAdapterFactory, restServiceH
                         sortings: args.sortings || []
                     }
                 },
-                url:(config.baseUri || '') + 'api/query/purchase-order/findByPrincipal',
+                url:(config.baseUri || '') + 'api/query/purchase-order/findAll',
                 withCredentials:true
             };
             request.success = exposeResults;
