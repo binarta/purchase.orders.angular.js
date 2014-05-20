@@ -1,11 +1,11 @@
-angular.module('purchase.orders', [])
+angular.module('purchase.orders', ['ngRoute', 'i18n'])
     .controller('ListPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', 'fetchAccountMetadata', ListPurchaseOrderController])
     .controller('ViewPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', '$routeParams', ViewPurchaseOrderController])
     .factory('addressSelection', ['localStorage', LocalStorageAddressSelectionFactory])
     .controller('AddressSelectionController', ['$scope', 'addressSelection', 'viewCustomerAddress', '$location', AddressSelectionController])
     .controller('SelectPaymentProviderController', ['$scope', 'localStorage', 'config', SelectPaymentProviderController])
     .controller('ApprovePaymentController', ['$scope', 'usecaseAdapterFactory', '$location', '$routeParams', 'restServiceHandler', 'config', ApprovePaymentController])
-    .controller('CancelPaymentController', ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', '$location', 'topicMessageDispatcher', CancelPaymentController])
+    .controller('CancelPaymentController', ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', 'i18nLocation', 'topicMessageDispatcher', CancelPaymentController])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
             .when('/payment/:id/approve', {templateUrl: 'partials/shop/approve-payment.html', controller: 'ApprovePaymentController'})
@@ -224,7 +224,7 @@ function ApprovePaymentController($scope, usecaseAdapterFactory, $location, $rou
     }
 }
 
-function CancelPaymentController($scope, usecaseAdapterFactory, $routeParams, config, restServiceHandler, $location, topicMessageDispatcher) {
+function CancelPaymentController($scope, usecaseAdapterFactory, $routeParams, config, restServiceHandler, i18nLocation, topicMessageDispatcher) {
     $scope.init = function() {
         var ctx = usecaseAdapterFactory($scope);
         ctx.params = {
@@ -240,15 +240,15 @@ function CancelPaymentController($scope, usecaseAdapterFactory, $routeParams, co
             withCredentials: true
         };
         ctx.success = function() {
-            $location.search('token', null);
-            $location.path(($scope.locale || '') + '/');
+            i18nLocation.search({});
+            i18nLocation.path('/');
             topicMessageDispatcher.fire('system.info', {
                 code: 'purchase.order.cancel.success',
                 default: 'Your purchase order was cancelled'
             })
         };
         ctx.notFound = function() {
-            $location.path('/404')
+            i18nLocation.path('/404')
         };
         restServiceHandler(ctx);
     }

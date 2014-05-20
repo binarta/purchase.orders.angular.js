@@ -663,17 +663,6 @@ describe('purchase.orders.angular', function () {
                     expect(location.search().token).toBeUndefined();
                 });
 
-                describe('with a locale', function () {
-                    beforeEach(function () {
-                        scope.locale = 'locale';
-                        presenter.success();
-                    });
-
-                    it('redirects to localized home page', function () {
-                        expect(location.path()).toEqual('/locale/');
-                    });
-                });
-
                 it('fires a notification', inject(function (topicMessageDispatcherMock) {
                     expect(topicMessageDispatcherMock['system.info']).toEqual({
                         code: 'purchase.order.cancel.success',
