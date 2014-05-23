@@ -168,6 +168,68 @@ describe('purchase.orders.angular', function () {
                         }));
                     });
                 });
+
+                describe('map order status to warning level', function () {
+                    beforeEach(function () {
+                        scope.orders = [];
+                        results = [
+                            {status: 'pending-approval-by-customer'},
+                            {status: 'payment-approved-by-customer'},
+                            {status: 'payment-approved-by-vendor'},
+                            {status: 'refund-pending'},
+                            {status: 'in-transit'},
+                            {status: 'review-pending'},
+                            {status: 'canceled'},
+                            {status: 'refunded'},
+                            {status: 'paid'},
+                            {status: 'shipped'}
+                        ];
+                    });
+
+                    it('orders are exposed on scope', function () {
+                        var expected = [
+                            {status: 'pending-approval-by-customer', statusLevel: 'info'},
+                            {status: 'payment-approved-by-customer', statusLevel: 'info'},
+                            {status: 'payment-approved-by-vendor', statusLevel: 'info'},
+                            {status: 'refund-pending', statusLevel: 'info'},
+                            {status: 'in-transit', statusLevel: 'info'},
+                            {status: 'review-pending', statusLevel: 'warning'},
+                            {status: 'canceled', statusLevel: 'danger'},
+                            {status: 'refunded', statusLevel: 'success'},
+                            {status: 'paid', statusLevel: 'success'},
+                            {status: 'shipped', statusLevel: 'success'}
+                        ];
+
+                        presenter.success(results);
+
+                        expect(scope.orders).toEqual(expected);
+                    });
+
+                    describe('when bootstrap 2', function () {
+                        beforeEach(function () {
+                            scope.init({bootstrapVersion: 2});
+                        });
+
+                        it('orders are exposed on scope', function () {
+                            var expected = [
+                                {status: 'pending-approval-by-customer', statusLevel: 'info'},
+                                {status: 'payment-approved-by-customer', statusLevel: 'info'},
+                                {status: 'payment-approved-by-vendor', statusLevel: 'info'},
+                                {status: 'refund-pending', statusLevel: 'info'},
+                                {status: 'in-transit', statusLevel: 'info'},
+                                {status: 'review-pending', statusLevel: 'warning'},
+                                {status: 'canceled', statusLevel: 'important'},
+                                {status: 'refunded', statusLevel: 'success'},
+                                {status: 'paid', statusLevel: 'success'},
+                                {status: 'shipped', statusLevel: 'success'}
+                            ];
+
+                            presenter.success(results);
+
+                            expect(scope.orders).toEqual(expected);
+                        });
+                    });
+                });
             });
         });
     });
@@ -198,16 +260,66 @@ describe('purchase.orders.angular', function () {
                 })
             }));
 
-            describe('and order is found', function() {
-                var order = {};
+            [
+                {status: 'pending-approval-by-customer', expectedStatusLevel: 'info'},
+                {status: 'payment-approved-by-customer', expectedStatusLevel: 'info'},
+                {status: 'payment-approved-by-vendor', expectedStatusLevel: 'info'},
+                {status: 'refund-pending', expectedStatusLevel: 'info'},
+                {status: 'in-transit', expectedStatusLevel: 'info'},
+                {status: 'review-pending', expectedStatusLevel: 'warning'},
+                {status: 'canceled', expectedStatusLevel: 'danger'},
+                {status: 'refunded', expectedStatusLevel: 'success'},
+                {status: 'paid', expectedStatusLevel: 'success'},
+                {status: 'shipped', expectedStatusLevel: 'success'}
+            ].forEach(function (order) {
+                describe('and order is found', function() {
+                    beforeEach(function() {
+                        request().success(order);
+                    });
 
-                beforeEach(function() {
-                    request().success(order);
+                    it('payload is exposed on scope as order', inject(function() {
+                        expect(scope.order).toEqual(order);
+                    }));
+
+                    it('statusLevel is exposed on order', function () {
+                        expect(scope.order.statusLevel).toEqual(order.expectedStatusLevel);
+                    });
                 });
+            });
 
-                it('payload is exposed on scope as order', inject(function() {
-                    expect(scope.order).toEqual(order);
+            describe('when bootstrap 2', function () {
+                beforeEach(inject(function($routeParams) {
+                    $routeParams.id = 'id';
+                    $routeParams.owner = 'owner';
+                    scope.init({bootstrapVersion: 2});
                 }));
+
+                [
+                    {status: 'pending-approval-by-customer', expectedStatusLevel: 'info'},
+                    {status: 'payment-approved-by-customer', expectedStatusLevel: 'info'},
+                    {status: 'payment-approved-by-vendor', expectedStatusLevel: 'info'},
+                    {status: 'refund-pending', expectedStatusLevel: 'info'},
+                    {status: 'in-transit', expectedStatusLevel: 'info'},
+                    {status: 'review-pending', expectedStatusLevel: 'warning'},
+                    {status: 'canceled', expectedStatusLevel: 'important'},
+                    {status: 'refunded', expectedStatusLevel: 'success'},
+                    {status: 'paid', expectedStatusLevel: 'success'},
+                    {status: 'shipped', expectedStatusLevel: 'success'}
+                ].forEach(function (order) {
+                        describe('and order is found', function() {
+                            beforeEach(function() {
+                                request().success(order);
+                            });
+
+                            it('payload is exposed on scope as order', inject(function() {
+                                expect(scope.order).toEqual(order);
+                            }));
+
+                            it('statusLevel is exposed on order', function () {
+                                expect(scope.order.statusLevel).toEqual(order.expectedStatusLevel);
+                            });
+                        });
+                    });
             });
         });
     });

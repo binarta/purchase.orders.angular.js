@@ -86,6 +86,7 @@ function ListPurchaseOrderController($scope, usecaseAdapterFactory, restServiceH
         }
 
         function addOrderToScope(order) {
+            mapStatusLevel(order, args);
             $scope.orders.push(order);
         }
 
@@ -95,10 +96,52 @@ function ListPurchaseOrderController($scope, usecaseAdapterFactory, restServiceH
     }
 }
 
+function mapStatusLevel(order, args) {
+    if(order.status) order.statusLevel = args.bootstrapVersion == 2
+        ? getStatusLevelForBootstrap2(order.status)
+        : getStatusLevelForBootstrap3(order.status);
+}
+
+function getStatusLevelForBootstrap2(status) {
+    switch (status) {
+        case 'review-pending':
+            return 'warning';
+        case 'canceled':
+            return 'important';
+        case 'refunded':
+            return 'success';
+        case 'paid':
+            return 'success';
+        case 'shipped':
+            return 'success';
+        default:
+            return 'info';
+    }
+}
+
+function getStatusLevelForBootstrap3(status) {
+    switch (status) {
+        case 'review-pending':
+            return 'warning';
+        case 'canceled':
+            return 'danger';
+        case 'refunded':
+            return 'success';
+        case 'paid':
+            return 'success';
+        case 'shipped':
+            return 'success';
+        default:
+            return 'info';
+    }
+}
+
 function ViewPurchaseOrderController($scope, usecaseAdapterFactory, restServiceHandler, config, $routeParams) {
     var request = usecaseAdapterFactory($scope);
+    var initConfig = {};
 
-    $scope.init = function() {
+    $scope.init = function(args) {
+        if (args) initConfig = args;
         prepareRestCall();
         restServiceHandler(request);
     };
@@ -118,6 +161,7 @@ function ViewPurchaseOrderController($scope, usecaseAdapterFactory, restServiceH
     }
 
     function exposeOrderOnScope(payload) {
+        mapStatusLevel(payload, initConfig);
         $scope.order = payload;
     }
 }
