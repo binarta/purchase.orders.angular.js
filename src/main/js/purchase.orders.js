@@ -13,6 +13,7 @@ angular.module('purchase.orders', ['ngRoute', 'i18n'])
             .when('/:locale/payment/:id/approve', {templateUrl: 'partials/shop/approve-payment.html', controller: 'ApprovePaymentController'})
             .when('/:locale/payment/:id/cancel', {templateUrl: 'partials/shop/cancel-payment.html', controller: 'CancelPaymentController'})
             .when('/order/:id', {templateUrl: 'partials/shop/order-details.html', controller: 'ViewPurchaseOrderController'})
+            .when('/:locale/order/:id', {templateUrl: 'partials/shop/order-details.html', controller: 'ViewPurchaseOrderController'})
     }]);
 
 function ListPurchaseOrderController($scope, usecaseAdapterFactory, restServiceHandler, config, fetchAccountMetadata) {
