@@ -272,6 +272,10 @@ describe('purchase.orders.angular', function () {
                 {status: 'paid', expectedStatusLevel: 'success'},
                 {status: 'shipped', expectedStatusLevel: 'success'}
             ].forEach(function (order) {
+                it('expose status level as function', inject(function() {
+                    expect(scope.statusLevel(order.status)).toEqual(order.expectedStatusLevel);
+                }));
+
                 describe('and order is found', function() {
                     beforeEach(function() {
                         request().success(order);
@@ -306,6 +310,10 @@ describe('purchase.orders.angular', function () {
                     {status: 'paid', expectedStatusLevel: 'success'},
                     {status: 'shipped', expectedStatusLevel: 'success'}
                 ].forEach(function (order) {
+                        it('expose status level as function', inject(function() {
+                            expect(scope.statusLevel(order.status)).toEqual(order.expectedStatusLevel);
+                        }));
+
                         describe('and order is found', function() {
                             beforeEach(function() {
                                 request().success(order);
@@ -795,5 +803,94 @@ describe('purchase.orders.angular', function () {
             });
         });
 
+    });
+
+    describe('UpdateOrderStatusController', function() {
+        beforeEach(inject(function($controller, $routeParams) {
+            config.baseUri = 'base-uri/';
+            $routeParams.id = 'id';
+            $routeParams.owner = 'owner';
+            ctrl = $controller(UpdateOrderStatusController, {$scope:scope, config:config})
+        }));
+
+        describe('on move to in transit', function() {
+            beforeEach(function() {
+                scope.inTransit();
+            });
+
+            it('request is sent', inject(function($routeParams) {
+                expect(request().params).toEqual({
+                    method:'POST',
+                    url: 'base-uri/api/entity/purchase-order',
+                    data: {
+                        context: 'updateStatusAsVendor',
+                        id: {
+                            id: $routeParams.id,
+                            owner: $routeParams.owner
+                        },
+                        status: 'in-transit'
+                    },
+                    withCredentials:true
+                })
+            }));
+
+            describe('and success', function() {
+                beforeEach(inject(function() {
+                    scope.order = {status:'previous'};
+                    request().success();
+                }));
+
+                it('order status is updated', inject(function() {
+                    expect(scope.order.status).toEqual('in-transit');
+                }));
+
+                it('test', inject(function(topicMessageDispatcherMock) {
+                    expect(topicMessageDispatcherMock['system.success']).toEqual({
+                        code: 'purchase.order.update.status.success',
+                        default: 'The status of the order has been updated'
+                    })
+                }));
+            });
+        });
+
+        describe('on move to shipped', function() {
+            beforeEach(function() {
+                scope.shipped();
+            });
+
+            it('request is sent', inject(function($routeParams) {
+                expect(request().params).toEqual({
+                    method:'POST',
+                    url: 'base-uri/api/entity/purchase-order',
+                    data: {
+                        context: 'updateStatusAsVendor',
+                        id: {
+                            id: $routeParams.id,
+                            owner: $routeParams.owner
+                        },
+                        status: 'shipped'
+                    },
+                    withCredentials:true
+                })
+            }));
+
+            describe('and success', function() {
+                beforeEach(inject(function() {
+                    scope.order = {status:'previous'};
+                    request().success();
+                }));
+
+                it('order status is updated', inject(function() {
+                    expect(scope.order.status).toEqual('shipped');
+                }));
+
+                it('test', inject(function(topicMessageDispatcherMock) {
+                    expect(topicMessageDispatcherMock['system.success']).toEqual({
+                        code: 'purchase.order.update.status.success',
+                        default: 'The status of the order has been updated'
+                    })
+                }));
+            });
+        });
     });
 });

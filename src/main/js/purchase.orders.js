@@ -165,6 +165,12 @@ function ViewPurchaseOrderController($scope, usecaseAdapterFactory, restServiceH
         mapStatusLevel(payload, initConfig);
         $scope.order = payload;
     }
+
+    $scope.statusLevel = function(status) {
+        var input = {status:status};
+        mapStatusLevel(input, initConfig);
+        return input.statusLevel;
+    }
 }
 
 function LocalStorageAddressSelectionFactory(localStorage) {
@@ -298,4 +304,40 @@ function CancelPaymentController($scope, usecaseAdapterFactory, $routeParams, co
         };
         restServiceHandler(ctx);
     }
+}
+
+function UpdateOrderStatusController($scope, usecaseAdapterFactory, config, $routeParams, restServiceHandler, topicMessageDispatcher) {
+    var request = usecaseAdapterFactory($scope);
+    request.params = {
+        method:'POST',
+        url: (config.baseUri || '') + 'api/entity/purchase-order',
+        data: {
+            context: 'updateStatusAsVendor',
+            id: {
+                id: $routeParams.id,
+                owner: $routeParams.owner
+            }
+        },
+        withCredentials:true
+    };
+
+    $scope.inTransit = function() {
+        updateToStatus('in-transit');
+    };
+
+    function updateToStatus(status) {
+        request.params.data.status = status;
+        request.success = function() {
+            $scope.order.status = status;
+            topicMessageDispatcher.fire('system.success', {
+                code: 'purchase.order.update.status.success',
+                default: 'The status of the order has been updated'
+            })
+        };
+        restServiceHandler(request);
+    }
+
+    $scope.shipped = function() {
+        updateToStatus('shipped');
+    };
 }
