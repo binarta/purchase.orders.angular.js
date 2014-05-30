@@ -306,7 +306,7 @@ function CancelPaymentController($scope, usecaseAdapterFactory, $routeParams, co
     }
 }
 
-function UpdateOrderStatusController($scope, usecaseAdapterFactory, config, $routeParams, restServiceHandler, topicMessageDispatcher) {
+function UpdateOrderStatusController($scope, usecaseAdapterFactory, config, $routeParams, restServiceHandler, topicMessageDispatcher, $location) {
     var request = usecaseAdapterFactory($scope);
     request.params = {
         method:'POST',
@@ -340,4 +340,8 @@ function UpdateOrderStatusController($scope, usecaseAdapterFactory, config, $rou
     $scope.shipped = function() {
         updateToStatus('shipped');
     };
+
+    $scope.pathStartsWith = function(path) {
+        return $location.path().indexOf(path) == 0;
+    }
 }

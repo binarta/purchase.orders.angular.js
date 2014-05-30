@@ -892,5 +892,27 @@ describe('purchase.orders.angular', function () {
                 }));
             });
         });
+
+        describe('pathStartsWith', function() {
+            beforeEach(inject(function($location) {
+                $location.path('/valid/path/');
+            }));
+
+            it('match full path', inject(function() {
+                expect(scope.pathStartsWith('/valid/path/')).toBeTruthy();
+            }));
+
+            it('match start of path', inject(function() {
+                expect(scope.pathStartsWith('/valid/')).toBeTruthy();
+            }));
+
+            it('do not match end of path', inject(function() {
+                expect(scope.pathStartsWith('/path/')).toBeFalsy();
+            }));
+
+            it('do not match invalid path', inject(function() {
+                expect(scope.pathStartsWith('invalid')).toBeFalsy();
+            }));
+        });
     });
 });
