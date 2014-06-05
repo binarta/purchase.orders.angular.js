@@ -178,6 +178,7 @@ describe('purchase.orders.angular', function () {
                             {status: 'payment-approved-by-vendor'},
                             {status: 'refund-pending'},
                             {status: 'in-transit'},
+                            {status: 'shipping-pending'},
                             {status: 'review-pending'},
                             {status: 'canceled'},
                             {status: 'refunded'},
@@ -193,6 +194,7 @@ describe('purchase.orders.angular', function () {
                             {status: 'payment-approved-by-vendor', statusLevel: 'info'},
                             {status: 'refund-pending', statusLevel: 'info'},
                             {status: 'in-transit', statusLevel: 'info'},
+                            {status: 'shipping-pending', statusLevel: 'info'},
                             {status: 'review-pending', statusLevel: 'warning'},
                             {status: 'canceled', statusLevel: 'danger'},
                             {status: 'refunded', statusLevel: 'success'},
@@ -217,6 +219,7 @@ describe('purchase.orders.angular', function () {
                                 {status: 'payment-approved-by-vendor', statusLevel: 'info'},
                                 {status: 'refund-pending', statusLevel: 'info'},
                                 {status: 'in-transit', statusLevel: 'info'},
+                                {status: 'shipping-pending', statusLevel: 'info'},
                                 {status: 'review-pending', statusLevel: 'warning'},
                                 {status: 'canceled', statusLevel: 'important'},
                                 {status: 'refunded', statusLevel: 'success'},
@@ -266,6 +269,7 @@ describe('purchase.orders.angular', function () {
                 {status: 'payment-approved-by-vendor', expectedStatusLevel: 'info'},
                 {status: 'refund-pending', expectedStatusLevel: 'info'},
                 {status: 'in-transit', expectedStatusLevel: 'info'},
+                {status: 'shipping-pending', expectedStatusLevel: 'info'},
                 {status: 'review-pending', expectedStatusLevel: 'warning'},
                 {status: 'canceled', expectedStatusLevel: 'danger'},
                 {status: 'refunded', expectedStatusLevel: 'success'},
@@ -304,6 +308,7 @@ describe('purchase.orders.angular', function () {
                     {status: 'payment-approved-by-vendor', expectedStatusLevel: 'info'},
                     {status: 'refund-pending', expectedStatusLevel: 'info'},
                     {status: 'in-transit', expectedStatusLevel: 'info'},
+                    {status: 'shipping-pending', expectedStatusLevel: 'info'},
                     {status: 'review-pending', expectedStatusLevel: 'warning'},
                     {status: 'canceled', expectedStatusLevel: 'important'},
                     {status: 'refunded', expectedStatusLevel: 'success'},
@@ -752,9 +757,8 @@ describe('purchase.orders.angular', function () {
                 expect(presenter.params.data).toEqual({
                     status: 'canceled',
                     context: 'updateStatusAsCustomer',
-                    id: {
-                        id: $routeParams.id
-                    }
+                    id: $routeParams.id,
+                    treatInputAsId:true
                 });
                 expect(presenter.params.withCredentials).toBeTruthy();
             }));
@@ -813,83 +817,49 @@ describe('purchase.orders.angular', function () {
             ctrl = $controller(UpdateOrderStatusController, {$scope:scope, config:config})
         }));
 
-        describe('on move to in transit', function() {
-            beforeEach(function() {
-                scope.inTransit();
-            });
+        [
+            {status:'in-transit', func:function() {scope.inTransit()}},
+            {status:'shipped', func:function() {scope.shipped()}},
+            {status:'paid', func:function() {scope.paid()}},
+            {status:'shipping-pending', func:function() {scope.shippingPending()}}
+        ].forEach(function(def) {
+            describe('on move to ' + def.status, function() {
+                beforeEach(function() {
+                    def.func();
+                });
 
-            it('request is sent', inject(function($routeParams) {
-                expect(request().params).toEqual({
-                    method:'POST',
-                    url: 'base-uri/api/entity/purchase-order',
-                    data: {
-                        context: 'updateStatusAsVendor',
-                        id: {
+                it('request is sent', inject(function($routeParams) {
+                    expect(request().params).toEqual({
+                        method:'POST',
+                        url: 'base-uri/api/entity/purchase-order',
+                        data: {
+                            context: 'updateStatusAsVendor',
                             id: $routeParams.id,
-                            owner: $routeParams.owner
+                            owner: $routeParams.owner,
+                            status: def.status,
+                            treatInputAsId:true
                         },
-                        status: 'in-transit'
-                    },
-                    withCredentials:true
-                })
-            }));
-
-            describe('and success', function() {
-                beforeEach(inject(function() {
-                    scope.order = {status:'previous'};
-                    request().success();
-                }));
-
-                it('order status is updated', inject(function() {
-                    expect(scope.order.status).toEqual('in-transit');
-                }));
-
-                it('test', inject(function(topicMessageDispatcherMock) {
-                    expect(topicMessageDispatcherMock['system.success']).toEqual({
-                        code: 'purchase.order.update.status.success',
-                        default: 'The status of the order has been updated'
+                        withCredentials:true
                     })
                 }));
-            });
-        });
 
-        describe('on move to shipped', function() {
-            beforeEach(function() {
-                scope.shipped();
-            });
+                describe('and success', function() {
+                    beforeEach(inject(function() {
+                        scope.order = {status:'previous'};
+                        request().success();
+                    }));
 
-            it('request is sent', inject(function($routeParams) {
-                expect(request().params).toEqual({
-                    method:'POST',
-                    url: 'base-uri/api/entity/purchase-order',
-                    data: {
-                        context: 'updateStatusAsVendor',
-                        id: {
-                            id: $routeParams.id,
-                            owner: $routeParams.owner
-                        },
-                        status: 'shipped'
-                    },
-                    withCredentials:true
-                })
-            }));
+                    it('order status is updated', inject(function() {
+                        expect(scope.order.status).toEqual(def.status);
+                    }));
 
-            describe('and success', function() {
-                beforeEach(inject(function() {
-                    scope.order = {status:'previous'};
-                    request().success();
-                }));
-
-                it('order status is updated', inject(function() {
-                    expect(scope.order.status).toEqual('shipped');
-                }));
-
-                it('test', inject(function(topicMessageDispatcherMock) {
-                    expect(topicMessageDispatcherMock['system.success']).toEqual({
-                        code: 'purchase.order.update.status.success',
-                        default: 'The status of the order has been updated'
-                    })
-                }));
+                    it('test', inject(function(topicMessageDispatcherMock) {
+                        expect(topicMessageDispatcherMock['system.success']).toEqual({
+                            code: 'purchase.order.update.status.success',
+                            default: 'The status of the order has been updated'
+                        })
+                    }));
+                });
             });
         });
 

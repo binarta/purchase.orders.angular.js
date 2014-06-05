@@ -285,9 +285,8 @@ function CancelPaymentController($scope, usecaseAdapterFactory, $routeParams, co
             data: {
                 status: 'canceled',
                 context: 'updateStatusAsCustomer',
-                id: {
-                    id: $routeParams.id
-                }
+                id: $routeParams.id,
+                treatInputAsId:true
             },
             withCredentials: true
         };
@@ -313,16 +312,23 @@ function UpdateOrderStatusController($scope, usecaseAdapterFactory, config, $rou
         url: (config.baseUri || '') + 'api/entity/purchase-order',
         data: {
             context: 'updateStatusAsVendor',
-            id: {
-                id: $routeParams.id,
-                owner: $routeParams.owner
-            }
+            id: $routeParams.id,
+            owner: $routeParams.owner,
+            treatInputAsId:true
         },
         withCredentials:true
     };
 
     $scope.inTransit = function() {
         updateToStatus('in-transit');
+    };
+
+    $scope.paid = function() {
+        updateToStatus('paid');
+    };
+
+    $scope.shippingPending = function() {
+        updateToStatus('shipping-pending')
     };
 
     function updateToStatus(status) {
