@@ -2,6 +2,7 @@ angular.module('purchase.orders', ['ngRoute', 'i18n'])
     .controller('ListPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', 'fetchAccountMetadata', ListPurchaseOrderController])
     .controller('ViewPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', '$routeParams', ViewPurchaseOrderController])
     .factory('addressSelection', ['localStorage', LocalStorageAddressSelectionFactory])
+    .factory('validateOrder', ['usecaseAdapterFactory', 'restServiceHandler', 'config', ValidateOrderFactory])
     .controller('AddressSelectionController', ['$scope', 'addressSelection', 'viewCustomerAddress', '$location', AddressSelectionController])
     .controller('SelectPaymentProviderController', ['$scope', 'localStorage', 'config', SelectPaymentProviderController])
     .controller('ApprovePaymentController', ['$scope', 'usecaseAdapterFactory', '$location', '$routeParams', 'restServiceHandler', 'config', ApprovePaymentController])
@@ -349,5 +350,21 @@ function UpdateOrderStatusController($scope, usecaseAdapterFactory, config, $rou
 
     $scope.pathStartsWith = function(path) {
         return $location.path().indexOf(path) == 0;
+    }
+}
+
+function ValidateOrderFactory(usecaseAdapterFactory, restServiceHandler, config) {
+    return function($scope, args) {
+        var request = usecaseAdapterFactory($scope);
+        request.success = args.success;
+        request.error = args.error;
+        args.data.reportType = 'complex';
+        request.params = {
+            method:'POST',
+            url: (config.baseUri || '') + 'validate/purchase-order',
+            data: args.data,
+            withCredentials:true
+        };
+        restServiceHandler(request);
     }
 }

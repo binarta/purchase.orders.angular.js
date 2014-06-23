@@ -18,6 +18,7 @@ describe('purchase.orders.angular', function () {
     beforeEach(module('angular.usecase.adapter'));
     beforeEach(module('rest.client'));
     beforeEach(module('web.storage'));
+    beforeEach(module('config'));
     beforeEach(module('notifications'));
     beforeEach(inject(function ($rootScope, usecaseAdapterFactory, restServiceHandler, $location, topicMessageDispatcherMock) {
         scope = $rootScope.$new();
@@ -883,6 +884,55 @@ describe('purchase.orders.angular', function () {
             it('do not match invalid path', inject(function() {
                 expect(scope.pathStartsWith('invalid')).toBeFalsy();
             }));
+        });
+    });
+
+    describe('ValidateOrder', function() {
+        describe('when validating', function() {
+            var args = {};
+            var success = jasmine.createSpy('success');
+            var error = jasmine.createSpy('error');
+
+            beforeEach(inject(function(validateOrder) {
+                args.data = {items:['I1', 'I2']};
+                args.success = success;
+                args.error = error;
+                validateOrder(scope, args);
+            }));
+
+            it('send request', function() {
+                expect(request().params).toEqual({
+                    method: 'POST',
+                    url: 'validate/purchase-order',
+                    data: {
+                        reportType: 'complex',
+                        items: [
+                            'I1', 'I2'
+                        ]
+                    },
+                    withCredentials: true
+                })
+            });
+
+            describe('on success', function() {
+                beforeEach(function() {
+                    request().success();
+                });
+
+                it('then callback is called', function() {
+                    expect(success.calls[0]).toBeDefined();
+                })
+            });
+
+            describe('on error', function() {
+                beforeEach(function() {
+                    request().error();
+                });
+
+                it('then callback is called', function() {
+                    expect(error.calls[0]).toBeDefined();
+                })
+            });
         });
     });
 });
