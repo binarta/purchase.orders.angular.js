@@ -822,7 +822,8 @@ describe('purchase.orders.angular', function () {
             {status:'in-transit', func:function() {scope.inTransit()}},
             {status:'shipped', func:function() {scope.shipped()}},
             {status:'paid', func:function() {scope.paid()}},
-            {status:'shipping-pending', func:function() {scope.shippingPending()}}
+            {status:'shipping-pending', func:function() {scope.shippingPending()}},
+            {status:'canceled', func:function() {scope.cancel()}}
         ].forEach(function(def) {
             describe('on move to ' + def.status, function() {
                 beforeEach(function() {

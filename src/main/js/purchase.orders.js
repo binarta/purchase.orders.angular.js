@@ -329,7 +329,11 @@ function UpdateOrderStatusController($scope, usecaseAdapterFactory, config, $rou
     };
 
     $scope.shippingPending = function() {
-        updateToStatus('shipping-pending')
+        updateToStatus('shipping-pending');
+    };
+
+    $scope.cancel = function() {
+        updateToStatus('canceled');
     };
 
     function updateToStatus(status) {
