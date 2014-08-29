@@ -40,201 +40,89 @@ describe('purchase.orders.angular', function () {
 
     describe('ListPurchaseOrdersController', function () {
         beforeEach(inject(function ($controller) {
+            authorized = true;
             ctrl = $controller(ListPurchaseOrderController, {$scope: scope, config: config, fetchAccountMetadata:fetchAccountMetadata});
         }));
 
-        describe('on init', function () {
-            beforeEach(function () {
-                config.baseUri = 'base-uri/';
-                scope.init();
+        describe('on decorator', function() {
+            [
+                {status: 'pending-approval-by-customer', statusLevel: 'info'},
+                {status: 'payment-approved-by-customer', statusLevel: 'info'},
+                {status: 'payment-approved-by-vendor', statusLevel: 'info'},
+                {status: 'refund-pending', statusLevel: 'info'},
+                {status: 'in-transit', statusLevel: 'info'},
+                {status: 'shipping-pending', statusLevel: 'info'},
+                {status: 'review-pending', statusLevel: 'warning'},
+                {status: 'canceled', statusLevel: 'danger'},
+                {status: 'refunded', statusLevel: 'success'},
+                {status: 'paid', statusLevel: 'success'},
+                {status: 'shipped', statusLevel: 'success'}
+            ].forEach(function(input) {
+                it('test', function() {
+                    var order = {status:input.status};
+                    scope.decorator(order);
+                    expect(order.statusLevel).toEqual(input.statusLevel);
+                })
             });
 
-            it('presenter is created', function () {
-                expect(usecaseAdapter.calls[0].args[0]).toEqual(scope);
-            });
-
-            it('params are populated', function () {
-                expect(request().params.method).toEqual('POST');
-                expect(request().params.data).toEqual({args: {subset: {offset: 0, count: 10}, sortings: []}});
-                expect(request().params.url).toEqual('base-uri/api/query/purchase-order/findAll');
-                expect(request().params.withCredentials).toBeTruthy();
-            });
-
-            it('rest service is called with presenter', function () {
-                expect(request()).toEqual(presenter);
-            });
-
-            it('different subset can be provided on init', inject(function () {
-                scope.init({subset: {offset: 0, count: 5}});
-                expect(request().params.data.args.subset).toEqual({offset: 0, count: 5});
-            }));
-
-            it('sortings can be provided on init', inject(function () {
-                scope.init({sortings: ['sortings']});
-                expect(request().params.data.args.sortings).toEqual(['sortings']);
-            }));
-            
-            describe('with use current user flag enabled', function() {
+            describe('for bootstrap2', function() {
                 beforeEach(function() {
-                    rest.reset();
+                    config.styling = 'bootstrap2';
                 });
 
-                describe('and user is authorized', function() {
-                    beforeEach(function() {
-                        scope.init({useCurrentUser:true})
-                    });
-
-                    it('principal is put on request', inject(function() {
-                        expect(request().params.data.args.owner).toEqual('principal');
-                    }));
-                });
-
-                describe('and user is not authorized', function() {
-                    beforeEach(function() {
-                        authorized = false;
-                        scope.init({useCurrentUser:true});
-                    });
-
-                    it('owner on request is undefined', inject(function() {
-                        expect(request().params.data.args.owner).toBeUndefined();
-                    }));
-                });
+                [
+                    {status: 'pending-approval-by-customer', statusLevel: 'info'},
+                    {status: 'payment-approved-by-customer', statusLevel: 'info'},
+                    {status: 'payment-approved-by-vendor', statusLevel: 'info'},
+                    {status: 'refund-pending', statusLevel: 'info'},
+                    {status: 'in-transit', statusLevel: 'info'},
+                    {status: 'shipping-pending', statusLevel: 'info'},
+                    {status: 'review-pending', statusLevel: 'warning'},
+                    {status: 'canceled', statusLevel: 'important'},
+                    {status: 'refunded', statusLevel: 'success'},
+                    {status: 'paid', statusLevel: 'success'},
+                    {status: 'shipped', statusLevel: 'success'}
+                ].forEach(function(input) {
+                    it('test', function() {
+                        var order = {status:input.status};
+                        scope.decorator(order);
+                        expect(order.statusLevel).toEqual(input.statusLevel);
+                    })
+                })
             });
 
-            describe('when results are found', function () {
-                var results = [];
+        });
 
-                beforeEach(function () {
-                    results = [
-                        {id: '1'}
-                    ];
-                    presenter.success(results);
-                });
+        describe('on filters customizer', function() {
+            var filters;
+            var promiseWasResolved;
 
-                it('results are exposed on scope', inject(function () {
-                    expect(scope.orders).toEqual(results);
-                }));
-
-                describe('and performing new search', function() {
-                    beforeEach(function() {
-                        rest.reset();
-                        scope.owner = 'owner';
-                        scope.search();
-                    });
-
-                    it('orders are reset', inject(function() {
-                        expect(scope.orders).toEqual([]);
-                    }));
-
-                    it('new request is sent', inject(function() {
-                        expect(request().params.data.args.subset.offset).toEqual(0);
-                        expect(request().params.data.args.owner).toEqual(scope.owner);
-                    }));
-                });
-
-                describe('and searching for more', function () {
-                    beforeEach(function () {
-                        rest.reset();
-                        scope.searchForMore();
-                    });
-
-                    it('increment offset with count', inject(function () {
-                        expect(request().params.data.args.subset).toEqual({offset: 1, count: 10});
-                    }));
-
-                    describe('and more results found', function () {
-                        beforeEach(function () {
-                            request().success([
-                                {id: '2'}
-                            ])
-                        });
-
-                        it('results are added to scope', inject(function () {
-                            expect(scope.orders).toEqual([
-                                {id: '1'},
-                                {id: '2'}
-                            ])
-                        }));
-                    });
-
-                    describe('and searching for more', function () {
-                        beforeEach(function () {
-                            request().success([]);
-                            rest.reset();
-                            scope.searchForMore();
-                        });
-
-                        it('offset gets incremented', inject(function () {
-                            expect(request().params.data.args.subset).toEqual({offset: 1, count: 10});
-                        }));
-                    });
-                });
-
-                describe('map order status to warning level', function () {
-                    beforeEach(function () {
-                        scope.orders = [];
-                        results = [
-                            {status: 'pending-approval-by-customer'},
-                            {status: 'payment-approved-by-customer'},
-                            {status: 'payment-approved-by-vendor'},
-                            {status: 'refund-pending'},
-                            {status: 'in-transit'},
-                            {status: 'shipping-pending'},
-                            {status: 'review-pending'},
-                            {status: 'canceled'},
-                            {status: 'refunded'},
-                            {status: 'paid'},
-                            {status: 'shipped'}
-                        ];
-                    });
-
-                    it('orders are exposed on scope', function () {
-                        var expected = [
-                            {status: 'pending-approval-by-customer', statusLevel: 'info'},
-                            {status: 'payment-approved-by-customer', statusLevel: 'info'},
-                            {status: 'payment-approved-by-vendor', statusLevel: 'info'},
-                            {status: 'refund-pending', statusLevel: 'info'},
-                            {status: 'in-transit', statusLevel: 'info'},
-                            {status: 'shipping-pending', statusLevel: 'info'},
-                            {status: 'review-pending', statusLevel: 'warning'},
-                            {status: 'canceled', statusLevel: 'danger'},
-                            {status: 'refunded', statusLevel: 'success'},
-                            {status: 'paid', statusLevel: 'success'},
-                            {status: 'shipped', statusLevel: 'success'}
-                        ];
-
-                        presenter.success(results);
-
-                        expect(scope.orders).toEqual(expected);
-                    });
-
-                    describe('when bootstrap 2', function () {
-                        beforeEach(function () {
-                            config.styling = 'bootstrap2';
-                        });
-
-                        it('orders are exposed on scope', function () {
-                            var expected = [
-                                {status: 'pending-approval-by-customer', statusLevel: 'info'},
-                                {status: 'payment-approved-by-customer', statusLevel: 'info'},
-                                {status: 'payment-approved-by-vendor', statusLevel: 'info'},
-                                {status: 'refund-pending', statusLevel: 'info'},
-                                {status: 'in-transit', statusLevel: 'info'},
-                                {status: 'shipping-pending', statusLevel: 'info'},
-                                {status: 'review-pending', statusLevel: 'warning'},
-                                {status: 'canceled', statusLevel: 'important'},
-                                {status: 'refunded', statusLevel: 'success'},
-                                {status: 'paid', statusLevel: 'success'},
-                                {status: 'shipped', statusLevel: 'success'}
-                            ];
-
-                            presenter.success(results);
-
-                            expect(scope.orders).toEqual(expected);
-                        });
-                    });
-                });
+            beforeEach(function() {
+                filters = {};
+                promiseWasResolved = false;
             });
+
+            function filter() {
+                scope.filtersCustomizer(filters).then(promiseWasResolved = true);
+                scope.$root.$digest();
+            }
+
+            function assertPromiseWasResolved() {
+                expect(promiseWasResolved).toBeTruthy();
+            }
+
+            it('when authenticated expose principal on filters', function() {
+                filter();
+                expect(filters.owner).toEqual(accountMetadata.principal);
+                assertPromiseWasResolved();
+            });
+
+            it('when unauthenticated nothing is exposed on filters', function() {
+                authorized = false;
+                filter();
+                expect(filters.owner).toBeUndefined();
+                assertPromiseWasResolved();
+            })
         });
     });
 

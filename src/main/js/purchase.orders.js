@@ -1,5 +1,5 @@
 angular.module('purchase.orders', ['ngRoute', 'i18n'])
-    .controller('ListPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', 'fetchAccountMetadata', ListPurchaseOrderController])
+    .controller('ListPurchaseOrderController', ['$scope', 'config', 'fetchAccountMetadata', '$q', ListPurchaseOrderController])
     .controller('ViewPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', '$routeParams', ViewPurchaseOrderController])
     .factory('addressSelection', ['localStorage', LocalStorageAddressSelectionFactory])
     .factory('validateOrder', ['usecaseAdapterFactory', 'restServiceHandler', 'config', ValidateOrderFactory])
@@ -17,85 +17,24 @@ angular.module('purchase.orders', ['ngRoute', 'i18n'])
             .when('/:locale/order/:id', {templateUrl: 'partials/shop/order-details.html', controller: 'ViewPurchaseOrderController'})
     }]);
 
-function ListPurchaseOrderController($scope, usecaseAdapterFactory, restServiceHandler, config, fetchAccountMetadata) {
-    var request = usecaseAdapterFactory($scope);
-    var defaultSubset = {offset:0, count: 10};
-    $scope.orders = [];
-
-    $scope.search = function() {
-        reset();
-        sendRequest();
+function ListPurchaseOrderController($scope, config, fetchAccountMetadata, $q) {
+    $scope.decorator = function(order) {
+        mapStatusLevel(order, {bootstrapVersion:config.styling});
     };
 
-    function reset() {
-        $scope.orders = [];
-        request.params.data.args.subset.offset = 0;
-        request.params.data.args.owner = $scope.owner;
-    }
-
-    function sendRequest() {
-        restServiceHandler(request);
-    }
-
-    $scope.init = function(args) {
-        new Initializer(args || {}).execute();
-    };
-
-    $scope.searchForMore = sendRequest;
-
-    function Initializer(args) {
-        this.execute = function() {
-            overrideSubset();
-            prepareRestQuery();
-            args.useCurrentUser ? useCurrentUser() : sendRequest();
-        };
-
-        function useCurrentUser() {
-            fetchAccountMetadata({
-                ok:function(it) {
-                    request.params.data.args.owner = it.principal;
-                    sendRequest();
-                },
-                unauthorized: sendRequest
-            });
-        }
-
-        function overrideSubset() {
-            if (args.subset) {
-                defaultSubset.offset = args.subset.offset;
-                defaultSubset.count = args.subset.count;
+    $scope.filtersCustomizer = function(filters) {
+        var deferred = $q.defer();
+        fetchAccountMetadata({
+            ok:function(it) {
+                filters.owner = it.principal;
+                deferred.resolve()
+            },
+            unauthorized: function() {
+                deferred.resolve();
             }
-        }
-
-        function prepareRestQuery() {
-            request.params = {
-                method:'POST',
-                data: {
-                    args: {
-                        subset: {offset:defaultSubset.offset, count: defaultSubset.count},
-                        sortings: args.sortings || []
-                    }
-                },
-                url:(config.baseUri || '') + 'api/query/purchase-order/findAll',
-                withCredentials:true
-            };
-            request.success = exposeResults;
-        }
-
-        function exposeResults(payload) {
-            incrementOffsetWith(payload.length);
-            payload.forEach(addOrderToScope);
-        }
-
-        function addOrderToScope(order) {
-            mapStatusLevel(order, {bootstrapVersion:config.styling});
-            $scope.orders.push(order);
-        }
-
-        function incrementOffsetWith(size) {
-            request.params.data.args.subset.offset += size;
-        }
-    }
+        });
+        return deferred.promise;
+    };
 }
 
 function mapStatusLevel(order, args) {
