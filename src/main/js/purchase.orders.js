@@ -88,7 +88,7 @@ function ListPurchaseOrderController($scope, usecaseAdapterFactory, restServiceH
         }
 
         function addOrderToScope(order) {
-            mapStatusLevel(order, args);
+            mapStatusLevel(order, {bootstrapVersion:config.styling});
             $scope.orders.push(order);
         }
 
@@ -99,7 +99,7 @@ function ListPurchaseOrderController($scope, usecaseAdapterFactory, restServiceH
 }
 
 function mapStatusLevel(order, args) {
-    if(order.status) order.statusLevel = args.bootstrapVersion == 2
+    if(order.status) order.statusLevel = args.bootstrapVersion == 'bootstrap2'
         ? getStatusLevelForBootstrap2(order.status)
         : getStatusLevelForBootstrap3(order.status);
 }
@@ -163,13 +163,13 @@ function ViewPurchaseOrderController($scope, usecaseAdapterFactory, restServiceH
     }
 
     function exposeOrderOnScope(payload) {
-        mapStatusLevel(payload, initConfig);
+        mapStatusLevel(payload, {bootstrapVersion: config.styling});
         $scope.order = payload;
     }
 
     $scope.statusLevel = function(status) {
         var input = {status:status};
-        mapStatusLevel(input, initConfig);
+        mapStatusLevel(input, {bootstrapVersion:config.styling});
         return input.statusLevel;
     }
 }

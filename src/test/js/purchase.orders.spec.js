@@ -210,7 +210,7 @@ describe('purchase.orders.angular', function () {
 
                     describe('when bootstrap 2', function () {
                         beforeEach(function () {
-                            scope.init({bootstrapVersion: 2});
+                            config.styling = 'bootstrap2';
                         });
 
                         it('orders are exposed on scope', function () {
@@ -300,7 +300,7 @@ describe('purchase.orders.angular', function () {
                 beforeEach(inject(function($routeParams) {
                     $routeParams.id = 'id';
                     $routeParams.owner = 'owner';
-                    scope.init({bootstrapVersion: 2});
+                    config.styling = 'bootstrap2';
                 }));
 
                 [
