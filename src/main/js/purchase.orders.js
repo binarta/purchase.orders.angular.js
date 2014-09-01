@@ -22,11 +22,11 @@ function ListPurchaseOrderController($scope, config, fetchAccountMetadata, $q) {
         mapStatusLevel(order, {bootstrapVersion:config.styling});
     };
 
-    $scope.filtersCustomizer = function(filters) {
+    $scope.filtersCustomizer = function(args) {
         var deferred = $q.defer();
         fetchAccountMetadata({
             ok:function(it) {
-                filters.owner = it.principal;
+                args.filters.owner = it.principal;
                 deferred.resolve()
             },
             unauthorized: function() {

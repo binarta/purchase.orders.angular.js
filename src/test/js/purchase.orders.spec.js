@@ -103,7 +103,7 @@ describe('purchase.orders.angular', function () {
             });
 
             function filter() {
-                scope.filtersCustomizer(filters).then(promiseWasResolved = true);
+                scope.filtersCustomizer({filters: filters}).then(promiseWasResolved = true);
                 scope.$root.$digest();
             }
 
