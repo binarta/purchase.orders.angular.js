@@ -594,7 +594,7 @@ describe('purchase.orders.angular', function () {
                         }));
 
                         it('destination url takes route params id', function () {
-                            expect(presenter.params.url).toEqual((baseUri || '') + 'purchase-order-payment/payment-id/approve')
+                            expect(presenter.params.url).toEqual((baseUri || '') + 'api/purchase-order-payment/payment-id/approve')
                         });
 
                         it('context is passed to rest service handler', function () {
@@ -792,7 +792,7 @@ describe('purchase.orders.angular', function () {
             it('send request', function() {
                 expect(request().params).toEqual({
                     method: 'POST',
-                    url: 'validate/purchase-order',
+                    url: 'api/validate/purchase-order',
                     data: {
                         reportType: 'complex',
                         items: [

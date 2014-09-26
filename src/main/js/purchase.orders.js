@@ -204,7 +204,7 @@ function ApprovePaymentController($scope, usecaseAdapterFactory, $location, $rou
         var ctx = usecaseAdapterFactory($scope);
         ctx.params = {
             method: 'POST',
-            url: (config.baseUri || '') + 'purchase-order-payment/' + $routeParams.id + '/approve',
+            url: (config.baseUri || '') + 'api/purchase-order-payment/' + $routeParams.id + '/approve',
             withCredentials: true,
             data: $routeParams
 
@@ -304,7 +304,7 @@ function ValidateOrderFactory(usecaseAdapterFactory, restServiceHandler, config)
         args.data.reportType = 'complex';
         request.params = {
             method:'POST',
-            url: (config.baseUri || '') + 'validate/purchase-order',
+            url: (config.baseUri || '') + 'api/validate/purchase-order',
             data: args.data,
             withCredentials:true
         };
