@@ -9,12 +9,12 @@ angular.module('purchase.orders', ['ngRoute', 'i18n'])
     .controller('CancelPaymentController', ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', 'i18nLocation', 'topicMessageDispatcher', CancelPaymentController])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
-            .when('/payment/:id/approve', {templateUrl: 'partials/shop/approve-payment.html', controller: 'ApprovePaymentController'})
-            .when('/payment/:id/cancel', {templateUrl: 'partials/shop/cancel-payment.html', controller: 'CancelPaymentController'})
-            .when('/:locale/payment/:id/approve', {templateUrl: 'partials/shop/approve-payment.html', controller: 'ApprovePaymentController'})
-            .when('/:locale/payment/:id/cancel', {templateUrl: 'partials/shop/cancel-payment.html', controller: 'CancelPaymentController'})
-            .when('/order/:id', {templateUrl: 'partials/shop/order-details.html', controller: 'ViewPurchaseOrderController'})
-            .when('/:locale/order/:id', {templateUrl: 'partials/shop/order-details.html', controller: 'ViewPurchaseOrderController'})
+            .when('/payment/:id/approve', {templateUrl: 'partials/shop/approve-payment.html', controller: ['$scope', 'usecaseAdapterFactory', '$location', '$routeParams', 'restServiceHandler', 'config', ApprovePaymentController]})
+            .when('/payment/:id/cancel', {templateUrl: 'partials/shop/cancel-payment.html', controller: ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', 'i18nLocation', 'topicMessageDispatcher', CancelPaymentController]})
+            .when('/:locale/payment/:id/approve', {templateUrl: 'partials/shop/approve-payment.html', controller: ['$scope', 'usecaseAdapterFactory', '$location', '$routeParams', 'restServiceHandler', 'config', ApprovePaymentController]})
+            .when('/:locale/payment/:id/cancel', {templateUrl: 'partials/shop/cancel-payment.html', controller: ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', 'i18nLocation', 'topicMessageDispatcher', CancelPaymentController]})
+            .when('/order/:id', {templateUrl: 'partials/shop/order-details.html', controller: ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', '$routeParams', ViewPurchaseOrderController]})
+            .when('/:locale/order/:id', {templateUrl: 'partials/shop/order-details.html', controller: ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', '$routeParams', ViewPurchaseOrderController]})
     }]);
 
 function ListPurchaseOrderController($scope, config, fetchAccountMetadata, $q) {
