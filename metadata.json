@@ -1,6 +1,9 @@
 {
   "msgs":{
     "default":{
+      "purchase.order.cancel.success": "Your purchase order was cancelled.",
+      "purchase.order.update.status.success": "The status of the order has been updated.",
+
       "purchase.orders.mail.clerk.paypal.payment.completed.title": "Purchase order completed",
       "purchase.orders.mail.clerk.paypal.payment.completed.message": "Purchase order completed.",
 
@@ -49,6 +52,9 @@
       "purchase.orders.mail.order.total.price.label": "Total price"
     },
     "nl":{
+      "purchase.order.cancel.success": "Uw bestelling is geannuleerd.",
+      "purchase.order.update.status.success": "De status van de bestelling is bijgewerkt.",
+
       "purchase.orders.mail.clerk.paypal.payment.completed.title": "Bestelling voltooid",
       "purchase.orders.mail.clerk.paypal.payment.completed.message": "Bestelling voltooid.",
 
@@ -97,6 +103,9 @@
       "purchase.orders.mail.order.total.price.label": "Totaal"
     },
     "en":{
+      "purchase.order.cancel.success": "Your purchase order was cancelled.",
+      "purchase.order.update.status.success": "The status of the order has been updated.",
+
       "purchase.orders.mail.clerk.paypal.payment.completed.title": "Purchase order completed",
       "purchase.orders.mail.clerk.paypal.payment.completed.message": "Purchase order completed.",
 
