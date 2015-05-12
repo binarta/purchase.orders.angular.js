@@ -16,16 +16,16 @@
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.title": "Purchase order completed",
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.message": "Purchase order completed.",
 
-      "purchase.orders.mail.clerk.wire.transfer.order.receiver.title": "A new Purchase Order was placed",
+      "purchase.orders.mail.clerk.wire.transfer.order.receiver.title": "A new Purchase order was placed",
       "purchase.orders.mail.clerk.wire.transfer.order.receiver.message": "Wire transfer has been chosen as payment option. The customer should be contacted with further instructions and an invoice.",
 
       "purchase.orders.mail.customer.wire.transfer.payment.received.title": "Thank you for your order",
       "purchase.orders.mail.customer.wire.transfer.payment.received.message": "Purchase order completed.",
 
       "purchase.orders.mail.customer.wire.transfer.order.received.title": "Thank you for your order",
-      "purchase.orders.mail.customer.wire.transfer.order.received.message": "Wired transfer has been chosen as payment option. An invoice will be sent with further instructions.",
+      "purchase.orders.mail.customer.wire.transfer.order.received.message": "Wire transfer has been chosen as payment option. An invoice will be sent with further instructions.",
 
-      "purchase.orders.mail.status.update.title": "The status of your order now",
+      "purchase.orders.mail.status.update.title": "The status of your order is now",
       "purchase.orders.mail.status.update.review.pending.message": "Your payment will be verified. After verification, your order will be completed, canceled or refunded.",
       "purchase.orders.mail.status.update.canceled.message": "Your order has been canceled. If you have questions about this cancellation, please do not hesitate to contact us.",
       "purchase.orders.mail.status.update.refund.pending.message": "A refund procedure is initiated. The amount will be transferred to you as soon as possible.",
@@ -118,16 +118,16 @@
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.title": "Purchase order completed",
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.message": "Purchase order completed.",
 
-      "purchase.orders.mail.clerk.wire.transfer.order.receiver.title": "A new Purchase Order was placed",
+      "purchase.orders.mail.clerk.wire.transfer.order.receiver.title": "A new Purchase order was placed",
       "purchase.orders.mail.clerk.wire.transfer.order.receiver.message": "Wire transfer has been chosen as payment option. The customer should be contacted with further instructions and an invoice.",
 
       "purchase.orders.mail.customer.wire.transfer.payment.received.title": "Thank you for your order",
       "purchase.orders.mail.customer.wire.transfer.payment.received.message": "Purchase order completed.",
 
       "purchase.orders.mail.customer.wire.transfer.order.received.title": "Thank you for your order",
-      "purchase.orders.mail.customer.wire.transfer.order.received.message": "Wired transfer has been chosen as payment option. An invoice will be sent with further instructions.",
+      "purchase.orders.mail.customer.wire.transfer.order.received.message": "Wire transfer has been chosen as payment option. An invoice will be sent with further instructions.",
 
-      "purchase.orders.mail.status.update.title": "The status of your order now",
+      "purchase.orders.mail.status.update.title": "The status of your order is now",
       "purchase.orders.mail.status.update.review.pending.message": "Your payment will be verified. After verification, your order will be completed, canceled or refunded.",
       "purchase.orders.mail.status.update.canceled.message": "Your order has been canceled. If you have questions about this cancellation, please do not hesitate to contact us.",
       "purchase.orders.mail.status.update.refund.pending.message": "A refund procedure is initiated. The amount will be transferred to you as soon as possible.",
