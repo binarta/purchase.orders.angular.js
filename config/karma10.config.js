@@ -11,6 +11,9 @@ module.exports = function(config) {
             {pattern:'../bower_components/thk-notifications-mock/src/notifications.mock.js'},
             {pattern:'../bower_components/thk-web-storage-mock/src/web.storage.mock.js'},
             {pattern:'../bower_components/binarta.i18n.mock.angular/src/i18n.mock.js'},
+            {pattern:'../bower_components/binarta.checkpoint.angular/src/main/js/checkpoint.js'},
+            {pattern:'../bower_components/angular-bootstrap/ui-bootstrap.js'},
+            {pattern:'../bower_components/binarta.customer.address/src/main/js/customer.address.js'},
             {pattern:'../src/**/*.js'}
         ],
         browsers:['PhantomJS']

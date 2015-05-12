@@ -1,4 +1,4 @@
-angular.module('purchase.orders', ['ngRoute', 'i18n'])
+angular.module('purchase.orders', ['ngRoute', 'config', 'checkpoint', 'angular.usecase.adapter', 'rest.client', 'web.storage', 'customer.address', 'i18n', 'notifications'])
     .controller('ListPurchaseOrderController', ['$scope', 'config', 'fetchAccountMetadata', '$q', ListPurchaseOrderController])
     .controller('ViewPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', '$routeParams', ViewPurchaseOrderController])
     .factory('addressSelection', ['localStorage', LocalStorageAddressSelectionFactory])
