@@ -29,6 +29,7 @@
       "purchase.orders.mail.status.update.refunded.message": "The repayment has been completed and the amount is transferred to your account.",
 
       "purchase.orders.mail.order.view.details.link": "You can view the details of the order here",
+      "purchase.orders.mail.order.information.label": "Order details:",
       "purchase.orders.mail.order.number.label": "Order #",
       "purchase.orders.mail.order.username.label": "Username",
       "purchase.orders.mail.order.mail.label": "Email address",
@@ -76,6 +77,7 @@
       "purchase.orders.mail.status.update.refunded.message": "De terugbetaling is voltooid en het bedrag is overgemaakt naar uw account.",
 
       "purchase.orders.mail.order.view.details.link": "U kan de details van de bestelling hier bekijken",
+      "purchase.orders.mail.order.information.label": "Bestelgegevens:",
       "purchase.orders.mail.order.number.label": "Bestelling #",
       "purchase.orders.mail.order.username.label": "Gebruikersnaam",
       "purchase.orders.mail.order.mail.label": "Email",
@@ -123,6 +125,7 @@
       "purchase.orders.mail.status.update.refunded.message": "The repayment has been completed and the amount is transferred to your account.",
 
       "purchase.orders.mail.order.view.details.link": "You can view the details of the order here",
+      "purchase.orders.mail.order.information.label": "Order details:",
       "purchase.orders.mail.order.number.label": "Order #",
       "purchase.orders.mail.order.username.label": "Username",
       "purchase.orders.mail.order.mail.label": "Email address",
