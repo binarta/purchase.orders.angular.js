@@ -152,6 +152,108 @@
       "purchase.orders.mail.order.price.label": "Total",
       "purchase.orders.mail.order.subtotal.price.label": "Subtotal",
       "purchase.orders.mail.order.total.price.label": "Total price"
+    },
+    "fr":{
+      "purchase.order.cancel.success": "Votre commande est annulée.",
+      "purchase.order.update.status.success": "Le statut de votre commande a été mis à jour.",
+
+      "purchase.orders.mail.clerk.paypal.payment.completed.title": "Commande terminée",
+      "purchase.orders.mail.clerk.paypal.payment.completed.message": "Commande terminée.",
+
+      "purchase.orders.mail.customer.paypal.payment.received.title": "Merci pour votre commande",
+      "purchase.orders.mail.customer.paypal.payment.received.message": "Le processus de paiement s'est déroulé avec succès et votre commande est terminée.<br><br>N'hésitez pas à prendre contact avec nous si vous avez des questions ou des remarques.",
+
+      "purchase.orders.mail.customer.paypal.order.received.title": "Merci pour votre commande",
+      "purchase.orders.mail.customer.paypal.order.received.message": "Le processus d'approbation de PayPal est en cours. Vous recevrez un e-mail de confirmation après l'approbation du paiement.<br><br>En cas de problème lors du processus de paiement, veuillez prendre contact avec nous afin que nous puissions examiner le problème.",
+
+      "purchase.orders.mail.clerk.wire.transfer.payment.completed.title": "Commande terminée",
+      "purchase.orders.mail.clerk.wire.transfer.payment.completed.message": "Commande terminée.",
+
+      "purchase.orders.mail.clerk.wire.transfer.order.receiver.title": "Une nouvelle commande a été passée",
+      "purchase.orders.mail.clerk.wire.transfer.order.receiver.message": "Le mode de paiement par virement a été choisi. Veuillez prendre contact avec le client pour lui fournir de plus amples instructions ainsi qu'une facture.",
+
+      "purchase.orders.mail.customer.wire.transfer.payment.received.title": "Merci pour votre commande",
+      "purchase.orders.mail.customer.wire.transfer.payment.received.message": "Commande terminée.",
+
+      "purchase.orders.mail.customer.wire.transfer.order.received.title": "Merci pour votre commande",
+      "purchase.orders.mail.customer.wire.transfer.order.received.message": "Le mode de paiement par virement a été choisi. Une facture sera envoyée ainsi que des instructions complémentaires.",
+
+      "purchase.orders.mail.status.update.title": "Le statut de votre commande est à présent",
+      "purchase.orders.mail.status.update.review.pending.message": "Nos collaborateurs vont vérifier votre paiement. Après vérification, votre commande sera terminée, annulée ou remboursée.",
+      "purchase.orders.mail.status.update.canceled.message": "Votre commande est annulée. Si vous avez des questions relatives à cette annulation, n'hésitez pas à prendre contact avec nous.",
+      "purchase.orders.mail.status.update.refund.pending.message": "Une procédure de remboursement est en cours. Le montant vous sera versé dans les plus brefs délais.",
+      "purchase.orders.mail.status.update.refunded.message": "Le remboursement est terminé et le montant a été versé sur votre compte.",
+
+      "purchase.orders.mail.order.view.details.link": "Vous pouvez consulter les détails de la commande ici",
+      "purchase.orders.mail.order.information.label": "Données liées à la commande:",
+      "purchase.orders.mail.order.number.label": "Commande n°",
+      "purchase.orders.mail.order.username.label": "Nom d'utilisateur",
+      "purchase.orders.mail.order.mail.label": "E-mail",
+      "purchase.orders.mail.order.vat.label": "TVA",
+      "purchase.orders.mail.order.comment.label": "Remarque",
+      "purchase.orders.mail.order.shipping.address.label": "Adresse de livraison",
+      "purchase.orders.mail.order.billing.address.label": "Adresse de facturation",
+      "purchase.orders.mail.order.addressee.label": "Destinataire",
+      "purchase.orders.mail.order.address.line.1.label": "Rue",
+      "purchase.orders.mail.order.address.line.2.label": "Ville",
+      "purchase.orders.mail.order.country.label": "Pays",
+      "purchase.orders.mail.order.item.name.label": "Nom",
+      "purchase.orders.mail.order.quantity.label": "Quantité",
+      "purchase.orders.mail.order.unit.price.label": "Prix unitaire",
+      "purchase.orders.mail.order.price.label": "Total",
+      "purchase.orders.mail.order.subtotal.price.label": "Sous-total",
+      "purchase.orders.mail.order.total.price.label": "Total price"
+    },
+    "de":{
+      "purchase.order.cancel.success": "Ihre Bestellung wurde storniert.",
+      "purchase.order.update.status.success": "Der Status der Bestellung wurde aktualisiert.",
+
+      "purchase.orders.mail.clerk.paypal.payment.completed.title": "Bestellung ausgeführt",
+      "purchase.orders.mail.clerk.paypal.payment.completed.message": "Bestellung ausgeführt.",
+
+      "purchase.orders.mail.customer.paypal.payment.received.title": "Vielen Dank für Ihre Bestellung",
+      "purchase.orders.mail.customer.paypal.payment.received.message": "Der Zahlungsvorgang wurde erfolgreich abgeschlossen und Ihre Bestellung ausgeführt.<br><br>Für eventuelle Fragen oder Anmerkungen stehen wir Ihnen jederzeit gerne zur Verfügung.",
+
+      "purchase.orders.mail.customer.paypal.order.received.title": "Vielen Dank für Ihre Bestellung",
+      "purchase.orders.mail.customer.paypal.order.received.message": "Der PayPal-Genehmigungsvorgang wurde gestartet. Nach Genehmigung Ihrer Zahlung erhalten Sie per E-Mail eine Bestätigungsnachricht.<br><br>Sollte während des Zahlungsvorgangs ein Problem eintreten, kontaktieren Sie uns bitte, damit wir dieses Problem näher analysieren können.",
+
+      "purchase.orders.mail.clerk.wire.transfer.payment.completed.title": "Bestellung ausgeführt",
+      "purchase.orders.mail.clerk.wire.transfer.payment.completed.message": "Bestellung ausgeführt.",
+
+      "purchase.orders.mail.clerk.wire.transfer.order.receiver.title": "Es wurde eine neuen Bestellung aufgegeben",
+      "purchase.orders.mail.clerk.wire.transfer.order.receiver.message": "Es wurde eine Zahlung per Überweisung gewählt. Bitte den Kunden mit weiteren Anleitungen und einer Rechnung kontaktieren.",
+
+      "purchase.orders.mail.customer.wire.transfer.payment.received.title": "Vielen Dank für Ihre Bestellung",
+      "purchase.orders.mail.customer.wire.transfer.payment.received.message": "Bestellung ausgeführt.",
+
+      "purchase.orders.mail.customer.wire.transfer.order.received.title": "Vielen Dank für Ihre Bestellung",
+      "purchase.orders.mail.customer.wire.transfer.order.received.message": "Es wurde eine Zahlung per Überweisung gewählt. Es wird eine Rechnung mit weiteren Anleitungen versandt.",
+
+      "purchase.orders.mail.status.update.title": "Der aktuelle Status Ihrer Bestellung ist",
+      "purchase.orders.mail.status.update.review.pending.message": "Unsere Mitarbeiter prüfen Ihre Zahlung. Anschließend wird Ihre Bestellung ausgeführt, storniert oder der Betrag erstattet.",
+      "purchase.orders.mail.status.update.canceled.message": "Ihre Bestellung wurde storniert. Kontaktieren Sie uns, falls Sie Fragen zu dieser Stornierung haben.",
+      "purchase.orders.mail.status.update.refund.pending.message": "Es wurde ein Rückzahlungsvorgang gestartet. Der Erstattungsbetrag wird umgehend an Sie überwiesen.",
+      "purchase.orders.mail.status.update.refunded.message": "Die Rückzahlung ist abgeschlossen. Der Betrag wurde auf Ihr Konto überwiesen.",
+
+      "purchase.orders.mail.order.view.details.link": "Sie können die Details der Bestellung hier anzeigen",
+      "purchase.orders.mail.order.information.label": "Bestelldaten:",
+      "purchase.orders.mail.order.number.label": "Bestellnummer",
+      "purchase.orders.mail.order.username.label": "Benutzername",
+      "purchase.orders.mail.order.mail.label": "E-Mail",
+      "purchase.orders.mail.order.vat.label": "MwSt.",
+      "purchase.orders.mail.order.comment.label": "Anmerkungen",
+      "purchase.orders.mail.order.shipping.address.label": "Lieferadresse",
+      "purchase.orders.mail.order.billing.address.label": "Rechnungsadresse",
+      "purchase.orders.mail.order.addressee.label": "Empfänger",
+      "purchase.orders.mail.order.address.line.1.label": "Straße",
+      "purchase.orders.mail.order.address.line.2.label": "Ort",
+      "purchase.orders.mail.order.country.label": "Land",
+      "purchase.orders.mail.order.item.name.label": "Name",
+      "purchase.orders.mail.order.quantity.label": "Menge",
+      "purchase.orders.mail.order.unit.price.label": "Einzelpreis",
+      "purchase.orders.mail.order.price.label": "Gesamt",
+      "purchase.orders.mail.order.subtotal.price.label": "Zwischensumme",
+      "purchase.orders.mail.order.total.price.label": "Gesamt"
     }
   }
 }
