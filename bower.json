@@ -2,7 +2,6 @@
   "name": "binarta.purchase.orders.angular",
   "main": [
     "./src/main/js/purchase.orders.js",
-    "./metadata.json",
     "./metadata-system.json"
   ],
   "dependencies": {
@@ -14,7 +13,7 @@
     "binarta.rest.client.angular": "0.*.*",
     "binarta.web.storage.angular": "0.*.*",
     "binarta.customer.address": "0.*.*",
-    "binarta.i18n.angular": "0.*.*",
+    "binarta.i18n.angular": "1.*.*",
     "binarta.notifications.angular": "1.*.*"
   },
   "devDependencies": {
