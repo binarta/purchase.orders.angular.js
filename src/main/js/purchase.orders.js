@@ -7,6 +7,7 @@ angular.module('purchase.orders', ['ngRoute', 'config', 'checkpoint', 'angular.u
     .controller('SelectPaymentProviderController', ['$scope', 'localStorage', 'config', SelectPaymentProviderController])
     .controller('ApprovePaymentController', ['$scope', 'usecaseAdapterFactory', '$location', '$routeParams', 'restServiceHandler', 'config', ApprovePaymentController])
     .controller('CancelPaymentController', ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', 'i18nLocation', 'topicMessageDispatcher', CancelPaymentController])
+    .controller('UpdateOrderStatusController', ['$scope', 'usecaseAdapterFactory', 'config', '$routeParams', 'restServiceHandler', 'topicMessageDispatcher', '$location', UpdateOrderStatusController])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
             .when('/payment/:id/approve', {templateUrl: 'partials/shop/approve-payment.html', controller: ['$scope', 'usecaseAdapterFactory', '$location', '$routeParams', 'restServiceHandler', 'config', ApprovePaymentController]})
