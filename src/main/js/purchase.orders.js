@@ -3,34 +3,52 @@ angular.module('purchase.orders', ['ngRoute', 'config', 'checkpoint', 'angular.u
     .controller('ViewPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', '$routeParams', ViewPurchaseOrderController])
     .factory('addressSelection', ['localStorage', LocalStorageAddressSelectionFactory])
     .factory('validateOrder', ['usecaseAdapterFactory', 'restServiceHandler', 'config', ValidateOrderFactory])
-    .controller('AddressSelectionController', ['$scope', 'addressSelection', 'viewCustomerAddress', '$location', AddressSelectionController])
+    .controller('AddressSelectionController', ['$scope', 'addressSelection', 'viewCustomerAddress', '$location', '$routeParams', AddressSelectionController])
     .controller('SelectPaymentProviderController', ['$scope', 'localStorage', 'config', SelectPaymentProviderController])
     .controller('ApprovePaymentController', ['$scope', 'usecaseAdapterFactory', '$location', '$routeParams', 'restServiceHandler', 'config', ApprovePaymentController])
     .controller('CancelPaymentController', ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', 'i18nLocation', 'topicMessageDispatcher', CancelPaymentController])
     .controller('UpdateOrderStatusController', ['$scope', 'usecaseAdapterFactory', 'config', '$routeParams', 'restServiceHandler', 'topicMessageDispatcher', '$location', UpdateOrderStatusController])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
-            .when('/payment/:id/approve', {templateUrl: 'partials/shop/approve-payment.html', controller: ['$scope', 'usecaseAdapterFactory', '$location', '$routeParams', 'restServiceHandler', 'config', ApprovePaymentController]})
-            .when('/payment/:id/cancel', {templateUrl: 'partials/shop/cancel-payment.html', controller: ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', 'i18nLocation', 'topicMessageDispatcher', CancelPaymentController]})
-            .when('/:locale/payment/:id/approve', {templateUrl: 'partials/shop/approve-payment.html', controller: ['$scope', 'usecaseAdapterFactory', '$location', '$routeParams', 'restServiceHandler', 'config', ApprovePaymentController]})
-            .when('/:locale/payment/:id/cancel', {templateUrl: 'partials/shop/cancel-payment.html', controller: ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', 'i18nLocation', 'topicMessageDispatcher', CancelPaymentController]})
-            .when('/order/:id', {templateUrl: 'partials/shop/order-details.html', controller: ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', '$routeParams', ViewPurchaseOrderController]})
-            .when('/:locale/order/:id', {templateUrl: 'partials/shop/order-details.html', controller: ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', '$routeParams', ViewPurchaseOrderController]})
+            .when('/payment/:id/approve', {
+                templateUrl: 'partials/shop/approve-payment.html',
+                controller: 'ApprovePaymentController'
+            })
+            .when('/payment/:id/cancel', {
+                templateUrl: 'partials/shop/cancel-payment.html',
+                controller: 'CancelPaymentController'
+            })
+            .when('/:locale/payment/:id/approve', {
+                templateUrl: 'partials/shop/approve-payment.html',
+                controller: 'ApprovePaymentController'
+            })
+            .when('/:locale/payment/:id/cancel', {
+                templateUrl: 'partials/shop/cancel-payment.html',
+                controller: 'CancelPaymentController'
+            })
+            .when('/order/:id', {
+                templateUrl: 'partials/shop/order-details.html',
+                controller: 'ViewPurchaseOrderController'
+            })
+            .when('/:locale/order/:id', {
+                templateUrl: 'partials/shop/order-details.html',
+                controller: 'ViewPurchaseOrderController'
+            })
     }]);
 
 function ListPurchaseOrderController($scope, config, fetchAccountMetadata, $q) {
-    $scope.decorator = function(order) {
-        mapStatusLevel(order, {bootstrapVersion:config.styling});
+    $scope.decorator = function (order) {
+        mapStatusLevel(order, {bootstrapVersion: config.styling});
     };
 
-    $scope.filtersCustomizer = function(args) {
+    $scope.filtersCustomizer = function (args) {
         var deferred = $q.defer();
         fetchAccountMetadata({
-            ok:function(it) {
+            ok: function (it) {
                 args.filters.owner = it.principal;
                 deferred.resolve()
             },
-            unauthorized: function() {
+            unauthorized: function () {
                 deferred.resolve();
             }
         });
@@ -39,7 +57,7 @@ function ListPurchaseOrderController($scope, config, fetchAccountMetadata, $q) {
 }
 
 function mapStatusLevel(order, args) {
-    if(order.status) order.statusLevel = args.bootstrapVersion == 'bootstrap2'
+    if (order.status) order.statusLevel = args.bootstrapVersion == 'bootstrap2'
         ? getStatusLevelForBootstrap2(order.status)
         : getStatusLevelForBootstrap3(order.status);
 }
@@ -82,7 +100,7 @@ function ViewPurchaseOrderController($scope, usecaseAdapterFactory, restServiceH
     var request = usecaseAdapterFactory($scope);
     var initConfig = {};
 
-    $scope.init = function(args) {
+    $scope.init = function (args) {
         if (args) initConfig = args;
         prepareRestCall();
         restServiceHandler(request);
@@ -107,9 +125,9 @@ function ViewPurchaseOrderController($scope, usecaseAdapterFactory, restServiceH
         $scope.order = payload;
     }
 
-    $scope.statusLevel = function(status) {
-        var input = {status:status};
-        mapStatusLevel(input, {bootstrapVersion:config.styling});
+    $scope.statusLevel = function (status) {
+        var input = {status: status};
+        mapStatusLevel(input, {bootstrapVersion: config.styling});
         return input.statusLevel;
     }
 }
@@ -125,63 +143,129 @@ function LocalStorageAddressSelectionFactory(localStorage) {
         addresses = JSON.parse(localStorage.addresses);
     }
 
-    return new function() {
+    return new function () {
         if (!localStorage.addresses) {
             addresses = {};
             flush();
         }
         hydrate();
-        this.all = function() {
+        this.all = function () {
             return addresses;
         };
-        this.add = function(type, data) {
+        this.add = function (type, data) {
             if (data) addresses[type] = {label: data.label, addressee: data.addressee};
             else addresses[type] = {};
             flush();
         };
-        this.view = function(type) {
+        this.view = function (type) {
             return addresses[type] || {};
         };
-        this.clear = function() {
+        this.clear = function () {
             addresses = {};
             flush();
         }
     };
 }
 
-function AddressSelectionController($scope, addressSelection, viewCustomerAddress, $location) {
+function AddressSelectionController($scope, addressSelection, viewCustomerAddress, $location, $routeParams) {
     var self = this;
+    var types = [];
 
-    $scope.init = function(type) {
-        $scope[type] = addressSelection.view(type);
-        if ($location.search()[type]) $scope[type].label = $location.search()[type];
+    $scope.init = function (args) {
+        init(args, $scope);
     };
+    this.init = function (args) {
+        init(args, self);
+    };
+    function init(args, ctx) {
+        var type = args.type || args;
+        types.push(type);
 
-    $scope.fallbackTo = function(fallbackAddressType) {
+        var address = addressSelection.view(type);
+        if (args.addresses) {
+            if (args.addresses.length > 0) {
+                ctx[type] = address.label && isAddressKnown(address) ? address : angular.copy(args.addresses[0]);
+            } else {
+                ctx[type] = undefined;
+            }
+        } else {
+            ctx[type] = address;
+        }
+
+        if ($location.search()[type]) ctx[type].label = $location.search()[type];
+
+        function isAddressKnown(address) {
+            var known = false;
+            angular.forEach(args.addresses, function (it) {
+                if (it.label == address.label) known = true;
+            });
+            return known;
+        }
+    }
+
+
+    $scope.fallbackTo = fallbackTo;
+    this.fallbackTo = fallbackTo;
+    function fallbackTo(fallbackAddressType) {
         self.fallbackAddressType = fallbackAddressType;
-    };
+    }
 
-    $scope.resetIfSameAsFallback = function(type) {
-        if($scope[type].label == $scope[self.fallbackAddressType].label)
-            $scope[type] = {};
+    $scope.resetIfSameAsFallback = function (type) {
+        resetIfSameAsFallback(type, $scope);
     };
-
-    $scope.select = function(type) {
-        addressSelection.add(type, $scope[type].label ? $scope[type] : $scope[self.fallbackAddressType]);
+    this.resetIfSameAsFallback = function (type) {
+        resetIfSameAsFallback(type, self);
     };
+    function resetIfSameAsFallback(type, ctx) {
+        if (ctx[type].label == ctx[self.fallbackAddressType].label)
+            ctx[type] = {};
+    }
 
-    $scope.view = function(type) {
-        var ctx = addressSelection.view(type);
-        var onSuccess = function(payload) {
-            $scope[type] = payload;
-            if (ctx.addressee) $scope[type].addressee = ctx.addressee;
+    $scope.select = function (type) {
+        select(type, $scope);
+    };
+    this.select = function (type) {
+        select(type, self);
+    };
+    function select(type, ctx) {
+        addressSelection.add(type, ctx[type].label ? ctx[type] : ctx[self.fallbackAddressType]);
+    }
+
+    $scope.view = function (type) {
+        view(type, $scope);
+    };
+    this.view = function (type) {
+        view(type, self);
+    };
+    function view(type, ctx) {
+        var context = addressSelection.view(type);
+        var onSuccess = function (payload) {
+            ctx[type] = payload;
+            if (context.addressee) ctx[type].addressee = context.addressee;
         };
-        if (ctx) viewCustomerAddress({label: ctx.label}, onSuccess);
+        if (context) viewCustomerAddress({label: context.label}, onSuccess);
+    }
+
+    this.isValid = function () {
+        var isValid = true;
+        angular.forEach(types, function (type) {
+            if (!self[type] || !self[type].label) isValid = false;
+        });
+        return isValid;
+    };
+
+    this.proceed = function (args) {
+        if (self.isValid()) {
+            angular.forEach(types, function (type) {
+                self.select(type);
+            });
+            if (args && args.redirectTo) $location.path(($routeParams.locale || '') + args.redirectTo);
+        }
     }
 }
 
 function SelectPaymentProviderController($scope, localStorage, config) {
-    $scope.init = function() {
+    $scope.init = function () {
         if (localStorage.provider == null && config.defaultPaymentProvider != null) {
             $scope.provider = config.defaultPaymentProvider;
             $scope.flush();
@@ -190,18 +274,18 @@ function SelectPaymentProviderController($scope, localStorage, config) {
         }
     };
 
-    $scope.select = function(provider) {
+    $scope.select = function (provider) {
         $scope.provider = provider;
         $scope.flush();
     };
 
-    $scope.flush = function() {
+    $scope.flush = function () {
         localStorage.provider = $scope.provider;
     }
 }
 
 function ApprovePaymentController($scope, usecaseAdapterFactory, $location, $routeParams, restServiceHandler, config) {
-    $scope.init = function() {
+    $scope.init = function () {
         var ctx = usecaseAdapterFactory($scope);
         ctx.params = {
             method: 'POST',
@@ -210,7 +294,7 @@ function ApprovePaymentController($scope, usecaseAdapterFactory, $location, $rou
             data: $routeParams
 
         };
-        ctx.success = function() {
+        ctx.success = function () {
             $location.$$search = {};
         };
         restServiceHandler(ctx);
@@ -218,7 +302,7 @@ function ApprovePaymentController($scope, usecaseAdapterFactory, $location, $rou
 }
 
 function CancelPaymentController($scope, usecaseAdapterFactory, $routeParams, config, restServiceHandler, i18nLocation, topicMessageDispatcher) {
-    $scope.init = function() {
+    $scope.init = function () {
         var ctx = usecaseAdapterFactory($scope);
         ctx.params = {
             method: 'POST',
@@ -227,11 +311,11 @@ function CancelPaymentController($scope, usecaseAdapterFactory, $routeParams, co
                 status: 'canceled',
                 context: 'updateStatusAsCustomer',
                 id: $routeParams.id,
-                treatInputAsId:true
+                treatInputAsId: true
             },
             withCredentials: true
         };
-        ctx.success = function() {
+        ctx.success = function () {
             i18nLocation.search({});
             i18nLocation.path('/');
             topicMessageDispatcher.fire('system.info', {
@@ -239,7 +323,7 @@ function CancelPaymentController($scope, usecaseAdapterFactory, $routeParams, co
                 default: 'Your purchase order was cancelled'
             })
         };
-        ctx.notFound = function() {
+        ctx.notFound = function () {
             i18nLocation.path('/404')
         };
         restServiceHandler(ctx);
@@ -249,36 +333,36 @@ function CancelPaymentController($scope, usecaseAdapterFactory, $routeParams, co
 function UpdateOrderStatusController($scope, usecaseAdapterFactory, config, $routeParams, restServiceHandler, topicMessageDispatcher, $location) {
     var request = usecaseAdapterFactory($scope);
     request.params = {
-        method:'POST',
+        method: 'POST',
         url: (config.baseUri || '') + 'api/entity/purchase-order',
         data: {
             context: 'updateStatusAsVendor',
             id: $routeParams.id,
             owner: $routeParams.owner,
-            treatInputAsId:true
+            treatInputAsId: true
         },
-        withCredentials:true
+        withCredentials: true
     };
 
-    $scope.inTransit = function() {
+    $scope.inTransit = function () {
         updateToStatus('in-transit');
     };
 
-    $scope.paid = function() {
+    $scope.paid = function () {
         updateToStatus('paid');
     };
 
-    $scope.shippingPending = function() {
+    $scope.shippingPending = function () {
         updateToStatus('shipping-pending');
     };
 
-    $scope.cancel = function() {
+    $scope.cancel = function () {
         updateToStatus('canceled');
     };
 
     function updateToStatus(status) {
         request.params.data.status = status;
-        request.success = function() {
+        request.success = function () {
             $scope.order.status = status;
             topicMessageDispatcher.fire('system.success', {
                 code: 'purchase.order.update.status.success',
@@ -288,26 +372,26 @@ function UpdateOrderStatusController($scope, usecaseAdapterFactory, config, $rou
         restServiceHandler(request);
     }
 
-    $scope.shipped = function() {
+    $scope.shipped = function () {
         updateToStatus('shipped');
     };
 
-    $scope.pathStartsWith = function(path) {
+    $scope.pathStartsWith = function (path) {
         return $location.path().indexOf(path) == 0;
     }
 }
 
 function ValidateOrderFactory(usecaseAdapterFactory, restServiceHandler, config) {
-    return function($scope, args) {
+    return function ($scope, args) {
         var request = usecaseAdapterFactory($scope);
         request.success = args.success;
         request.error = args.error;
         args.data.reportType = 'complex';
         request.params = {
-            method:'POST',
+            method: 'POST',
             url: (config.baseUri || '') + 'api/validate/purchase-order',
             data: args.data,
-            withCredentials:true
+            withCredentials: true
         };
         restServiceHandler(request);
     }
