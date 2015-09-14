@@ -331,49 +331,58 @@ function CancelPaymentController($scope, usecaseAdapterFactory, $routeParams, co
 }
 
 function UpdateOrderStatusController($scope, usecaseAdapterFactory, config, $routeParams, restServiceHandler, topicMessageDispatcher, $location) {
-    var request = usecaseAdapterFactory($scope);
-    request.params = {
-        method: 'POST',
-        url: (config.baseUri || '') + 'api/entity/purchase-order',
-        data: {
-            context: 'updateStatusAsVendor',
-            id: $routeParams.id,
-            owner: $routeParams.owner,
-            treatInputAsId: true
-        },
-        withCredentials: true
+    var id, owner, successNotification;
+
+    $scope.init = function (args) {
+        id = args.id;
+        owner = args.owner;
+        successNotification = args.successNotification;
     };
 
-    $scope.inTransit = function () {
-        updateToStatus('in-transit');
+    $scope.inTransit = function (args) {
+        updateToStatus('in-transit', args);
     };
 
-    $scope.paid = function () {
-        updateToStatus('paid');
+    $scope.paid = function (args) {
+        updateToStatus('paid', args);
     };
 
-    $scope.shippingPending = function () {
-        updateToStatus('shipping-pending');
+    $scope.shippingPending = function (args) {
+        updateToStatus('shipping-pending', args);
     };
 
-    $scope.cancel = function () {
-        updateToStatus('canceled');
+    $scope.cancel = function (args) {
+        updateToStatus('canceled', args);
     };
 
-    function updateToStatus(status) {
-        request.params.data.status = status;
+    function updateToStatus(status, args) {
+        var request = usecaseAdapterFactory($scope);
+        request.params = {
+            method: 'POST',
+            url: (config.baseUri || '') + 'api/entity/purchase-order',
+            data: {
+                context: 'updateStatusAsVendor',
+                id: id || $routeParams.id,
+                owner: owner || $routeParams.owner,
+                treatInputAsId: true,
+                status: status
+            },
+            withCredentials: true
+        };
         request.success = function () {
             $scope.order.status = status;
-            topicMessageDispatcher.fire('system.success', {
-                code: 'purchase.order.update.status.success',
-                default: 'The status of the order has been updated'
-            })
+            if (args && args.success) args.success();
+            if (successNotification != false)
+                topicMessageDispatcher.fire('system.success', {
+                    code: 'purchase.order.update.status.success',
+                    default: 'The status of the order has been updated'
+                });
         };
         restServiceHandler(request);
     }
 
-    $scope.shipped = function () {
-        updateToStatus('shipped');
+    $scope.shipped = function (args) {
+        updateToStatus('shipped', args);
     };
 
     $scope.pathStartsWith = function (path) {

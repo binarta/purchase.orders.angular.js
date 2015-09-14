@@ -43,7 +43,7 @@ describe('purchase.orders.angular', function () {
     describe('ListPurchaseOrdersController', function () {
         beforeEach(inject(function ($controller) {
             authorized = true;
-            ctrl = $controller(ListPurchaseOrderController, {
+            ctrl = $controller('ListPurchaseOrderController', {
                 $scope: scope,
                 config: config,
                 fetchAccountMetadata: fetchAccountMetadata
@@ -134,7 +134,7 @@ describe('purchase.orders.angular', function () {
 
     describe('ViewPurchaseOrderController', function () {
         beforeEach(inject(function ($controller) {
-            ctrl = $controller(ViewPurchaseOrderController, {$scope: scope, config: config});
+            ctrl = $controller('ViewPurchaseOrderController', {$scope: scope, config: config});
             config.baseUri = 'base-uri/';
         }));
 
@@ -240,11 +240,9 @@ describe('purchase.orders.angular', function () {
 
         describe('addressSelection', function () {
             var service;
-            var registryMock;
 
-            beforeEach(inject(function (localStorage, topicRegistry, topicRegistryMock) {
-                registryMock = topicRegistryMock;
-                service = LocalStorageAddressSelectionFactory(localStorage, topicRegistry);
+            beforeEach(inject(function (addressSelection) {
+                service = addressSelection;
             }));
 
             it('retrieves all selected addresses', function () {
@@ -306,7 +304,7 @@ describe('purchase.orders.angular', function () {
             var viewCustomerAddress = jasmine.createSpy('viewCustomerAddress');
 
             beforeEach(inject(function ($controller) {
-                ctrl = $controller(AddressSelectionController, {
+                ctrl = $controller('AddressSelectionController', {
                     $scope: scope,
                     addressSelection: addressSelection,
                     $location: location,
@@ -655,7 +653,7 @@ describe('purchase.orders.angular', function () {
         var local;
 
         beforeEach(inject(function ($controller, localStorage) {
-            $controller(SelectPaymentProviderController, {$scope: scope, config: config});
+            $controller('SelectPaymentProviderController', {$scope: scope, config: config});
             local = localStorage;
         }));
 
@@ -742,7 +740,7 @@ describe('purchase.orders.angular', function () {
 
     describe('ApprovePaymentController', function () {
         beforeEach(inject(function ($controller) {
-            ctrl = $controller(ApprovePaymentController, {$scope: scope, config: config});
+            ctrl = $controller('ApprovePaymentController', {$scope: scope, config: config});
         }));
 
         describe('given payment params', function () {
@@ -812,7 +810,7 @@ describe('purchase.orders.angular', function () {
 
     describe('CancelPaymentController', function () {
         beforeEach(inject(function ($controller, $routeParams) {
-            ctrl = $controller(CancelPaymentController, {$scope: scope, config: config});
+            ctrl = $controller('CancelPaymentController', {$scope: scope, config: config});
             $routeParams.id = 'payment-id';
         }));
 
@@ -884,79 +882,138 @@ describe('purchase.orders.angular', function () {
     });
 
     describe('UpdateOrderStatusController', function () {
-        beforeEach(inject(function ($controller, $routeParams) {
+        var $routeParams;
+
+        beforeEach(inject(function ($controller, _$routeParams_) {
+            $routeParams = _$routeParams_;
             config.baseUri = 'base-uri/';
-            $routeParams.id = 'id';
-            $routeParams.owner = 'owner';
-            ctrl = $controller(UpdateOrderStatusController, {$scope: scope, config: config})
+            ctrl = $controller('UpdateOrderStatusController', {$scope: scope, config: config})
         }));
 
-        [
-            {
-                status: 'in-transit', func: function () {
-                scope.inTransit()
-            }
-            },
-            {
-                status: 'shipped', func: function () {
-                scope.shipped()
-            }
-            },
-            {
-                status: 'paid', func: function () {
-                scope.paid()
-            }
-            },
-            {
-                status: 'shipping-pending', func: function () {
-                scope.shippingPending()
-            }
-            },
-            {
-                status: 'canceled', func: function () {
-                scope.cancel()
-            }
-            }
-        ].forEach(function (def) {
-                describe('on move to ' + def.status, function () {
-                    beforeEach(function () {
-                        def.func();
-                    });
+        function assertStatusUpdate(args) {
+            [
+                {
+                    status: 'in-transit', func: function () {
+                    args ? scope.inTransit(args) : scope.inTransit();
+                }
+                },
+                {
+                    status: 'shipped', func: function () {
+                    args ? scope.shipped(args) : scope.shipped();
+                }
+                },
+                {
+                    status: 'paid', func: function () {
+                    args ? scope.paid(args) : scope.paid();
+                }
+                },
+                {
+                    status: 'shipping-pending', func: function () {
+                    args ? scope.shippingPending(args) : scope.shippingPending();
+                }
+                },
+                {
+                    status: 'canceled', func: function () {
+                    args ? scope.cancel(args) : scope.cancel();
+                }
+                }
+            ].forEach(function (def) {
+                    describe('on move to ' + def.status, function () {
+                        beforeEach(function () {
+                            def.func();
+                            if (args) args.success.reset();
+                        });
 
-                    it('request is sent', inject(function ($routeParams) {
-                        expect(request().params).toEqual({
-                            method: 'POST',
-                            url: 'base-uri/api/entity/purchase-order',
-                            data: {
-                                context: 'updateStatusAsVendor',
-                                id: $routeParams.id,
-                                owner: $routeParams.owner,
-                                status: def.status,
-                                treatInputAsId: true
-                            },
-                            withCredentials: true
-                        })
-                    }));
-
-                    describe('and success', function () {
-                        beforeEach(inject(function () {
-                            scope.order = {status: 'previous'};
-                            request().success();
-                        }));
-
-                        it('order status is updated', inject(function () {
-                            expect(scope.order.status).toEqual(def.status);
-                        }));
-
-                        it('test', inject(function (topicMessageDispatcherMock) {
-                            expect(topicMessageDispatcherMock['system.success']).toEqual({
-                                code: 'purchase.order.update.status.success',
-                                default: 'The status of the order has been updated'
+                        it('request is sent', inject(function ($routeParams) {
+                            expect(request().params).toEqual({
+                                method: 'POST',
+                                url: 'base-uri/api/entity/purchase-order',
+                                data: {
+                                    context: 'updateStatusAsVendor',
+                                    id: 'id',
+                                    owner: 'owner',
+                                    status: def.status,
+                                    treatInputAsId: true
+                                },
+                                withCredentials: true
                             })
                         }));
+
+                        describe('and success', function () {
+                            beforeEach(inject(function () {
+                                scope.order = {status: 'previous'};
+                                request().success();
+                            }));
+
+                            it('order status is updated', inject(function () {
+                                expect(scope.order.status).toEqual(def.status);
+                            }));
+
+                            it('test', inject(function (topicMessageDispatcherMock) {
+                                expect(topicMessageDispatcherMock['system.success']).toEqual({
+                                    code: 'purchase.order.update.status.success',
+                                    default: 'The status of the order has been updated'
+                                })
+                            }));
+
+                            if (args) {
+                                it('whit success callback', function () {
+                                    expect(args.success).toHaveBeenCalled();
+                                });
+                            }
+                        });
                     });
                 });
+        }
+
+        describe('with routeParams', function () {
+            beforeEach(function () {
+                $routeParams.id = 'id';
+                $routeParams.owner = 'owner';
             });
+
+            assertStatusUpdate();
+        });
+
+        describe('with init', function () {
+            beforeEach(function () {
+                scope.init({
+                    id: 'id',
+                    owner: 'owner'
+                });
+            });
+
+            assertStatusUpdate();
+        });
+
+        describe('with success callback defined', function () {
+            beforeEach(function () {
+                scope.init({
+                    id: 'id',
+                    owner: 'owner'
+                });
+            });
+
+            assertStatusUpdate({success: jasmine.createSpy('success callback')});
+        });
+
+        describe('with init and notification is disabled', function () {
+            beforeEach(function () {
+                scope.init({
+                    id: 'id',
+                    owner: 'owner',
+                    successNotification: false
+                });
+            });
+
+            it('do not send notification', inject(function (topicMessageDispatcherMock) {
+                scope.paid();
+                scope.order = {status: 'previous'};
+                request().success();
+
+                expect(topicMessageDispatcherMock['system.success']).toBeUndefined();
+            }));
+        });
 
         describe('pathStartsWith', function () {
             beforeEach(inject(function ($location) {
