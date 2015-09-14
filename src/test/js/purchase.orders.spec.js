@@ -887,7 +887,7 @@ describe('purchase.orders.angular', function () {
         beforeEach(inject(function ($controller, _$routeParams_) {
             $routeParams = _$routeParams_;
             config.baseUri = 'base-uri/';
-            ctrl = $controller('UpdateOrderStatusController', {$scope: scope, config: config})
+            ctrl = $controller('UpdateOrderStatusController', {$scope: scope, config: config});
         }));
 
         function assertStatusUpdate(args) {
@@ -1036,6 +1036,235 @@ describe('purchase.orders.angular', function () {
                 expect(scope.pathStartsWith('invalid')).toBeFalsy();
             }));
         });
+    });
+
+    describe('purchaseOrderStatus directive', function () {
+        var $rootScope, element, html, $compile, renderer, permitter, scope, topics;
+
+        beforeEach(inject(function (_$rootScope_, _$compile_, editModeRenderer, activeUserHasPermission, topicMessageDispatcherMock) {
+            $rootScope = _$rootScope_;
+            $compile = _$compile_;
+            renderer = editModeRenderer;
+            permitter = activeUserHasPermission;
+            topics = topicMessageDispatcherMock;
+
+            $rootScope.order = {
+                status: 'status',
+                statusLevel: 'level'
+            }
+        }));
+
+        function createElement() {
+            html = '<purchase-order-status order="order"></purchase-order-status>';
+            element = angular.element(html);
+            $compile(element)($rootScope.$new());
+            scope = element.isolateScope();
+        }
+
+        it('directive uses UpdateOrderStatusController', function () {
+            createElement();
+
+            expect(element.controller('purchaseOrderStatus').constructor.name).toEqual('UpdateOrderStatusController');
+        });
+
+        it('order is on scope', function () {
+            $rootScope.order = 'order';
+
+            createElement();
+
+            expect(scope.order).toEqual('order');
+        });
+
+        it('template is compiled', function () {
+            createElement();
+
+            expect(element.html()).toContain('code="purchase.orders.status.status"');
+        });
+
+        it('check for permission', function () {
+            createElement();
+
+            expect(permitter).toHaveBeenCalled();
+            expect(permitter.calls[0].args[1]).toEqual('update.purchase.order.as.vendor');
+        });
+
+        [
+            {
+                order: {
+                    provider: 'wire-transfer',
+                    status: 'pending-approval-by-customer'
+                },
+                expected: jasmine.any(Function)
+            },
+            {
+                order: {
+                    provider: 'provider',
+                    status: 'pending-approval-by-customer'
+                },
+                expected: undefined
+            },
+            {
+                order: {
+                    provider: 'provider',
+                    status: 'paid'
+                },
+                expected: jasmine.any(Function)
+            },
+            {
+                order: {
+                    provider: 'provider',
+                    status: 'shipping-pending'
+                },
+                expected: jasmine.any(Function)
+            },
+            {
+                order: {
+                    provider: 'provider',
+                    status: 'shipped'
+                },
+                expected: jasmine.any(Function)
+            }
+        ].forEach(function (test) {
+                describe('order with provider: ' + test.order.provider + ' and status: ' + test.order.status, function () {
+                    beforeEach(function () {
+                        $rootScope.order = test.order;
+                        createElement();
+                    });
+
+                    describe('when permitted', function () {
+                        beforeEach(function () {
+                            permitter.calls[0].args[0].yes();
+                        });
+
+                        it('clerk template is compiled', function () {
+                            expect(element.html()).toContain('code="purchase.orders.status.' + test.order.status + '"');
+                            if (test.expected) expect(element.html()).toContain('button');
+                            else expect(element.html()).toContain('label');
+                        });
+
+                        it('has update on scope', function () {
+                            expect(scope.update).toEqual(test.expected);
+                        });
+                    });
+                });
+            });
+
+        describe('on update', function () {
+            beforeEach(function () {
+                $rootScope.order = {
+                    provider: 'wire-transfer',
+                    status: 'pending-approval-by-customer',
+                    id: 'id',
+                    owner: 'owner'
+                };
+                createElement();
+                permitter.calls[0].args[0].yes();
+
+                scope.update();
+            });
+
+            it('editModeRenderer is opened', function () {
+                expect(renderer.open).toHaveBeenCalledWith({
+                    template: jasmine.any(String),
+                    scope: jasmine.any(Object)
+                });
+            });
+
+            describe('with renderer scope', function () {
+                var rendererScope;
+
+                beforeEach(function () {
+                    rendererScope = renderer.open.calls[0].args[0].scope;
+                });
+
+                function assertRequest(status) {
+                    expect(request().params).toEqual({
+                        method: 'POST',
+                        url: 'api/entity/purchase-order',
+                        data: {
+                            context: 'updateStatusAsVendor',
+                            id: 'id',
+                            owner: 'owner',
+                            status: status,
+                            treatInputAsId: true
+                        },
+                        withCredentials: true
+                    });
+
+                    onRequestSuccess(status);
+                }
+
+                function onRequestSuccess(status) {
+                    request().success();
+                    assertDoNotShowSuccessNotification();
+                    assertRendererIsClosed();
+                    assertTemplateIsRecompiled(status);
+                }
+
+                function assertDoNotShowSuccessNotification() {
+                    expect(topics['system.success']).toBeUndefined();
+                }
+
+                function assertRendererIsClosed() {
+                    expect(renderer.close).toHaveBeenCalled();
+                }
+
+                function assertTemplateIsRecompiled(status) {
+                    expect(element.html()).toContain('code="purchase.orders.status.' + status + '"');
+                }
+
+                it('order is available', function () {
+                    expect(rendererScope.order).toEqual($rootScope.order);
+                });
+
+                it('on close', function () {
+                    rendererScope.close();
+
+                    expect(renderer.close).toHaveBeenCalled();
+                });
+
+                describe('on cancel order', function () {
+                    beforeEach(function () {
+                        rendererScope.cancelOrder();
+                    });
+
+                    it('ask confirmation', function () {
+                        expect(rendererScope.cancelOrderConfirmation).toBeTruthy();
+                    });
+
+                    it('when aborted', function () {
+                        rendererScope.cancelOrderAborted();
+
+                        expect(rendererScope.cancelOrderConfirmation).toBeFalsy();
+                    });
+
+                    it('when confirmed', function () {
+                        rendererScope.cancelOrderConfirmed();
+
+                        assertRequest('canceled');
+                    });
+                });
+
+                it('on paid', function () {
+                    rendererScope.paid();
+
+                    assertRequest('paid');
+                });
+
+                it('on shipping pending', function () {
+                    rendererScope.shippingPending();
+
+                    assertRequest('shipping-pending');
+                });
+
+                it('on shipped', function () {
+                    rendererScope.shipped();
+
+                    assertRequest('shipped');
+                });
+            });
+        });
+
     });
 
     describe('ValidateOrder', function () {

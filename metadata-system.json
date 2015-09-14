@@ -49,7 +49,22 @@
       "purchase.orders.mail.order.unit.price.label": "Eenheidsprijs",
       "purchase.orders.mail.order.price.label": "Totaal",
       "purchase.orders.mail.order.subtotal.price.label": "Subtotaal",
-      "purchase.orders.mail.order.total.price.label": "Totaal"
+      "purchase.orders.mail.order.total.price.label": "Totaal",
+
+      "purchase.orders.status.pending-approval-by-customer": "In afwachting van betaling",
+      "purchase.orders.status.paid": "Betaald",
+      "purchase.orders.status.shipping-pending": "In afwachting van verzending",
+      "purchase.orders.status.shipped": "Verzonden",
+      "purchase.orders.status.canceled": "Geannuleerd",
+      "purchase.orders.status.payment-approved-by-customer": "Betaling wordt gevalideerd",
+      "purchase.orders.status.payment-approved-by-vendor": "Betaling gevalideerd",
+      "purchase.orders.status.refund-pending": "In afwachting van terugbetaling",
+      "purchase.orders.status.refunded": "Terugbetaald",
+      "purchase.orders.status.review-pending": "In afwachting van herziening",
+
+      "purchase.orders.cancel.order.confirmation.message": "Ben je zeker dat je de bestelling wilt annuleren? Dit kan niet ongedaan worden.",
+      "purchase.orders.cancel.order.button": "Annuleer bestelling",
+      "purchase.orders.go.back.button": "Ga terug"
     },
     "en":{
       "purchase.order.cancel.success": "Your purchase order was cancelled.",
@@ -100,7 +115,22 @@
       "purchase.orders.mail.order.unit.price.label": "Unit Price",
       "purchase.orders.mail.order.price.label": "Total",
       "purchase.orders.mail.order.subtotal.price.label": "Subtotal",
-      "purchase.orders.mail.order.total.price.label": "Total price"
+      "purchase.orders.mail.order.total.price.label": "Total price",
+
+      "purchase.orders.status.pending-approval-by-customer": "Awaiting payment",
+      "purchase.orders.status.paid": "Paid",
+      "purchase.orders.status.shipping-pending": "Awaiting shipment",
+      "purchase.orders.status.shipped": "Shipped",
+      "purchase.orders.status.canceled": "Canceled",
+      "purchase.orders.status.payment-approved-by-customer": "Validating payment",
+      "purchase.orders.status.payment-approved-by-vendor": "Payment validated",
+      "purchase.orders.status.refund-pending": "Awaiting refund",
+      "purchase.orders.status.refunded": "Refunded",
+      "purchase.orders.status.review-pending": "Awaiting review",
+
+      "purchase.orders.cancel.order.confirmation.message": "Are you sure you want to cancel the order? This cannot be undone.",
+      "purchase.orders.cancel.order.button": "Cancel order",
+      "purchase.orders.go.back.button": "Go back"
     },
     "fr":{
       "purchase.order.cancel.success": "Votre commande est annulée.",
@@ -151,7 +181,22 @@
       "purchase.orders.mail.order.unit.price.label": "Prix unitaire",
       "purchase.orders.mail.order.price.label": "Total",
       "purchase.orders.mail.order.subtotal.price.label": "Sous-total",
-      "purchase.orders.mail.order.total.price.label": "Total price"
+      "purchase.orders.mail.order.total.price.label": "Total price",
+
+      "purchase.orders.status.pending-approval-by-customer": "Awaiting payment",
+      "purchase.orders.status.paid": "Paid",
+      "purchase.orders.status.shipping-pending": "Awaiting shipment",
+      "purchase.orders.status.shipped": "Shipped",
+      "purchase.orders.status.canceled": "Canceled",
+      "purchase.orders.status.payment-approved-by-customer": "Validating payment",
+      "purchase.orders.status.payment-approved-by-vendor": "Payment validated",
+      "purchase.orders.status.refund-pending": "Awaiting refund",
+      "purchase.orders.status.refunded": "Refunded",
+      "purchase.orders.status.review-pending": "Awaiting review",
+
+      "purchase.orders.cancel.order.confirmation.message": "Are you sure you want to cancel the order? This cannot be undone.",
+      "purchase.orders.cancel.order.button": "Cancel order",
+      "purchase.orders.go.back.button": "Go back"
     },
     "de":{
       "purchase.order.cancel.success": "Ihre Bestellung wurde storniert.",
@@ -202,7 +247,22 @@
       "purchase.orders.mail.order.unit.price.label": "Einzelpreis",
       "purchase.orders.mail.order.price.label": "Gesamt",
       "purchase.orders.mail.order.subtotal.price.label": "Zwischensumme",
-      "purchase.orders.mail.order.total.price.label": "Gesamt"
+      "purchase.orders.mail.order.total.price.label": "Gesamt",
+
+      "purchase.orders.status.pending-approval-by-customer": "Awaiting payment",
+      "purchase.orders.status.paid": "Paid",
+      "purchase.orders.status.shipping-pending": "Awaiting shipment",
+      "purchase.orders.status.shipped": "Shipped",
+      "purchase.orders.status.canceled": "Canceled",
+      "purchase.orders.status.payment-approved-by-customer": "Validating payment",
+      "purchase.orders.status.payment-approved-by-vendor": "Payment validated",
+      "purchase.orders.status.refund-pending": "Awaiting refund",
+      "purchase.orders.status.refunded": "Refunded",
+      "purchase.orders.status.review-pending": "Awaiting review",
+
+      "purchase.orders.cancel.order.confirmation.message": "Are you sure you want to cancel the order? This cannot be undone.",
+      "purchase.orders.cancel.order.button": "Cancel order",
+      "purchase.orders.go.back.button": "Go back"
     }
   }
 }

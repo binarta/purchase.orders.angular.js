@@ -1,5 +1,5 @@
 (function () {
-    angular.module('purchase.orders', ['ngRoute', 'config', 'checkpoint', 'angular.usecase.adapter', 'rest.client', 'web.storage', 'customer.address', 'i18n', 'notifications'])
+    angular.module('purchase.orders', ['ngRoute', 'config', 'checkpoint', 'angular.usecase.adapter', 'rest.client', 'web.storage', 'customer.address', 'i18n', 'notifications', 'toggle.edit.mode'])
         .controller('ListPurchaseOrderController', ['$scope', 'config', 'fetchAccountMetadata', '$q', ListPurchaseOrderController])
         .controller('ViewPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', '$routeParams', ViewPurchaseOrderController])
         .factory('addressSelection', ['localStorage', LocalStorageAddressSelectionFactory])
@@ -9,6 +9,7 @@
         .controller('ApprovePaymentController', ['$scope', 'usecaseAdapterFactory', '$location', '$routeParams', 'restServiceHandler', 'config', ApprovePaymentController])
         .controller('CancelPaymentController', ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', 'i18nLocation', 'topicMessageDispatcher', CancelPaymentController])
         .controller('UpdateOrderStatusController', ['$scope', 'usecaseAdapterFactory', 'config', '$routeParams', 'restServiceHandler', 'topicMessageDispatcher', '$location', UpdateOrderStatusController])
+        .directive('purchaseOrderStatus', ['$compile', 'activeUserHasPermission', 'editModeRenderer', PurchaseOrderStatusDirective])
         .config(['$routeProvider', function ($routeProvider) {
             $routeProvider
                 .when('/payment/:id/approve', {
@@ -388,6 +389,171 @@
 
         $scope.pathStartsWith = function (path) {
             return $location.path().indexOf(path) == 0;
+        }
+    }
+
+    function PurchaseOrderStatusDirective($compile, permitter, renderer) {
+        return {
+            restrict: 'E',
+            scope: {
+                order: '='
+            },
+            controller: 'UpdateOrderStatusController',
+            link: function (scope, el) {
+                compileTemplate();
+
+                permitter({
+                    yes: function () {
+                        if (isAllowedToUpdateStatus()) {
+                            scope.update = update;
+                            compileClerkTemplate();
+                        }
+                    }
+                }, 'update.purchase.order.as.vendor');
+
+                function isAllowedToUpdateStatus() {
+                    if (scope.order.provider == 'wire-transfer' && scope.order.status == 'pending-approval-by-customer') return true;
+                    if ([
+                            'paid',
+                            'shipping-pending',
+                            'shipped'
+                        ].indexOf(scope.order.status) != -1) return true;
+                }
+
+                function compileClerkTemplate() {
+                    el.html('<button class="btn btn-sm" ng-click="update()" ' +
+                        'i18n code="purchase.orders.status.' + scope.order.status + '" read-only>' +
+                        '<i class="fa fa-pencil fa-fw"></i> {{::var}}' +
+                        '</button>');
+                    $compile(el.contents())(scope);
+                }
+
+                function compileTemplate() {
+                    el.html('<span class="label" ' +
+                        'i18n code="purchase.orders.status.' + scope.order.status + '" read-only>{{::var}}</span>');
+                    $compile(el.contents())(scope);
+                }
+
+                function update() {
+                    scope.init({
+                        id: scope.order.id,
+                        owner: scope.order.owner,
+                        successNotification: false
+                    });
+
+                    var rendererScope = angular.extend(scope.$new(), {
+                        close: function () {
+                            renderer.close();
+                        },
+                        cancelOrder: function () {
+                            rendererScope.cancelOrderConfirmation = true;
+                        },
+                        cancelOrderAborted: function () {
+                            rendererScope.cancelOrderConfirmation = false;
+                        },
+                        cancelOrderConfirmed: function () {
+                            scope.cancel({
+                                success: onSuccess
+                            });
+                        },
+                        paid: function () {
+                            scope.paid({
+                                success: onSuccess
+                            });
+                        },
+                        shippingPending: function () {
+                            scope.shippingPending({
+                                success: onSuccess
+                            });
+                        },
+                        shipped: function () {
+                            scope.shipped({
+                                success: onSuccess
+                            });
+                        },
+                        order: scope.order
+                    });
+
+                    function onSuccess() {
+                        compileClerkTemplate();
+                        renderer.close();
+                    }
+
+                    renderer.open({
+                        template: '<form class="bin-menu-edit-body bin-menu-edit-purchase-orders">' +
+
+                        '<div ng-show="working" i18n code="clerk.menu.updating.message" read-only>' +
+                        '<i class="fa fa-spinner fa-spin fa-fw"></i> {{::var}}' +
+                        '</div>' +
+
+                        '<div ng-show="cancelOrderConfirmation && !working">' +
+                        '<div class="row">' +
+                        '<div class="col-xs-12">' +
+                        '<div class="alert alert-danger" i18n code="purchase.orders.cancel.order.confirmation.message" read-only>' +
+                        '<i class="fa fa-exclamation-circle fa-fw"></i> {{::var}}' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+
+                        '<div class="row">' +
+                        '<div class="col-xs-12">' +
+                        '<button class="btn btn-danger" ng-click="cancelOrderConfirmed()" ng-disabled="working" ' +
+                        'i18n code="purchase.orders.cancel.order.button" read-only>{{::var}}</button>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+
+                        '<div ng-hide="cancelOrderConfirmation || working">' +
+                        '<ol>' +
+                        '<li ng-if="order.provider == \'wire-transfer\'" ng-class="{\'active\': order.status == \'pending-approval-by-customer\'}">' +
+                        '<button class="btn" ng-class="order.status == \'pending-approval-by-customer\' ? \'btn-success\' : \'btn-default\'" ' +
+                        'disabled ' +
+                        'i18n code="purchase.orders.status.pending-approval-by-customer" read-only>' +
+                        '<i class="fa fa-clock-o fa-fw"></i> {{::var}}' +
+                        '</button>' +
+                        '</li>' +
+
+                        '<li ng-class="{\'active\': order.status == \'paid\'}">' +
+                        '<button class="btn" ng-class="order.status == \'paid\' ? \'btn-success\' : \'btn-default\'" ' +
+                        'ng-click="paid()" ng-disabled="working || order.status == \'paid\'" ' +
+                        'i18n code="purchase.orders.status.paid" read-only>' +
+                        '<i class="fa fa-money fa-fw"></i> {{::var}}' +
+                        '</button>' +
+                        '</li>' +
+
+                        '<li ng-class="{\'active\': order.status == \'shipping-pending\'}">' +
+                        '<button class="btn" ng-class="order.status == \'shipping-pending\' ? \'btn-success\' : \'btn-default\'" ' +
+                        'ng-click="shippingPending()" ng-disabled="working || order.status == \'shipping-pending\'" ' +
+                        'i18n code="purchase.orders.status.shipping-pending" read-only>' +
+                        '<i class="fa fa-calendar-check-o fa-fw"></i> {{::var}}' +
+                        '</button>' +
+                        '</li>' +
+
+                        '<li ng-class="{\'active\': order.status == \'shipped\'}">' +
+                        '<button class="btn" ng-class="order.status == \'shipped\' ? \'btn-success\' : \'btn-default\'" ' +
+                        'ng-click="shipped()" ng-disabled="working || order.status == \'shipped\'" ' +
+                        'i18n code="purchase.orders.status.shipped" read-only>' +
+                        '<i class="fa fa-ship fa-fw"></i> {{::var}}' +
+                        '</button>' +
+                        '</li>' +
+                        '</ol>' +
+                        '</div>' +
+
+                        '</form>' +
+                        '<div class="bin-menu-edit-actions">' +
+                        '<button type="button" class="btn btn-danger pull-left" ' +
+                        'ng-if="order.status == \'pending-approval-by-customer\' && !cancelOrderConfirmation" ' +
+                        'ng-click="cancelOrder()" ng-disabled="working" i18n code="purchase.orders.cancel.order.button" read-only>{{::var}}</button>' +
+                        '<button type="button" class="btn btn-success pull-left" ' +
+                        'ng-show="cancelOrderConfirmation" ' +
+                        'ng-click="cancelOrderAborted()" ng-disabled="working" i18n code="purchase.orders.go.back.button" read-only>{{::var}}</button>' +
+                        '<button type="reset" class="btn btn-default" ng-click="close()" ng-disabled="working" ' +
+                        'i18n code="clerk.menu.close.button" read-only>{{::var}}</button>' +
+                        '</div>',
+                        scope: rendererScope
+                    });
+                }
+            }
         }
     }
 
