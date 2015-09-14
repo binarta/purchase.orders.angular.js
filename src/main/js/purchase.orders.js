@@ -511,33 +511,34 @@
 
                         '<div ng-hide="cancelOrderConfirmation || working">' +
                         '<ol>' +
-                        '<li ng-if="order.provider == \'wire-transfer\'" ng-class="{\'active\': order.status == \'pending-approval-by-customer\'}">' +
+                        '<li ng-if="order.provider == \'wire-transfer\'" ' +
+                        'style="margin-bottom: 30px;" ng-class="{\'active\': order.status == \'pending-approval-by-customer\'}">' +
                         '<button class="btn" ng-class="order.status == \'pending-approval-by-customer\' ? \'btn-success\' : \'btn-default\'" ' +
-                        'disabled ' +
+                        'style="padding: 15px;" disabled ' +
                         'i18n code="purchase.orders.status.pending-approval-by-customer" read-only>' +
                         '<i class="fa fa-clock-o fa-fw"></i> {{::var}}' +
                         '</button>' +
                         '</li>' +
 
-                        '<li ng-class="{\'active\': order.status == \'paid\'}">' +
+                        '<li style="margin-bottom: 30px;" ng-class="{\'active\': order.status == \'paid\'}">' +
                         '<button class="btn" ng-class="order.status == \'paid\' ? \'btn-success\' : \'btn-default\'" ' +
-                        'ng-click="paid()" ng-disabled="working || order.status == \'paid\'" ' +
+                        'style="padding: 15px;" ng-click="paid()" ng-disabled="working || order.status == \'paid\'" ' +
                         'i18n code="purchase.orders.status.paid" read-only>' +
                         '<i class="fa fa-money fa-fw"></i> {{::var}}' +
                         '</button>' +
                         '</li>' +
 
-                        '<li ng-class="{\'active\': order.status == \'shipping-pending\'}">' +
+                        '<li style="margin-bottom: 30px;" ng-class="{\'active\': order.status == \'shipping-pending\'}">' +
                         '<button class="btn" ng-class="order.status == \'shipping-pending\' ? \'btn-success\' : \'btn-default\'" ' +
-                        'ng-click="shippingPending()" ng-disabled="working || order.status == \'shipping-pending\'" ' +
+                        'style="padding: 15px;" ng-click="shippingPending()" ng-disabled="working || order.status == \'shipping-pending\'" ' +
                         'i18n code="purchase.orders.status.shipping-pending" read-only>' +
                         '<i class="fa fa-calendar-check-o fa-fw"></i> {{::var}}' +
                         '</button>' +
                         '</li>' +
 
-                        '<li ng-class="{\'active\': order.status == \'shipped\'}">' +
+                        '<li style="margin-bottom: 30px;" ng-class="{\'active\': order.status == \'shipped\'}">' +
                         '<button class="btn" ng-class="order.status == \'shipped\' ? \'btn-success\' : \'btn-default\'" ' +
-                        'ng-click="shipped()" ng-disabled="working || order.status == \'shipped\'" ' +
+                        'style="padding: 15px;" ng-click="shipped()" ng-disabled="working || order.status == \'shipped\'" ' +
                         'i18n code="purchase.orders.status.shipped" read-only>' +
                         '<i class="fa fa-ship fa-fw"></i> {{::var}}' +
                         '</button>' +
