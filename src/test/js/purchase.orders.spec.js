@@ -40,6 +40,59 @@ describe('purchase.orders.angular', function () {
         return rest.calls[0].args[0];
     }
 
+    describe('toPurchaseOrderStatusLevel filter', function () {
+        var config, filter;
+
+        beforeEach(inject(function (_config_, toPurchaseOrderStatusLevelFilter) {
+            config = _config_;
+            filter = toPurchaseOrderStatusLevelFilter;
+        }));
+
+        describe('with default styling', function () {
+            [
+                {status: 'pending-approval-by-customer', statusLevel: 'info'},
+                {status: 'payment-approved-by-customer', statusLevel: 'info'},
+                {status: 'payment-approved-by-vendor', statusLevel: 'info'},
+                {status: 'refund-pending', statusLevel: 'info'},
+                {status: 'in-transit', statusLevel: 'info'},
+                {status: 'shipping-pending', statusLevel: 'info'},
+                {status: 'review-pending', statusLevel: 'warning'},
+                {status: 'canceled', statusLevel: 'danger'},
+                {status: 'refunded', statusLevel: 'success'},
+                {status: 'paid', statusLevel: 'success'},
+                {status: 'shipped', statusLevel: 'success'}
+            ].forEach(function (input) {
+                    it('status "' + input.status + '" should return "' + input.statusLevel + '"', function () {
+                        expect(filter(input.status)).toEqual(input.statusLevel);
+                    });
+                });
+        });
+
+        describe('with bootstrap2 styling', function () {
+            beforeEach(function () {
+                config.styling = 'bootstrap2';
+            });
+
+            [
+                {status: 'pending-approval-by-customer', statusLevel: 'info'},
+                {status: 'payment-approved-by-customer', statusLevel: 'info'},
+                {status: 'payment-approved-by-vendor', statusLevel: 'info'},
+                {status: 'refund-pending', statusLevel: 'info'},
+                {status: 'in-transit', statusLevel: 'info'},
+                {status: 'shipping-pending', statusLevel: 'info'},
+                {status: 'review-pending', statusLevel: 'warning'},
+                {status: 'canceled', statusLevel: 'important'},
+                {status: 'refunded', statusLevel: 'success'},
+                {status: 'paid', statusLevel: 'success'},
+                {status: 'shipped', statusLevel: 'success'}
+            ].forEach(function (input) {
+                    it('status "' + input.status + '" should return "' + input.statusLevel + '"', function () {
+                        expect(filter(input.status)).toEqual(input.statusLevel);
+                    });
+                });
+        });
+    });
+
     describe('ListPurchaseOrdersController', function () {
         beforeEach(inject(function ($controller) {
             authorized = true;

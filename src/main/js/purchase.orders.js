@@ -9,7 +9,7 @@
         .controller('ApprovePaymentController', ['$scope', 'usecaseAdapterFactory', '$location', '$routeParams', 'restServiceHandler', 'config', ApprovePaymentController])
         .controller('CancelPaymentController', ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', 'i18nLocation', 'topicMessageDispatcher', CancelPaymentController])
         .controller('UpdateOrderStatusController', ['$scope', 'usecaseAdapterFactory', 'config', '$routeParams', 'restServiceHandler', 'topicMessageDispatcher', '$location', UpdateOrderStatusController])
-        .directive('purchaseOrderStatus', ['$compile', 'activeUserHasPermission', 'editModeRenderer', PurchaseOrderStatusDirective])
+        .directive('purchaseOrderStatus', ['$compile', '$filter', 'activeUserHasPermission', 'editModeRenderer', PurchaseOrderStatusDirective])
         .config(['$routeProvider', function ($routeProvider) {
             $routeProvider
                 .when('/payment/:id/approve', {
@@ -36,6 +36,12 @@
                     templateUrl: 'partials/shop/order-details.html',
                     controller: 'ViewPurchaseOrderController'
                 })
+        }]).filter('toPurchaseOrderStatusLevel', ['config', function (config) {
+            return function (status) {
+                 return config.styling == 'bootstrap2'
+                    ? getStatusLevelForBootstrap2(status)
+                    : getStatusLevelForBootstrap3(status);
+            }
         }]);
 
     function ListPurchaseOrderController($scope, config, fetchAccountMetadata, $q) {
@@ -392,7 +398,7 @@
         }
     }
 
-    function PurchaseOrderStatusDirective($compile, permitter, renderer) {
+    function PurchaseOrderStatusDirective($compile, $filter, permitter, renderer) {
         return {
             restrict: 'E',
             scope: {
@@ -421,7 +427,7 @@
                 }
 
                 function compileClerkTemplate() {
-                    el.html('<button class="btn btn-sm" ng-click="update()" ' +
+                    el.html('<button class="btn btn-sm btn-' + $filter('toPurchaseOrderStatusLevel')(scope.order.status) + '" ng-click="update()" ' +
                         'i18n code="purchase.orders.status.' + scope.order.status + '" read-only>' +
                         '<i class="fa fa-pencil fa-fw"></i> {{::var}}' +
                         '</button>');
@@ -429,7 +435,7 @@
                 }
 
                 function compileTemplate() {
-                    el.html('<span class="label" ' +
+                    el.html('<span class="label label-' + $filter('toPurchaseOrderStatusLevel')(scope.order.status) + '" ' +
                         'i18n code="purchase.orders.status.' + scope.order.status + '" read-only>{{::var}}</span>');
                     $compile(el.contents())(scope);
                 }
