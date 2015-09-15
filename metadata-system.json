@@ -62,6 +62,8 @@
       "purchase.orders.status.refunded": "Terugbetaald",
       "purchase.orders.status.review-pending": "In afwachting van herziening",
 
+      "purchase.orders.payment.method.wire-transfer": "Overschrijving",
+
       "purchase.orders.cancel.order.confirmation.message": "Ben je zeker dat je de bestelling wilt annuleren? Dit kan niet ongedaan worden.",
       "purchase.orders.cancel.order.button": "Annuleer bestelling",
       "purchase.orders.go.back.button": "Ga terug"
@@ -127,6 +129,8 @@
       "purchase.orders.status.refund-pending": "Awaiting refund",
       "purchase.orders.status.refunded": "Refunded",
       "purchase.orders.status.review-pending": "Awaiting review",
+
+      "purchase.orders.payment.method.wire-transfer": "Wire transfer",
 
       "purchase.orders.cancel.order.confirmation.message": "Are you sure you want to cancel the order? This cannot be undone.",
       "purchase.orders.cancel.order.button": "Cancel order",
@@ -194,6 +198,8 @@
       "purchase.orders.status.refunded": "Refunded",
       "purchase.orders.status.review-pending": "Awaiting review",
 
+      "purchase.orders.payment.method.wire-transfer": "Wire transfer",
+
       "purchase.orders.cancel.order.confirmation.message": "Are you sure you want to cancel the order? This cannot be undone.",
       "purchase.orders.cancel.order.button": "Cancel order",
       "purchase.orders.go.back.button": "Go back"
@@ -259,6 +265,8 @@
       "purchase.orders.status.refund-pending": "Awaiting refund",
       "purchase.orders.status.refunded": "Refunded",
       "purchase.orders.status.review-pending": "Awaiting review",
+
+      "purchase.orders.payment.method.wire-transfer": "Wire transfer",
 
       "purchase.orders.cancel.order.confirmation.message": "Are you sure you want to cancel the order? This cannot be undone.",
       "purchase.orders.cancel.order.button": "Cancel order",
