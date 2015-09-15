@@ -30,11 +30,11 @@
                 })
                 .when('/order/:id', {
                     templateUrl: 'partials/shop/order-details.html',
-                    controller: 'ViewPurchaseOrderController'
+                    controller: 'ViewPurchaseOrderController as viewOrderCtrl'
                 })
                 .when('/:locale/order/:id', {
                     templateUrl: 'partials/shop/order-details.html',
-                    controller: 'ViewPurchaseOrderController'
+                    controller: 'ViewPurchaseOrderController as viewOrderCtrl'
                 })
         }]).filter('toPurchaseOrderStatusLevel', ['config', function (config) {
             return function (status) {
@@ -105,6 +105,7 @@
     }
 
     function ViewPurchaseOrderController($scope, usecaseAdapterFactory, restServiceHandler, config, $routeParams) {
+        var self = this;
         var request = usecaseAdapterFactory($scope);
         var initConfig = {};
 
@@ -113,6 +114,7 @@
             prepareRestCall();
             restServiceHandler(request);
         };
+        this.init = $scope.init;
 
         function prepareRestCall() {
             request.success = exposeOrderOnScope;
@@ -131,6 +133,7 @@
         function exposeOrderOnScope(payload) {
             mapStatusLevel(payload, {bootstrapVersion: config.styling});
             $scope.order = payload;
+            self.order = payload;
         }
 
         $scope.statusLevel = function (status) {

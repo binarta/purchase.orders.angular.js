@@ -191,63 +191,25 @@ describe('purchase.orders.angular', function () {
             config.baseUri = 'base-uri/';
         }));
 
-        describe('on init with route params', function () {
-            beforeEach(inject(function ($routeParams) {
-                $routeParams.id = 'id';
-                $routeParams.owner = 'owner';
-                scope.init();
-            }));
-
-            it('request is sent', inject(function () {
-                expect(request().params).toEqual({
-                    method: 'GET',
-                    params: {
-                        id: 'id',
-                        owner: 'owner',
-                        treatInputAsId: true
-                    },
-                    url: config.baseUri + 'api/entity/purchase-order',
-                    withCredentials: true
-                })
-            }));
-
-            [
-                {status: 'pending-approval-by-customer', expectedStatusLevel: 'info'},
-                {status: 'payment-approved-by-customer', expectedStatusLevel: 'info'},
-                {status: 'payment-approved-by-vendor', expectedStatusLevel: 'info'},
-                {status: 'refund-pending', expectedStatusLevel: 'info'},
-                {status: 'in-transit', expectedStatusLevel: 'info'},
-                {status: 'shipping-pending', expectedStatusLevel: 'info'},
-                {status: 'review-pending', expectedStatusLevel: 'warning'},
-                {status: 'canceled', expectedStatusLevel: 'danger'},
-                {status: 'refunded', expectedStatusLevel: 'success'},
-                {status: 'paid', expectedStatusLevel: 'success'},
-                {status: 'shipped', expectedStatusLevel: 'success'}
-            ].forEach(function (order) {
-                    it('expose status level as function', inject(function () {
-                        expect(scope.statusLevel(order.status)).toEqual(order.expectedStatusLevel);
-                    }));
-
-                    describe('and order is found', function () {
-                        beforeEach(function () {
-                            request().success(order);
-                        });
-
-                        it('payload is exposed on scope as order', inject(function () {
-                            expect(scope.order).toEqual(order);
-                        }));
-
-                        it('statusLevel is exposed on order', function () {
-                            expect(scope.order.statusLevel).toEqual(order.expectedStatusLevel);
-                        });
-                    });
-                });
-
-            describe('when bootstrap 2', function () {
+        describe('using scope', function () {
+            describe('on init with route params', function () {
                 beforeEach(inject(function ($routeParams) {
                     $routeParams.id = 'id';
                     $routeParams.owner = 'owner';
-                    config.styling = 'bootstrap2';
+                    scope.init();
+                }));
+
+                it('request is sent', inject(function () {
+                    expect(request().params).toEqual({
+                        method: 'GET',
+                        params: {
+                            id: 'id',
+                            owner: 'owner',
+                            treatInputAsId: true
+                        },
+                        url: config.baseUri + 'api/entity/purchase-order',
+                        withCredentials: true
+                    })
                 }));
 
                 [
@@ -258,7 +220,7 @@ describe('purchase.orders.angular', function () {
                     {status: 'in-transit', expectedStatusLevel: 'info'},
                     {status: 'shipping-pending', expectedStatusLevel: 'info'},
                     {status: 'review-pending', expectedStatusLevel: 'warning'},
-                    {status: 'canceled', expectedStatusLevel: 'important'},
+                    {status: 'canceled', expectedStatusLevel: 'danger'},
                     {status: 'refunded', expectedStatusLevel: 'success'},
                     {status: 'paid', expectedStatusLevel: 'success'},
                     {status: 'shipped', expectedStatusLevel: 'success'}
@@ -281,6 +243,79 @@ describe('purchase.orders.angular', function () {
                             });
                         });
                     });
+
+                describe('when bootstrap 2', function () {
+                    beforeEach(inject(function ($routeParams) {
+                        $routeParams.id = 'id';
+                        $routeParams.owner = 'owner';
+                        config.styling = 'bootstrap2';
+                    }));
+
+                    [
+                        {status: 'pending-approval-by-customer', expectedStatusLevel: 'info'},
+                        {status: 'payment-approved-by-customer', expectedStatusLevel: 'info'},
+                        {status: 'payment-approved-by-vendor', expectedStatusLevel: 'info'},
+                        {status: 'refund-pending', expectedStatusLevel: 'info'},
+                        {status: 'in-transit', expectedStatusLevel: 'info'},
+                        {status: 'shipping-pending', expectedStatusLevel: 'info'},
+                        {status: 'review-pending', expectedStatusLevel: 'warning'},
+                        {status: 'canceled', expectedStatusLevel: 'important'},
+                        {status: 'refunded', expectedStatusLevel: 'success'},
+                        {status: 'paid', expectedStatusLevel: 'success'},
+                        {status: 'shipped', expectedStatusLevel: 'success'}
+                    ].forEach(function (order) {
+                            it('expose status level as function', inject(function () {
+                                expect(scope.statusLevel(order.status)).toEqual(order.expectedStatusLevel);
+                            }));
+
+                            describe('and order is found', function () {
+                                beforeEach(function () {
+                                    request().success(order);
+                                });
+
+                                it('payload is exposed on scope as order', inject(function () {
+                                    expect(scope.order).toEqual(order);
+                                }));
+
+                                it('statusLevel is exposed on order', function () {
+                                    expect(scope.order.statusLevel).toEqual(order.expectedStatusLevel);
+                                });
+                            });
+                        });
+                });
+            });
+        });
+
+        describe('using controller', function () {
+            describe('on init with route params', function () {
+                beforeEach(inject(function ($routeParams) {
+                    $routeParams.id = 'id';
+                    $routeParams.owner = 'owner';
+                    ctrl.init();
+                }));
+
+                it('request is sent', inject(function () {
+                    expect(request().params).toEqual({
+                        method: 'GET',
+                        params: {
+                            id: 'id',
+                            owner: 'owner',
+                            treatInputAsId: true
+                        },
+                        url: config.baseUri + 'api/entity/purchase-order',
+                        withCredentials: true
+                    })
+                }));
+
+                describe('and order is found', function () {
+                    beforeEach(function () {
+                        request().success('order');
+                    });
+
+                    it('payload is exposed on controller as order', inject(function () {
+                        expect(ctrl.order).toEqual('order');
+                    }));
+                });
             });
         });
     });
