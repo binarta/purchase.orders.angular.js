@@ -1,0 +1,130 @@
+${'<%'}
+def app = [:]
+
+[
+dev:{
+app.binartaAppUrlSuffix = ".app.binarta.dev.thinkerit.be"
+},
+demo:{
+app.binartaAppUrlSuffix = ".app.binarta.demo.thinkerit.be"
+},
+prod:{
+app.binartaAppUrlSuffix = ".app.binarta.com"
+}
+][environment]()
+${'%>'}
+
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>\${resolver.resolve(key:'purchase.orders.status.' + order.status)}</title>
+</head>
+
+<body bgcolor="#f6f6f6"
+      style="-webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none; font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; font-size: 100%; height: 100%; line-height: 1.6em; margin: 0; padding: 0; width: 100%;">
+
+<!-- body -->
+<table class="body-wrap" bgcolor="#f6f6f6" style="padding: 20px; width: 100%;">
+    <tr>
+        <td></td>
+        <td class="container" bgcolor="#FFFFFF"
+            style="Margin: 0 auto; border: 1px solid #f0f0f0; clear: both; display: block; max-width: 600px; padding: 20px;">
+
+            <!-- content -->
+            <div class="content" style="display: block; margin: 0 auto; max-width: 600px;">
+                <table style="width: 100%;">
+                    <tr>
+                        <td>
+                            <h1 style="font-size: 28px; line-height: 1.2em; color: #111111; font-weight: 200; margin: 0 0 10px; padding: 0;">
+                                \${resolver.resolve(key:'purchase.orders.mail.status.update.title')}: <strong>\${resolver.resolve(key:'purchase.orders.status.' + order.status)}</strong>
+                            </h1>
+
+                            <p style="font-size: 14px; font-weight: normal; margin-bottom: 10px;">
+                                ${'<% if (order.status == "review-pending") { %>'}
+                                \${resolver.resolve(key:'purchase.orders.mail.status.update.review.pending.message')}
+                                ${'<% } %>'}
+                                ${'<% if (order.status == "canceled") { %>'}
+                                \${resolver.resolve(key:'purchase.orders.mail.status.update.canceled.message')}
+                                ${'<% } %>'}
+                                ${'<% if (order.status == "refund-pending") { %>'}
+                                \${resolver.resolve(key:'purchase.orders.mail.status.update.refund.pending.message')}
+                                ${'<% } %>'}
+                                ${'<% if (order.status == "refunded") { %>'}
+                                \${resolver.resolve(key:'purchase.orders.mail.status.update.refunded.message')}
+                                ${'<% } %>'}
+                                ${'<% if (order.status == "shipping-pending") { %>'}
+                                \${resolver.resolve(key:'purchase.orders.mail.status.update.shipping.pending.message')}
+                                ${'<% } %>'}
+                                ${'<% if (order.status == "shipped") { %>'}
+                                \${resolver.resolve(key:'purchase.orders.mail.status.update.shipped.message')}
+                                ${'<% } %>'}
+                            </p>
+
+                            <table class="divider" cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+                                <tr>
+                                    <td>
+                                        <span style="border-top: 1px solid #f6f6f6; display: inline-block; margin: 40px 0; width: 100%;"></span>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="font-size: 14px; font-weight: normal; margin-bottom: 10px;">
+                            <ul style="font-size: 14px; font-weight: normal; margin-bottom: 10px; padding-left:0;">
+                                <li style="list-style-position: inside; margin-left: 5px;">
+                                    <strong>\${resolver.resolve(key:'purchase.orders.mail.order.number.label')}</strong> \${org.apache.commons.lang.StringUtils.substring(order.id, 0, 8)}
+                                </li>
+                            </ul>
+                            </p>
+                            <!-- button -->
+                            <table class="btn-primary" cellpadding="0" cellspacing="0" border="0"
+                                   style="Margin: 30px 0 10px; width: auto;">
+                                <tr>
+                                    <td style="background-color: #348eda; border-radius: 25px;">
+                                        <a href="\${namespace}\${app.binartaAppUrlSuffix}order/\${order.owner}/\${order.id}" target="_blank" style="background-color: #348eda; border: solid 1px #348eda; border-radius: 25px;border-width: 10px 20px; color: #ffffff; cursor: pointer; display: inline-block;font-weight: bold; line-height: 2; text-decoration: none;">
+                                            \${resolver.resolve(key:'purchase.orders.mail.order.view.details.link')}
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <!-- /button -->
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <!-- /content -->
+
+        </td>
+        <td></td>
+    </tr>
+</table>
+<!-- /body -->
+
+<!-- footer -->
+<table class="footer-wrap" style="clear: both; width: 100%;">
+    <tr>
+        <td></td>
+        <td class="container" style="Margin: 0 auto; clear: both; display: block; max-width: 600px;">
+
+            <!-- content -->
+            <div class="content" style="display: block; margin: 0 auto; max-width: 600px;">
+                <table style="width: 100%;">
+                    <tr>
+                        <td align="center">
+                            <p style="color: #666666; font-size: 12px; font-weight: normal; margin-bottom: 10px;">
+                                <!--\${resolver.resolve(key:'contact.us.mail.message.send.from')} <a href="${applicationUrl}" target="_blank" style="color: #999999;">${applicationUrl}</a>-->
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <!-- /content -->
+
+        </td>
+        <td></td>
+    </tr>
+</table>
+<!-- /footer -->
+</body>
+</html>

@@ -30,6 +30,8 @@
       "purchase.orders.mail.status.update.canceled.message": "Uw bestelling is geannuleerd. Indien u vragen hebt omtrent deze annulatie, aarzel dan niet om ons te contacteren.",
       "purchase.orders.mail.status.update.refund.pending.message": "Een terugbetalingsprocedure is gestart. Het bedrag zal zo snel mogelijk naar u overgemaakt worden.",
       "purchase.orders.mail.status.update.refunded.message": "De terugbetaling is voltooid en het bedrag is overgemaakt naar uw account.",
+      "purchase.orders.mail.status.update.shipping.pending.message": "Uw bestelling wordt klaargemaakt om te verzenden. U ontvangt een nieuwe mail zodra uw bestelling is verzonden.",
+      "purchase.orders.mail.status.update.shipped.message": "Uw bestelling is verzonden.",
 
       "purchase.orders.mail.order.view.details.link": "U kan de details van de bestelling hier bekijken",
       "purchase.orders.mail.order.information.label": "Bestelgegevens:",
@@ -98,6 +100,8 @@
       "purchase.orders.mail.status.update.canceled.message": "Your order has been canceled. If you have questions about this cancellation, please do not hesitate to contact us.",
       "purchase.orders.mail.status.update.refund.pending.message": "A refund procedure is initiated. The amount will be transferred to you as soon as possible.",
       "purchase.orders.mail.status.update.refunded.message": "The repayment has been completed and the amount is transferred to your account.",
+      "purchase.orders.mail.status.update.shipping.pending.message": "Your order is now being prepared for shipment. You will receive a notification when it has been shipped.",
+      "purchase.orders.mail.status.update.shipped.message": "Your order has now been shipped.",
 
       "purchase.orders.mail.order.view.details.link": "You can view the details of the order here",
       "purchase.orders.mail.order.information.label": "Order details:",
@@ -166,6 +170,8 @@
       "purchase.orders.mail.status.update.canceled.message": "Votre commande est annulée. Si vous avez des questions relatives à cette annulation, n'hésitez pas à prendre contact avec nous.",
       "purchase.orders.mail.status.update.refund.pending.message": "Une procédure de remboursement est en cours. Le montant vous sera versé dans les plus brefs délais.",
       "purchase.orders.mail.status.update.refunded.message": "Le remboursement est terminé et le montant a été versé sur votre compte.",
+      "purchase.orders.mail.status.update.shipping.pending.message": "Your order is now being prepared for shipment. You will receive a notification when it has been shipped.",
+      "purchase.orders.mail.status.update.shipped.message": "Your order has now been shipped.",
 
       "purchase.orders.mail.order.view.details.link": "Vous pouvez consulter les détails de la commande ici",
       "purchase.orders.mail.order.information.label": "Données liées à la commande:",
@@ -234,6 +240,8 @@
       "purchase.orders.mail.status.update.canceled.message": "Ihre Bestellung wurde storniert. Kontaktieren Sie uns, falls Sie Fragen zu dieser Stornierung haben.",
       "purchase.orders.mail.status.update.refund.pending.message": "Es wurde ein Rückzahlungsvorgang gestartet. Der Erstattungsbetrag wird umgehend an Sie überwiesen.",
       "purchase.orders.mail.status.update.refunded.message": "Die Rückzahlung ist abgeschlossen. Der Betrag wurde auf Ihr Konto überwiesen.",
+      "purchase.orders.mail.status.update.shipping.pending.message": "Your order is now being prepared for shipment. You will receive a notification when it has been shipped.",
+      "purchase.orders.mail.status.update.shipped.message": "Your order has now been shipped.",
 
       "purchase.orders.mail.order.view.details.link": "Sie können die Details der Bestellung hier anzeigen",
       "purchase.orders.mail.order.information.label": "Bestelldaten:",
