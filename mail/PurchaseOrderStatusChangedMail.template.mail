@@ -73,7 +73,7 @@ ${'%>'}
                             <p style="font-size: 14px; font-weight: normal; margin-bottom: 10px;">
                             <ul style="font-size: 14px; font-weight: normal; margin-bottom: 10px; padding-left:0;">
                                 <li style="list-style-position: inside; margin-left: 5px;">
-                                    <strong>\${resolver.resolve(key:'purchase.orders.mail.order.number.label')}</strong> \${org.apache.commons.lang.StringUtils.substring(order.id, 0, 8)}
+                                    <strong>\${resolver.resolve(key:'purchase.orders.mail.order.number.label')}:</strong> \${org.apache.commons.lang.StringUtils.substring(order.id, 0, 8)}
                                 </li>
                             </ul>
                             </p>
@@ -82,7 +82,7 @@ ${'%>'}
                                    style="Margin: 30px 0 10px; width: auto;">
                                 <tr>
                                     <td style="background-color: #348eda; border-radius: 25px;">
-                                        <a href="\${namespace}\${app.binartaAppUrlSuffix}order/\${order.owner}/\${order.id}" target="_blank" style="background-color: #348eda; border: solid 1px #348eda; border-radius: 25px;border-width: 10px 20px; color: #ffffff; cursor: pointer; display: inline-block;font-weight: bold; line-height: 2; text-decoration: none;">
+                                        <a href="http://\${namespace}\${app.binartaAppUrlSuffix}/order/\${order.owner}/\${order.id}" target="_blank" style="background-color: #348eda; border: solid 1px #348eda; border-radius: 25px;border-width: 10px 20px; color: #ffffff; cursor: pointer; display: inline-block;font-weight: bold; line-height: 2; text-decoration: none;">
                                             \${resolver.resolve(key:'purchase.orders.mail.order.view.details.link')}
                                         </a>
                                     </td>
