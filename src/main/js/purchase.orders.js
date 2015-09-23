@@ -533,7 +533,8 @@
 
                         '<li style="margin-bottom: 30px;" ng-class="{\'active\': order.status == \'shipping-pending\'}">' +
                         '<button class="btn" ng-class="order.status == \'shipping-pending\' ? \'btn-success\' : \'btn-default\'" ' +
-                        'style="padding: 15px;" ng-click="shippingPending()" ng-disabled="working || order.status == \'shipping-pending\'" ' +
+                        'style="padding: 15px;" ng-click="shippingPending()" ' +
+                        'ng-disabled="working || order.status == \'shipping-pending\' || order.status == \'pending-approval-by-customer\'" ' +
                         'i18n code="purchase.orders.status.shipping-pending" read-only>' +
                         '<i class="fa fa-calendar-check-o fa-fw"></i> {{::var}}' +
                         '</button>' +
@@ -541,7 +542,8 @@
 
                         '<li style="margin-bottom: 30px;" ng-class="{\'active\': order.status == \'shipped\'}">' +
                         '<button class="btn" ng-class="order.status == \'shipped\' ? \'btn-success\' : \'btn-default\'" ' +
-                        'style="padding: 15px;" ng-click="shipped()" ng-disabled="working || order.status == \'shipped\'" ' +
+                        'style="padding: 15px;" ng-click="shipped()" ' +
+                        'ng-disabled="working || order.status == \'shipped\' || order.status == \'pending-approval-by-customer\'" ' +
                         'i18n code="purchase.orders.status.shipped" read-only>' +
                         '<i class="fa fa-ship fa-fw"></i> {{::var}}' +
                         '</button>' +
