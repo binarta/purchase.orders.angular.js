@@ -82,7 +82,7 @@ ${'%>'}
                                    style="Margin: 30px 0 10px; width: auto;">
                                 <tr>
                                     <td style="background-color: #348eda; border-radius: 25px;">
-                                        <a href="http://\${namespace}\${app.binartaAppUrlSuffix}/order/\${order.owner}/\${order.id}" target="_blank" style="background-color: #348eda; border: solid 1px #348eda; border-radius: 25px;border-width: 10px 20px; color: #ffffff; cursor: pointer; display: inline-block;font-weight: bold; line-height: 2; text-decoration: none;">
+                                        <a href="${applicationUrl}order/\${order.owner}/\${order.id}" target="_blank" style="background-color: #348eda; border: solid 1px #348eda; border-radius: 25px;border-width: 10px 20px; color: #ffffff; cursor: pointer; display: inline-block;font-weight: bold; line-height: 2; text-decoration: none;">
                                             \${resolver.resolve(key:'purchase.orders.mail.order.view.details.link')}
                                         </a>
                                     </td>
@@ -113,7 +113,7 @@ ${'%>'}
                     <tr>
                         <td align="center">
                             <p style="color: #666666; font-size: 12px; font-weight: normal; margin-bottom: 10px;">
-                                <!--\${resolver.resolve(key:'contact.us.mail.message.send.from')} <a href="${applicationUrl}" target="_blank" style="color: #999999;">${applicationUrl}</a>-->
+                                \${resolver.resolve(key:'contact.us.mail.message.send.from')} <a href="${applicationUrl}" target="_blank" style="color: #999999;">${applicationUrl}</a>
                             </p>
                         </td>
                     </tr>
