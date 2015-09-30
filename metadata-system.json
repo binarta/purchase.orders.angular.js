@@ -17,13 +17,13 @@
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.message": "Bestelling voltooid.",
 
       "purchase.orders.mail.clerk.wire.transfer.order.receiver.title": "Een nieuwe bestelling werd geplaatst",
-      "purchase.orders.mail.clerk.wire.transfer.order.receiver.message": "Er werd gekozen voor betaling via overschrijving. Gelieve de klant te contacteren met verdere instructies en een factuur.",
+      "purchase.orders.mail.clerk.wire.transfer.order.receiver.message": "Er werd gekozen voor betaling via overschrijving. Gelieve de klant te contacteren met verdere instructies.",
 
       "purchase.orders.mail.customer.wire.transfer.payment.received.title": "Bedankt voor uw bestelling",
       "purchase.orders.mail.customer.wire.transfer.payment.received.message": "Bestelling voltooid.",
 
       "purchase.orders.mail.customer.wire.transfer.order.received.title": "Bedankt voor uw bestelling",
-      "purchase.orders.mail.customer.wire.transfer.order.received.message": "Er werd gekozen voor betaling via overschrijving. Er zal een factuur worden verzonden met verdere instructies.",
+      "purchase.orders.mail.customer.wire.transfer.order.received.message": "Er werd gekozen voor betaling via overschrijving. Wij sturen zo snel mogelijk alle betalingsgegevens naar uw e-mailadres.",
 
       "purchase.orders.mail.status.update.title": "De status van uw bestelling is nu",
       "purchase.orders.mail.status.update.review.pending.message": "Onze medewerkers zullen uw betaling nakijken. Na nazicht zal uw bestelling voltooid, geannuleerd of terugbetaald worden.",
@@ -87,13 +87,13 @@
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.message": "Purchase order completed.",
 
       "purchase.orders.mail.clerk.wire.transfer.order.receiver.title": "A new Purchase order was placed",
-      "purchase.orders.mail.clerk.wire.transfer.order.receiver.message": "Wire transfer has been chosen as payment option. The customer should be contacted with further instructions and an invoice.",
+      "purchase.orders.mail.clerk.wire.transfer.order.receiver.message": "Wire transfer has been chosen as payment option. The customer should be contacted with further instructions.",
 
       "purchase.orders.mail.customer.wire.transfer.payment.received.title": "Thank you for your order",
       "purchase.orders.mail.customer.wire.transfer.payment.received.message": "Purchase order completed.",
 
       "purchase.orders.mail.customer.wire.transfer.order.received.title": "Thank you for your order",
-      "purchase.orders.mail.customer.wire.transfer.order.received.message": "Wire transfer has been chosen as payment option. An invoice will be sent with further instructions.",
+      "purchase.orders.mail.customer.wire.transfer.order.received.message": "Wire transfer has been chosen as the payment option. We will send all payment details to your e-mail address as soon as possible.",
 
       "purchase.orders.mail.status.update.title": "The status of your order is now",
       "purchase.orders.mail.status.update.review.pending.message": "Your payment will be verified. After verification, your order will be completed, canceled or refunded.",
@@ -157,13 +157,13 @@
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.message": "Commande terminée.",
 
       "purchase.orders.mail.clerk.wire.transfer.order.receiver.title": "Une nouvelle commande a été passée",
-      "purchase.orders.mail.clerk.wire.transfer.order.receiver.message": "Le mode de paiement par virement a été choisi. Veuillez prendre contact avec le client pour lui fournir de plus amples instructions ainsi qu'une facture.",
+      "purchase.orders.mail.clerk.wire.transfer.order.receiver.message": "Le mode de paiement par virement a été choisi. Veuillez prendre contact avec le client pour lui fournir de plus amples instructions.",
 
       "purchase.orders.mail.customer.wire.transfer.payment.received.title": "Merci pour votre commande",
       "purchase.orders.mail.customer.wire.transfer.payment.received.message": "Commande terminée.",
 
       "purchase.orders.mail.customer.wire.transfer.order.received.title": "Merci pour votre commande",
-      "purchase.orders.mail.customer.wire.transfer.order.received.message": "Le mode de paiement par virement a été choisi. Une facture sera envoyée ainsi que des instructions complémentaires.",
+      "purchase.orders.mail.customer.wire.transfer.order.received.message": "Wire transfer has been chosen as the payment option. We will send all payment details to your e-mail address as soon as possible.",
 
       "purchase.orders.mail.status.update.title": "Le statut de votre commande est à présent",
       "purchase.orders.mail.status.update.review.pending.message": "Nos collaborateurs vont vérifier votre paiement. Après vérification, votre commande sera terminée, annulée ou remboursée.",
@@ -227,13 +227,13 @@
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.message": "Bestellung ausgeführt.",
 
       "purchase.orders.mail.clerk.wire.transfer.order.receiver.title": "Es wurde eine neuen Bestellung aufgegeben",
-      "purchase.orders.mail.clerk.wire.transfer.order.receiver.message": "Es wurde eine Zahlung per Überweisung gewählt. Bitte den Kunden mit weiteren Anleitungen und einer Rechnung kontaktieren.",
+      "purchase.orders.mail.clerk.wire.transfer.order.receiver.message": "Es wurde eine Zahlung per Überweisung gewählt. Bitte den Kunden mit weiteren Anleitungen kontaktieren.",
 
       "purchase.orders.mail.customer.wire.transfer.payment.received.title": "Vielen Dank für Ihre Bestellung",
       "purchase.orders.mail.customer.wire.transfer.payment.received.message": "Bestellung ausgeführt.",
 
       "purchase.orders.mail.customer.wire.transfer.order.received.title": "Vielen Dank für Ihre Bestellung",
-      "purchase.orders.mail.customer.wire.transfer.order.received.message": "Es wurde eine Zahlung per Überweisung gewählt. Es wird eine Rechnung mit weiteren Anleitungen versandt.",
+      "purchase.orders.mail.customer.wire.transfer.order.received.message": "Wire transfer has been chosen as the payment option. We will send all payment details to your e-mail address as soon as possible.",
 
       "purchase.orders.mail.status.update.title": "Der aktuelle Status Ihrer Bestellung ist",
       "purchase.orders.mail.status.update.review.pending.message": "Unsere Mitarbeiter prüfen Ihre Zahlung. Anschließend wird Ihre Bestellung ausgeführt, storniert oder der Betrag erstattet.",
