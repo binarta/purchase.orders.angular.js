@@ -4,11 +4,15 @@
         .controller('ViewPurchaseOrderController', ['$scope', 'usecaseAdapterFactory', 'restServiceHandler', 'config', '$routeParams', ViewPurchaseOrderController])
         .factory('addressSelection', ['localStorage', LocalStorageAddressSelectionFactory])
         .factory('validateOrder', ['usecaseAdapterFactory', 'restServiceHandler', 'config', ValidateOrderFactory])
+        .service('paypal', ['config', 'configReader', 'restServiceHandler', PayPalGateway])
+        .service('setupPaypalFSM', ['paypal', SetupPaypalFSM])
         .controller('AddressSelectionController', ['$scope', 'addressSelection', 'viewCustomerAddress', '$location', '$routeParams', AddressSelectionController])
         .controller('SelectPaymentProviderController', ['$scope', 'localStorage', 'config', SelectPaymentProviderController])
         .controller('ApprovePaymentController', ['$scope', 'usecaseAdapterFactory', '$location', '$routeParams', 'restServiceHandler', 'config', ApprovePaymentController])
         .controller('CancelPaymentController', ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', 'i18nLocation', 'topicMessageDispatcher', CancelPaymentController])
         .controller('UpdateOrderStatusController', ['$scope', 'usecaseAdapterFactory', 'config', '$routeParams', 'restServiceHandler', 'topicMessageDispatcher', '$location', UpdateOrderStatusController])
+        .controller('SetupPaypalController', ['$window', '$scope', 'setupPaypalFSM', SetupPaypalController])
+        .controller('ConfirmPaypalPermissionsController', ['$scope', '$location', 'usecaseAdapterFactory', 'paypal', ConfirmPaypalPermissionsController])
         .directive('purchaseOrderStatus', ['$compile', '$filter', 'activeUserHasPermission', 'editModeRenderer', PurchaseOrderStatusDirective])
         .config(['$routeProvider', function ($routeProvider) {
             $routeProvider
@@ -36,13 +40,163 @@
                     templateUrl: 'partials/shop/order-details.html',
                     controller: 'ViewPurchaseOrderController as viewOrderCtrl'
                 })
+                .when('/payment-provider/paypal-classic/request-mandate/approve', {
+                    templateUrl: 'partials/shop/payment-provider-permission-approved.html',
+                    controller: 'ConfirmPaypalPermissionsController'
+                })
         }]).filter('toPurchaseOrderStatusLevel', ['config', function (config) {
-            return function (status) {
-                 return config.styling == 'bootstrap2'
-                    ? getStatusLevelForBootstrap2(status)
-                    : getStatusLevelForBootstrap3(status);
+        return function (status) {
+            return config.styling == 'bootstrap2'
+                ? getStatusLevelForBootstrap2(status)
+                : getStatusLevelForBootstrap3(status);
+        }
+    }]);
+
+    function PayPalGateway(config, configReader, rest) {
+        this.getConfig = function (response) {
+            configReader({
+                $scope: {}, // TODO - shame this is required here
+                scope: 'system',
+                key: 'payment.provider',
+                success: response.success,
+                notFound: function () {
+                    response.success();
+                }
+            });
+        };
+
+        this.setSubject = function (params, response) {
+            rest({
+                params: {
+                    method: 'POST',
+                    data: {
+                        headers: {usecase: 'set.paypal.subject'},
+                        payload: {subject: params.subject}
+                    },
+                    url: (config.baseUri || '') + 'api/usecase',
+                    withCredentials: true
+                },
+                success: response.success,
+                rejected: response.rejected
+            });
+        };
+
+        this.enablePaymentIntegration = function (response) {
+            rest({
+                params: {
+                    method: 'POST',
+                    data: {
+                        headers: {usecase: 'enable.payment.integration'},
+                        payload: {paymentProvider: 'paypal-classic'}
+                    },
+                    url: (config.baseUri || '') + 'api/usecase',
+                    withCredentials: true
+                },
+                success: response.success
+            });
+        };
+
+        this.confirmPermissionRequest = function (params, response) {
+            rest({
+                params: {
+                    method: 'POST',
+                    data: {
+                        headers: {usecase: 'payment.provider.mandate.confirmation'},
+                        payload: {
+                            paymentProvider: 'paypal-classic',
+                            request_token: params.request_token,
+                            verification_code: params.verification_code
+                        }
+                    },
+                    url: (config.baseUri || '') + 'api/usecase',
+                    withCredentials: true
+                },
+                success: response.success,
+                rejected: response.rejected
+            });
+        }
+    }
+
+    function SetupPaypalFSM(paypal) {
+        this.status = new InitialState(this);
+
+        function InitialState(fsm) {
+            this.name = 'idle';
+
+            this.refresh = function () {
+                fsm.status = new Working(fsm, function () {
+                    paypal.getConfig({
+                        success: function (json) {
+                            var data = json ? JSON.parse(json.value) : undefined;
+                            if (data && data.credentials && data.credentials['acct1.Subject']) {
+                                var subject = data.credentials['acct1.Subject'];
+                                if(data.credentials.accessToken && data.credentials.secretToken)
+                                    fsm.status = new Configured(fsm, subject);
+                                else
+                                    fsm.status = new AwaitingPermission(fsm, subject);
+                            } else
+                                fsm.status = new AwaitingConfiguration(fsm);
+                        }
+                    });
+                });
             }
-        }]);
+        }
+
+        function Working(fsm, job) {
+            this.name = 'working';
+            job();
+        }
+
+        function Configured(fsm, subject) {
+            this.name = 'configured';
+            this.subject = subject;
+        }
+
+        function AwaitingPermission(fsm, subject) {
+            this.name = 'awaiting-permission';
+            this.subject = subject;
+
+            this.submit = function () {
+                fsm.status = new Working(fsm, function () {
+                    paypal.enablePaymentIntegration({
+                        success: function (params) {
+                            fsm.status = new ConfirmPermissionRequest(fsm, params);
+                        }
+                    });
+                });
+            }
+        }
+
+        function AwaitingConfiguration(fsm) {
+            var self = this;
+
+            this.name = 'awaiting-configuration';
+
+            this.submit = function () {
+                fsm.status = new Working(fsm, function () {
+                    paypal.setSubject(self, {
+                        success: function () {
+                            paypal.enablePaymentIntegration({
+                                success: function (params) {
+                                    fsm.status = new ConfirmPermissionRequest(fsm, params);
+                                }
+                            });
+                        },
+                        rejected: function (violations) {
+                            fsm.status = new AwaitingConfiguration(fsm);
+                            fsm.status.violations = violations;
+                            fsm.status.subject = self.subject;
+                        }
+                    });
+                });
+            }
+        }
+
+        function ConfirmPermissionRequest(fsm, params) {
+            this.name = 'confirm-permission-request';
+            fsm.ui.confirmPermissionRequest(params);
+        }
+    }
 
     function ListPurchaseOrderController($scope, config, fetchAccountMetadata, $q) {
         $scope.decorator = function (order) {
@@ -398,6 +552,28 @@
 
         $scope.pathStartsWith = function (path) {
             return $location.path().indexOf(path) == 0;
+        }
+    }
+
+    function SetupPaypalController($window, $scope, fsm) {
+        this.fsm = fsm;
+        this.fsm.ui = this;
+
+        this.confirmPermissionRequest = function (params) {
+            $window.location = params.confirmRequestUrl;
+        }
+    }
+
+    function ConfirmPaypalPermissionsController($scope, $location, adapter, paypal) {
+        $scope.init = function () {
+            var ctx = adapter($scope);
+            Object.keys($location.search()).forEach(function (it) {
+                ctx[it] = $location.search()[it];
+            });
+            ctx.success = function () {
+                //$location.search({}); // TODO - do we really need to do this?
+            };
+            paypal.confirmPermissionRequest(ctx, ctx);
         }
     }
 

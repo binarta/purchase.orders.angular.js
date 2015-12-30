@@ -1,4 +1,5 @@
 describe('purchase.orders.angular', function () {
+    var $window;
     var ctrl;
     var scope;
     var usecaseAdapter;
@@ -22,9 +23,10 @@ describe('purchase.orders.angular', function () {
     beforeEach(module('config'));
     beforeEach(module('notifications'));
     beforeEach(inject(function ($rootScope, usecaseAdapterFactory, restServiceHandler, $location, topicMessageDispatcherMock, $routeParams) {
+        $window = {location:undefined};
         scope = $rootScope.$new();
         usecaseAdapter = usecaseAdapterFactory;
-        usecaseAdapter.andReturn(presenter);
+        usecaseAdapter.and.callFake(function() { return presenter; });
         rest = restServiceHandler;
         location = $location;
         routeParams = $routeParams;
@@ -36,8 +38,9 @@ describe('purchase.orders.angular', function () {
         presenter = {};
     });
 
-    function request() {
-        return rest.calls[0].args[0];
+    function request(idx) {
+        if(!idx) idx = 0;
+        return rest.calls.argsFor(idx)[0];
     }
 
     describe('toPurchaseOrderStatusLevel filter', function () {
@@ -416,7 +419,7 @@ describe('purchase.orders.angular', function () {
                         describe('on init', function () {
                             describe('and addressSelection has value', function () {
                                 beforeEach(inject(function () {
-                                    addressSelection.view.andReturn({label: 'label'});
+                                    addressSelection.view.and.callFake(function() { return {label: 'label'}; });
                                 }));
 
                                 describe('without type param in search', function () {
@@ -425,7 +428,7 @@ describe('purchase.orders.angular', function () {
                                     }));
 
                                     it('view from address selection', function () {
-                                        expect(addressSelection.view.mostRecentCall.args[0]).toEqual('type');
+                                        expect(addressSelection.view.calls.mostRecent().args[0]).toEqual('type');
                                         expect(context.type.label).toEqual('label');
                                     });
                                 });
@@ -447,7 +450,7 @@ describe('purchase.orders.angular', function () {
                                         }));
 
                                         it('view from address selection', function () {
-                                            expect(addressSelection.view.mostRecentCall.args[0]).toEqual('type');
+                                            expect(addressSelection.view.calls.mostRecent().args[0]).toEqual('type');
                                             expect(context.type.label).toEqual('label');
                                         });
                                     });
@@ -473,7 +476,7 @@ describe('purchase.orders.angular', function () {
 
                                 describe('and addressSelection has value', function () {
                                     beforeEach(inject(function () {
-                                        addressSelection.view.andReturn({label: 'label2'});
+                                        addressSelection.view.and.callFake(function() { return {label: 'label2'}; });
                                     }));
 
                                     it('select address', function () {
@@ -485,7 +488,7 @@ describe('purchase.orders.angular', function () {
 
                                 describe('and addressSelection has no value', function () {
                                     beforeEach(inject(function () {
-                                        addressSelection.view.andReturn({});
+                                        addressSelection.view.and.callFake(function() { return {}; });
                                     }));
 
                                     it('copy first from known addresses', function () {
@@ -498,7 +501,7 @@ describe('purchase.orders.angular', function () {
 
                                 describe('and addressSelection has unknown value', function () {
                                     beforeEach(inject(function () {
-                                        addressSelection.view.andReturn({label: 'unknown'});
+                                        addressSelection.view.and.callFake(function() { return {label: 'unknown'}; });
                                     }));
 
                                     it('select first from known addresses', function () {
@@ -511,7 +514,7 @@ describe('purchase.orders.angular', function () {
                                 describe('and addresses are empty', function () {
                                     beforeEach(inject(function () {
                                         addresses = [];
-                                        addressSelection.view.andReturn({label: 'unknown'});
+                                        addressSelection.view.and.callFake(function() { return {label: 'unknown'}; });
                                     }));
                                 
                                     it('nothing to select', function () {
@@ -526,8 +529,8 @@ describe('purchase.orders.angular', function () {
                         });
 
                         function assertSelectedAddress(type, address) {
-                            expect(addressSelection.add.mostRecentCall.args[0]).toEqual(type);
-                            expect(addressSelection.add.mostRecentCall.args[1]).toEqual(address);
+                            expect(addressSelection.add.calls.mostRecent().args[0]).toEqual(type);
+                            expect(addressSelection.add.calls.mostRecent().args[1]).toEqual(address);
                         }
 
                         describe('on select', function () {
@@ -596,22 +599,22 @@ describe('purchase.orders.angular', function () {
                             describe('with address in address selection', function () {
                                 describe('with addressee', function () {
                                     beforeEach(inject(function () {
-                                        addressSelection.view.andReturn({label: 'label', addressee: 'addressee'});
+                                        addressSelection.view.and.callFake(function() { return {label: 'label', addressee: 'addressee'}; });
                                         context.view('type');
                                     }));
 
                                     it('view from address selection', function () {
-                                        expect(addressSelection.view.mostRecentCall.args[0]).toEqual('type');
+                                        expect(addressSelection.view.calls.mostRecent().args[0]).toEqual('type');
                                     });
 
                                     it('passes label', function () {
-                                        expect(viewCustomerAddress.mostRecentCall.args[0]).toEqual({label: 'label'})
+                                        expect(viewCustomerAddress.calls.mostRecent().args[0]).toEqual({label: 'label'})
                                     });
 
                                     describe('on successfull view customer address', function () {
                                         var payload = {label: 'label', addressee: 'alt-addressee'};
                                         beforeEach(inject(function () {
-                                            viewCustomerAddress.mostRecentCall.args[1](payload);
+                                            viewCustomerAddress.calls.mostRecent().args[1](payload);
                                         }));
 
                                         it('puts payload on scope as type', function () {
@@ -626,14 +629,14 @@ describe('purchase.orders.angular', function () {
 
                                 describe('without addressee', function () {
                                     beforeEach(inject(function () {
-                                        addressSelection.view.andReturn({label: 'label'});
+                                        addressSelection.view.and.callFake(function() { return {label: 'label'}; });
                                         context.view('type');
                                     }));
 
                                     describe('on successfull view customer address', function () {
                                         var payload = {label: 'label', addressee: 'alt-addressee'};
                                         beforeEach(inject(function () {
-                                            viewCustomerAddress.mostRecentCall.args[1](payload);
+                                            viewCustomerAddress.calls.mostRecent().args[1](payload);
                                         }));
 
                                         it('puts addressee from view on context', function () {
@@ -646,13 +649,13 @@ describe('purchase.orders.angular', function () {
 
                             describe('without address in address selection', function () {
                                 beforeEach(inject(function () {
-                                    addressSelection.view.andReturn(undefined);
-                                    viewCustomerAddress.reset();
+                                    addressSelection.view.and.callFake(function() { return undefined; });
+                                    viewCustomerAddress.calls.reset();
                                     context.view('type');
                                 }));
 
                                 it('view customer address is not called', function () {
-                                    expect(viewCustomerAddress.calls[0]).toBeUndefined();
+                                    expect(viewCustomerAddress.calls.argsFor(0)[0]).toBeUndefined();
                                 });
                             });
 
@@ -664,9 +667,9 @@ describe('purchase.orders.angular', function () {
             describe('on isValid', function () {
                 describe('and address types are known', function () {
                     beforeEach(function () {
-                        addressSelection.view.andReturn({label: 'label1'});
+                        addressSelection.view.and.callFake(function() { return {label: 'label1'}; });
                         ctrl.init({type: 'label1'});
-                        addressSelection.view.andReturn({label: 'label2'});
+                        addressSelection.view.and.callFake(function() { return {label: 'label2'}; });
                         ctrl.init({type: 'label2'});
                     });
 
@@ -677,9 +680,9 @@ describe('purchase.orders.angular', function () {
 
                 describe('and not all address types are known', function () {
                     beforeEach(function () {
-                        addressSelection.view.andReturn({label: 'label1'});
+                        addressSelection.view.and.callFake(function() { return {label: 'label1'}; });
                         ctrl.init({type: 'label1'});
-                        addressSelection.view.andReturn({});
+                        addressSelection.view.and.callFake(function() { return {}; });
                         ctrl.init({type: 'label2'});
                     });
 
@@ -692,8 +695,8 @@ describe('purchase.orders.angular', function () {
             describe('on proceed', function () {
                 describe('and state is invalid', function () {
                     beforeEach(function () {
-                        addressSelection.add.reset();
-                        addressSelection.view.andReturn({});
+                        addressSelection.add.calls.reset();
+                        addressSelection.view.and.callFake(function() { return {}; });
                         ctrl.init({type: 'label'});
                     });
 
@@ -706,15 +709,15 @@ describe('purchase.orders.angular', function () {
 
                 describe('and state is valid', function () {
                     beforeEach(function () {
-                        addressSelection.add.reset();
-                        addressSelection.view.andReturn({label: 'label'});
+                        addressSelection.add.calls.reset();
+                        addressSelection.view.and.callFake(function() { return {label: 'label'}; });
                         ctrl.init({type: 'label'});
                     });
 
                     it('address is selected', function () {
                         ctrl.proceed();
 
-                        expect(addressSelection.add.mostRecentCall.args[0]).toEqual('label');
+                        expect(addressSelection.add.calls.mostRecent().args[0]).toEqual('label');
                     });
 
                     describe('with redirectTo', function () {
@@ -849,7 +852,7 @@ describe('purchase.orders.angular', function () {
                         });
 
                         it('then context is created', function () {
-                            expect(usecaseAdapter.mostRecentCall.args[0]).toEqual(scope);
+                            expect(usecaseAdapter.calls.mostRecent().args[0]).toEqual(scope);
                         });
 
                         it('then a POST request is configured', function () {
@@ -869,7 +872,7 @@ describe('purchase.orders.angular', function () {
                         });
 
                         it('context is passed to rest service handler', function () {
-                            expect(rest.mostRecentCall.args[0]).toEqual(presenter);
+                            expect(rest.calls.mostRecent().args[0]).toEqual(presenter);
                         });
 
                         [null, 'locale'].forEach(function (locale) {
@@ -908,7 +911,7 @@ describe('purchase.orders.angular', function () {
             });
 
             it('creates context', function () {
-                expect(usecaseAdapter.mostRecentCall.args[0]).toEqual(scope);
+                expect(usecaseAdapter.calls.mostRecent().args[0]).toEqual(scope);
             });
 
             it('sets up the context for a rest call', inject(function ($routeParams) {
@@ -935,7 +938,7 @@ describe('purchase.orders.angular', function () {
             });
 
             it('hands context to rest service', function () {
-                expect(rest.mostRecentCall.args[0]).toEqual(presenter);
+                expect(rest.calls.mostRecent().args[0]).toEqual(presenter);
             });
 
             describe('on success', function () {
@@ -1009,7 +1012,7 @@ describe('purchase.orders.angular', function () {
                     describe('on move to ' + def.status, function () {
                         beforeEach(function () {
                             def.func();
-                            if (args) args.success.reset();
+                            if (args) args.success.calls.reset();
                         });
 
                         it('request is sent', inject(function ($routeParams) {
@@ -1173,7 +1176,7 @@ describe('purchase.orders.angular', function () {
             createElement();
 
             expect(permitter).toHaveBeenCalled();
-            expect(permitter.calls[0].args[1]).toEqual('update.purchase.order.as.vendor');
+            expect(permitter.calls.argsFor(0)[1]).toEqual('update.purchase.order.as.vendor');
         });
 
         [
@@ -1221,7 +1224,7 @@ describe('purchase.orders.angular', function () {
 
                     describe('when permitted', function () {
                         beforeEach(function () {
-                            permitter.calls[0].args[0].yes();
+                            permitter.calls.argsFor(0)[0].yes();
                         });
 
                         it('clerk template is compiled', function () {
@@ -1246,7 +1249,7 @@ describe('purchase.orders.angular', function () {
                     owner: 'owner'
                 };
                 createElement();
-                permitter.calls[0].args[0].yes();
+                permitter.calls.argsFor(0)[0].yes();
 
                 scope.update();
             });
@@ -1262,7 +1265,7 @@ describe('purchase.orders.angular', function () {
                 var rendererScope;
 
                 beforeEach(function () {
-                    rendererScope = renderer.open.calls[0].args[0].scope;
+                    rendererScope = renderer.open.calls.argsFor(0)[0].scope;
                 });
 
                 function assertRequest(status) {
@@ -1388,7 +1391,7 @@ describe('purchase.orders.angular', function () {
                 });
 
                 it('then callback is called', function () {
-                    expect(success.calls[0]).toBeDefined();
+                    expect(success.calls.count()).toEqual(1);
                 })
             });
 
@@ -1398,9 +1401,238 @@ describe('purchase.orders.angular', function () {
                 });
 
                 it('then callback is called', function () {
-                    expect(error.calls[0]).toBeDefined();
+                    expect(error.calls.count()).toEqual(1);
                 })
             });
+        });
+    });
+
+    describe('PayPalGateway', function() {
+        var paypal;
+        var response;
+
+        beforeEach(inject(['paypal', function(p) {
+            response = jasmine.createSpyObj('response', ['rejected', 'success']);
+            paypal = p;
+        }]));
+
+        describe('confirm permission request', function() {
+            beforeEach(function() {
+                paypal.confirmPermissionRequest({request_token:'request-token', verification_code:'verification-code'}, response);
+            });
+
+            it('executes webservice call', function() {
+                expect(request().params.method).toEqual('POST');
+                expect(request().params.url).toEqual('api/usecase');
+                expect(request().params.withCredentials).toEqual(true);
+                expect(request().params.data).toEqual({
+                    headers:{usecase:'payment.provider.mandate.confirmation'},
+                    payload:{
+                        paymentProvider:'paypal-classic',
+                        request_token:'request-token',
+                        verification_code:'verification-code'
+                    }
+                });
+            });
+
+            it('wired success handler', function() {
+                request().success();
+                expect(response.success.calls.count()).toEqual(1);
+            });
+
+            it('wired rejected handler', function() {
+                request().rejected('violations');
+                expect(response.rejected.calls.argsFor(0)).toEqual(['violations']);
+            });
+        });
+    });
+
+    fdescribe('SetupPaypalFSM', function() {
+        var fsm;
+
+        beforeEach(inject(function(setupPaypalFSM) {
+            fsm = setupPaypalFSM;
+            fsm.ui = jasmine.createSpyObj('ui', ['confirmPermissionRequest']);
+        }));
+
+        it('starts out in idle state', function() {
+            expect(fsm.status.name).toEqual('idle');
+        });
+
+        describe('check for existing configuration', function() {
+            var configLookup;
+
+            beforeEach(function() {
+                fsm.status.refresh();
+            });
+            beforeEach(inject(function(configReader) {
+                expect(configReader.calls.count()).toEqual(1);
+                configLookup = configReader.calls.mostRecent();
+            }));
+
+            it('looked up payment provider config', function() {
+                expect(configLookup.args[0].scope).toEqual('system');
+                expect(configLookup.args[0].key).toEqual('payment.provider');
+            });
+
+            it('then fsm is in working state', function() {
+                expect(fsm.status.name).toEqual('working');
+            });
+
+            describe('and nothing found', function() {
+                beforeEach(function() {
+                    configLookup.args[0].notFound();
+                });
+
+                it('then fsm is in awaiting configuration state', function() {
+                    expect(fsm.status.name).toEqual('awaiting-configuration');
+                });
+
+                describe('when we set the subject', function() {
+                    beforeEach(function() {
+                        fsm.status.subject = 'subject';
+                        fsm.status.submit();
+                    });
+
+                    it('then fsm is in working state', function() {
+                        expect(fsm.status.name).toEqual('working');
+                    });
+
+                    it('then sends set.paypal.subject web service call', function() {
+                        expect(request().params.method).toEqual('POST');
+                        expect(request().params.url).toEqual('api/usecase');
+                        expect(request().params.withCredentials).toEqual(true);
+                        expect(request().params.data).toEqual({
+                            headers:{usecase:'set.paypal.subject'},
+                            payload:{subject:'subject'}
+                        });
+                    });
+
+                    describe('and subject is rejected', function() {
+                        beforeEach(function() {
+                            request().rejected('violations');
+                        });
+
+                        it('then fsm returns to awaiting configuration state', function() {
+                            expect(fsm.status.name).toEqual('awaiting-configuration');
+                        });
+
+                        it('then the violation report is exposed on the status', function() {
+                            expect(fsm.status.violations).toEqual('violations');
+                        });
+
+                        it('then the subject is preserved', function() {
+                            expect(fsm.status.subject).toEqual('subject');
+                        });
+                    });
+
+                    describe('and subject is accepted', function() {
+                        beforeEach(function() {
+                            request().success();
+                        });
+
+                        it('then fsm is in working state', function() {
+                            expect(fsm.status.name).toEqual('working');
+                        });
+
+                        it('then sends enable.payment.integration web service call', function() {
+                            expect(request(1).params.method).toEqual('POST');
+                            expect(request(1).params.url).toEqual('api/usecase');
+                            expect(request(1).params.withCredentials).toEqual(true);
+                            expect(request(1).params.data).toEqual({
+                                headers:{usecase:'enable.payment.integration'},
+                                payload:{paymentProvider:'paypal-classic'}
+                            });
+                        });
+
+                        describe('and integration flow started', function() {
+                            beforeEach(function() {
+                                request(1).success('confirmation-params');
+                            });
+
+                            it('then fsm is in confirm permission request state', function() {
+                                expect(fsm.status.name).toEqual('confirm-permission-request');
+                            });
+
+                            it('then the user is asked to confirm the permission request', function() {
+                                expect(fsm.ui.confirmPermissionRequest.calls.count()).toEqual(1);
+                                expect(fsm.ui.confirmPermissionRequest.calls.argsFor(0)[0]).toEqual('confirmation-params');
+                            });
+                        });
+                    });
+                });
+            });
+
+            describe('and subject found', function() {
+                beforeEach(function() {
+                    configLookup.args[0].success({value:JSON.stringify({credentials: {"acct1.Subject":"vendor@example.org"}})});
+                });
+
+                it('then fsm is in awaiting permission state', function() {
+                    expect(fsm.status.name).toEqual('awaiting-permission');
+                });
+
+                it('then state exposes subject', function() {
+                    expect(fsm.status.subject).toEqual('vendor@example.org');
+                });
+
+                describe('when requesting permission', function() {
+                    beforeEach(function() {
+                        fsm.status.submit();
+                    });
+
+                    it('then fsm is in working state', function() {
+                        expect(fsm.status.name).toEqual('working');
+                    });
+
+                    it('then sends enable.payment.integration web service call', function() {
+                        expect(request().params.method).toEqual('POST');
+                        expect(request().params.url).toEqual('api/usecase');
+                        expect(request().params.withCredentials).toEqual(true);
+                        expect(request().params.data).toEqual({
+                            headers:{usecase:'enable.payment.integration'},
+                            payload:{paymentProvider:'paypal-classic'}
+                        });
+                    });
+                });
+            });
+
+            describe('and credentials found', function() {
+                beforeEach(function() {
+                    configLookup.args[0].success({value:JSON.stringify({credentials: {
+                        "acct1.Subject":"vendor@example.org",
+                        "accessToken":"access-token",
+                        "secretToken":"secret-token"
+                    }})});
+                });
+
+                it('then fsm is in configured state', function() {
+                    expect(fsm.status.name).toEqual('configured');
+                });
+
+                it('then state exposes subject', function() {
+                    expect(fsm.status.subject).toEqual('vendor@example.org');
+                });
+            });
+        });
+    });
+
+    describe('SetupPaypalController', function() {
+        beforeEach(inject(function ($controller) {
+            ctrl = $controller('SetupPaypalController', {$window:$window, $scope: scope});
+        }));
+
+        it('exposes fsm', inject(function(setupPaypalFSM) {
+            expect(ctrl.fsm).toEqual(setupPaypalFSM);
+        }));
+
+        it('connects with the fsm', function() {
+            expect(ctrl.fsm.ui).toEqual(ctrl);
+        });
+
+        it('confirm permission request redirects the user', function() {
+            ctrl.confirmPermissionRequest({confirmRequestUrl:'url'});
+            expect($window.location).toEqual('url');
         });
     });
 });
