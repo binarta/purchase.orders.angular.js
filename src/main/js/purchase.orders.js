@@ -581,14 +581,18 @@
 
     function ConfirmPaypalPermissionsController($scope, $location, adapter, paypal) {
         $scope.init = function () {
-            var ctx = adapter($scope);
-            Object.keys($location.search()).forEach(function (it) {
-                ctx[it] = $location.search()[it];
-            });
-            ctx.success = function () {
-                //$location.search({}); // TODO - do we really need to do this?
-            };
-            paypal.confirmPermissionRequest(ctx, ctx);
+            var keys = Object.keys($location.search());
+            if(keys.length) {
+                var ctx = adapter($scope);
+                keys.forEach(function (it) {
+                    ctx[it] = $location.search()[it];
+                });
+                ctx.success = function () {
+                    //$location.search({}); // TODO - do we really need to do this?
+                };
+                paypal.confirmPermissionRequest(ctx, ctx);
+            } else
+                $scope.status = 'canceled';
         }
     }
 
