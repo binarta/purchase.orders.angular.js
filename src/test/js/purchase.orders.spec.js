@@ -1613,6 +1613,40 @@ describe('purchase.orders.angular', function () {
                 it('then state exposes subject', function() {
                     expect(fsm.status.subject).toEqual('vendor@example.org');
                 });
+
+                describe('when requesting permission', function() {
+                    beforeEach(function() {
+                        fsm.status.submit();
+                    });
+
+                    it('then fsm is in working state', function() {
+                        expect(fsm.status.name).toEqual('working');
+                    });
+
+                    it('then sends enable.payment.integration web service call', function() {
+                        expect(request().params.method).toEqual('POST');
+                        expect(request().params.url).toEqual('api/usecase');
+                        expect(request().params.withCredentials).toEqual(true);
+                        expect(request().params.data).toEqual({
+                            headers:{usecase:'enable.payment.integration'},
+                            payload:{paymentProvider:'paypal-classic'}
+                        });
+                    });
+                });
+
+                describe('when resetting paypal account', function() {
+                    beforeEach(function() {
+                        fsm.status.reset();
+                    });
+
+                    it('then fsm is in awaiting configuration state', function() {
+                        expect(fsm.status.name).toEqual('awaiting-configuration');
+                    });
+
+                    it('then state exposes subject', function() {
+                        expect(fsm.status.subject).toEqual('vendor@example.org');
+                    });
+                })
             });
         });
     });

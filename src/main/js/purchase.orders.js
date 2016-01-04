@@ -150,6 +150,20 @@
         function Configured(fsm, subject) {
             this.name = 'configured';
             this.subject = subject;
+
+            this.submit = function() {
+                fsm.status = new Working(fsm, function () {
+                    paypal.enablePaymentIntegration({
+                        success: function (params) {
+                            fsm.status = new ConfirmPermissionRequest(fsm, params);
+                        }
+                    });
+                });
+            };
+
+            this.reset = function() {
+                fsm.status = new AwaitingConfiguration(fsm, this.subject);
+            }
         }
 
         function AwaitingPermission(fsm, subject) {
@@ -167,8 +181,9 @@
             }
         }
 
-        function AwaitingConfiguration(fsm) {
+        function AwaitingConfiguration(fsm, subject) {
             var self = this;
+            if(subject) this.subject = subject;
 
             this.name = 'awaiting-configuration';
 
