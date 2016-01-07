@@ -3,7 +3,12 @@
   "main": [
     "./src/main/js/purchase.orders.js",
     "./metadata-system.json",
-    "./mail/PurchaseOrderStatusChangedMail.template.mail"
+    "./mail/PurchaseOrderStatusChangedMail.template.mail",
+    "./mail/WireTransferNewPurchaseOrderMail.template.mail",
+    "./mail/WireTransferPurchaseOrderReceivedMail.template.mail",
+    "./mail/PayPalPaymentCompletedMail.template.mail",
+    "./mail/PayPalPurchaseOrderReceivedMail.template.mail",
+    "./mail/PayPalPaymentReceivedMail.template.mail"
   ],
   "dependencies": {
     "angular": "1.3.*",
