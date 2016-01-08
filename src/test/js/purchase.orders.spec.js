@@ -1447,7 +1447,7 @@ describe('purchase.orders.angular', function () {
         });
     });
 
-    fdescribe('SetupPaypalFSM', function() {
+    describe('SetupPaypalFSM', function() {
         var fsm;
 
         beforeEach(inject(function(setupPaypalFSM) {
@@ -1559,6 +1559,37 @@ describe('purchase.orders.angular', function () {
                                 expect(fsm.ui.confirmPermissionRequest.calls.argsFor(0)[0]).toEqual('confirmation-params');
                             });
                         });
+
+                        describe('and request rejected', function() {
+                            var violations;
+
+                            beforeEach(function() {
+                                violations = {
+                                    mandate:[
+                                        {
+                                            code:520002,
+                                            params:{},
+                                            description:'Internal Error',
+                                            level:'ERROR',
+                                            label:null
+                                        }
+                                    ]
+                                };
+                                request(1).rejected(violations);
+                            });
+
+                            it('then fsm returns to awaiting configuration state', function() {
+                                expect(fsm.status.name).toEqual('awaiting-configuration');
+                            });
+
+                            it('then state exposes subject', function() {
+                                expect(fsm.status.subject).toEqual('subject');
+                            });
+
+                            it('then expose violations on status', function() {
+                                expect(fsm.status.violations).toEqual(violations);
+                            });
+                        });
                     });
                 });
             });
@@ -1594,6 +1625,37 @@ describe('purchase.orders.angular', function () {
                             payload:{paymentProvider:'paypal-classic'}
                         });
                     });
+
+                    describe('and request rejected', function() {
+                        var violations;
+
+                        beforeEach(function() {
+                            violations = {
+                                mandate:[
+                                    {
+                                        code:520002,
+                                        params:{},
+                                        description:'Internal Error',
+                                        level:'ERROR',
+                                        label:null
+                                    }
+                                ]
+                            };
+                            request().rejected(violations);
+                        });
+
+                        it('then fsm returns to awaiting permission state', function() {
+                            expect(fsm.status.name).toEqual('awaiting-permission');
+                        });
+
+                        it('then state exposes subject', function() {
+                            expect(fsm.status.subject).toEqual('vendor@example.org');
+                        });
+
+                        it('then expose violations on status', function() {
+                            expect(fsm.status.violations).toEqual(violations);
+                        });
+                    })
                 });
             });
 
@@ -1632,6 +1694,37 @@ describe('purchase.orders.angular', function () {
                             payload:{paymentProvider:'paypal-classic'}
                         });
                     });
+
+                    describe('and request rejected', function() {
+                        var violations;
+
+                        beforeEach(function() {
+                            violations = {
+                                mandate:[
+                                    {
+                                        code:520002,
+                                        params:{},
+                                        description:'Internal Error',
+                                        level:'ERROR',
+                                        label:null
+                                    }
+                                ]
+                            };
+                            request().rejected(violations);
+                        });
+
+                        it('then fsm returns to configured state', function() {
+                            expect(fsm.status.name).toEqual('configured');
+                        });
+
+                        it('then state exposes subject', function() {
+                            expect(fsm.status.subject).toEqual('vendor@example.org');
+                        });
+
+                        it('then expose violations on status', function() {
+                            expect(fsm.status.violations).toEqual(violations);
+                        });
+                    })
                 });
 
                 describe('when resetting paypal account', function() {

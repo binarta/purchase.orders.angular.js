@@ -92,7 +92,8 @@
                     url: (config.baseUri || '') + 'api/usecase',
                     withCredentials: true
                 },
-                success: response.success
+                success: response.success,
+                rejected: response.rejected
             });
         };
 
@@ -130,7 +131,7 @@
                             var data = json ? JSON.parse(json.value) : undefined;
                             if (data && data.credentials && data.credentials['acct1.Subject']) {
                                 var subject = data.credentials['acct1.Subject'];
-                                if(data.credentials.accessToken && data.credentials.secretToken)
+                                if (data.credentials.accessToken && data.credentials.secretToken)
                                     fsm.status = new Configured(fsm, subject);
                                 else
                                     fsm.status = new AwaitingPermission(fsm, subject);
@@ -148,25 +149,33 @@
         }
 
         function Configured(fsm, subject) {
+            var self = this;
+
             this.name = 'configured';
             this.subject = subject;
 
-            this.submit = function() {
+            this.submit = function () {
                 fsm.status = new Working(fsm, function () {
                     paypal.enablePaymentIntegration({
                         success: function (params) {
                             fsm.status = new ConfirmPermissionRequest(fsm, params);
+                        },
+                        rejected: function(violations) {
+                            fsm.status = new Configured(fsm, self.subject);
+                            fsm.status.violations = violations;
                         }
                     });
                 });
             };
 
-            this.reset = function() {
+            this.reset = function () {
                 fsm.status = new AwaitingConfiguration(fsm, this.subject);
             }
         }
 
         function AwaitingPermission(fsm, subject) {
+            var self = this;
+
             this.name = 'awaiting-permission';
             this.subject = subject;
 
@@ -175,6 +184,10 @@
                     paypal.enablePaymentIntegration({
                         success: function (params) {
                             fsm.status = new ConfirmPermissionRequest(fsm, params);
+                        },
+                        rejected: function(violations) {
+                            fsm.status = new AwaitingPermission(fsm, self.subject);
+                            fsm.status.violations = violations;
                         }
                     });
                 });
@@ -183,7 +196,7 @@
 
         function AwaitingConfiguration(fsm, subject) {
             var self = this;
-            if(subject) this.subject = subject;
+            if (subject) this.subject = subject;
 
             this.name = 'awaiting-configuration';
 
@@ -194,16 +207,19 @@
                             paypal.enablePaymentIntegration({
                                 success: function (params) {
                                     fsm.status = new ConfirmPermissionRequest(fsm, params);
-                                }
+                                },
+                                rejected: OnRejection
                             });
                         },
-                        rejected: function (violations) {
-                            fsm.status = new AwaitingConfiguration(fsm);
-                            fsm.status.violations = violations;
-                            fsm.status.subject = self.subject;
-                        }
+                        rejected: OnRejection
                     });
                 });
+            };
+
+            function OnRejection(violations) {
+                fsm.status = new AwaitingConfiguration(fsm);
+                fsm.status.violations = violations;
+                fsm.status.subject = self.subject;
             }
         }
 
@@ -582,7 +598,7 @@
     function ConfirmPaypalPermissionsController($scope, $location, adapter, paypal) {
         $scope.init = function () {
             var keys = Object.keys($location.search());
-            if(keys.length) {
+            if (keys.length) {
                 var ctx = adapter($scope);
                 keys.forEach(function (it) {
                     ctx[it] = $location.search()[it];
