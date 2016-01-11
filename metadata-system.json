@@ -72,6 +72,7 @@
       "purchase.orders.status.review-pending": "In afwachting van herziening",
 
       "purchase.orders.payment.method.wire-transfer": "Overschrijving",
+      "purchase.orders.payment.method.paypal-classic": "PayPal",
 
       "purchase.orders.cancel.order.confirmation.message": "Ben je zeker dat je de bestelling wilt annuleren? Dit kan niet ongedaan worden.",
       "purchase.orders.cancel.order.button": "Annuleer bestelling",
@@ -149,6 +150,7 @@
       "purchase.orders.status.review-pending": "Awaiting review",
 
       "purchase.orders.payment.method.wire-transfer": "Wire transfer",
+      "purchase.orders.payment.method.paypal-classic": "PayPal",
 
       "purchase.orders.cancel.order.confirmation.message": "Are you sure you want to cancel the order? This cannot be undone.",
       "purchase.orders.cancel.order.button": "Cancel order",
@@ -226,6 +228,7 @@
       "purchase.orders.status.review-pending": "Awaiting review",
 
       "purchase.orders.payment.method.wire-transfer": "Wire transfer",
+      "purchase.orders.payment.method.paypal-classic": "PayPal",
 
       "purchase.orders.cancel.order.confirmation.message": "Are you sure you want to cancel the order? This cannot be undone.",
       "purchase.orders.cancel.order.button": "Cancel order",
@@ -303,6 +306,7 @@
       "purchase.orders.status.review-pending": "Awaiting review",
 
       "purchase.orders.payment.method.wire-transfer": "Wire transfer",
+      "purchase.orders.payment.method.paypal-classic": "PayPal",
 
       "purchase.orders.cancel.order.confirmation.message": "Are you sure you want to cancel the order? This cannot be undone.",
       "purchase.orders.cancel.order.button": "Cancel order",
