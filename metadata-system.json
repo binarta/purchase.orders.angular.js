@@ -20,6 +20,7 @@
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.message": "Bestelling voltooid.",
 
       "purchase.orders.mail.clerk.wire.transfer.order.receiver.title": "Een nieuwe bestelling werd geplaatst",
+      "purchase.orders.mail.clerk.wire.transfer.order.receiver.subtitle": "actie vereist",
       "purchase.orders.mail.clerk.wire.transfer.order.receiver.message": "Er werd gekozen voor betaling via overschrijving. Gelieve de klant te contacteren met verdere instructies.",
 
       "purchase.orders.mail.customer.wire.transfer.payment.received.title": "Bedankt voor uw bestelling",
@@ -93,6 +94,7 @@
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.message": "Purchase order completed.",
 
       "purchase.orders.mail.clerk.wire.transfer.order.receiver.title": "A new Purchase order was placed",
+      "purchase.orders.mail.clerk.wire.transfer.order.receiver.subtitle": "action required",
       "purchase.orders.mail.clerk.wire.transfer.order.receiver.message": "Wire transfer has been chosen as payment option. The customer should be contacted with further instructions.",
 
       "purchase.orders.mail.customer.wire.transfer.payment.received.title": "Thank you for your order",
@@ -166,6 +168,7 @@
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.message": "Commande terminée.",
 
       "purchase.orders.mail.clerk.wire.transfer.order.receiver.title": "Une nouvelle commande a été passée",
+      "purchase.orders.mail.clerk.wire.transfer.order.receiver.subtitle": "action required",
       "purchase.orders.mail.clerk.wire.transfer.order.receiver.message": "Le mode de paiement par virement a été choisi. Veuillez prendre contact avec le client pour lui fournir de plus amples instructions.",
 
       "purchase.orders.mail.customer.wire.transfer.payment.received.title": "Merci pour votre commande",
@@ -239,6 +242,7 @@
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.message": "Bestellung ausgeführt.",
 
       "purchase.orders.mail.clerk.wire.transfer.order.receiver.title": "Es wurde eine neuen Bestellung aufgegeben",
+      "purchase.orders.mail.clerk.wire.transfer.order.receiver.subtitle": "action required",
       "purchase.orders.mail.clerk.wire.transfer.order.receiver.message": "Es wurde eine Zahlung per Überweisung gewählt. Bitte den Kunden mit weiteren Anleitungen kontaktieren.",
 
       "purchase.orders.mail.customer.wire.transfer.payment.received.title": "Vielen Dank für Ihre Bestellung",
