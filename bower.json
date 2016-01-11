@@ -8,7 +8,8 @@
     "./mail/WireTransferPurchaseOrderReceivedMail.template.mail",
     "./mail/PayPalPaymentCompletedMail.template.mail",
     "./mail/PayPalPurchaseOrderReceivedMail.template.mail",
-    "./mail/PayPalPaymentReceivedMail.template.mail"
+    "./mail/PayPalPaymentReceivedMail.template.mail",
+    "./mail/PurchaseOrderPaymentRequiresReviewMail.template.mail"
   ],
   "dependencies": {
     "angular": "1.3.*",
