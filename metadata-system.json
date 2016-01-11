@@ -10,6 +10,9 @@
       "purchase.orders.mail.clerk.paypal.order.receiver.title": "Een nieuwe bestelling werd geplaatst",
       "purchase.orders.mail.clerk.paypal.order.receiver.message": "Er werd gekozen voor betaling met PayPal.",
 
+      "purchase.orders.mail.clerk.paypal.review.pending.title": "De betaling is in afwachting van beoordeling",
+      "purchase.orders.mail.clerk.paypal.review.pending.message": "Meer informatie over deze transactie vindt u op de website van PayPal.",
+
       "purchase.orders.mail.customer.paypal.payment.received.title": "Bedankt voor uw bestelling",
       "purchase.orders.mail.customer.paypal.payment.received.message": "Het betalingsproces is succesvol afgerond en uw bestelling is voltooid.<br><br>Voor vragen of opmerkingen aarzel niet om ons te contacteren.",
 
@@ -83,6 +86,9 @@
 
       "purchase.orders.mail.clerk.paypal.order.receiver.title": "A new Purchase order was placed",
       "purchase.orders.mail.clerk.paypal.order.receiver.message": "PayPal has been chosen as payment option.",
+
+      "purchase.orders.mail.clerk.paypal.review.pending.title": "The payment is in review pending",
+      "purchase.orders.mail.clerk.paypal.review.pending.message": "More information about this transaction can be found on the PayPal website.",
 
       "purchase.orders.mail.customer.paypal.payment.received.title": "Thank you for your order",
       "purchase.orders.mail.customer.paypal.payment.received.message": "The payment process has been successfully completed and your order is complete.<br><br>For questions or comments please do not hesitate to contact us.",
@@ -158,6 +164,9 @@
       "purchase.orders.mail.clerk.paypal.order.receiver.title": "Une nouvelle commande a été passée",
       "purchase.orders.mail.clerk.paypal.order.receiver.message": "Le mode de paiement par PayPal a été choisi.",
 
+      "purchase.orders.mail.clerk.paypal.review.pending.title": "The payment is in review pending",
+      "purchase.orders.mail.clerk.paypal.review.pending.message": "More information about this transaction can be found on the PayPal website.",
+
       "purchase.orders.mail.customer.paypal.payment.received.title": "Merci pour votre commande",
       "purchase.orders.mail.customer.paypal.payment.received.message": "Le processus de paiement s'est déroulé avec succès et votre commande est terminée.<br><br>N'hésitez pas à prendre contact avec nous si vous avez des questions ou des remarques.",
 
@@ -231,6 +240,9 @@
 
       "purchase.orders.mail.clerk.paypal.order.receiver.title": "Es wurde eine neuen Bestellung aufgegeben",
       "purchase.orders.mail.clerk.paypal.order.receiver.message": "Es wurde eine Zahlung per PayPal gewählt.",
+
+      "purchase.orders.mail.clerk.paypal.review.pending.title": "The payment is in review pending",
+      "purchase.orders.mail.clerk.paypal.review.pending.message": "More information about this transaction can be found on the PayPal website.",
 
       "purchase.orders.mail.customer.paypal.payment.received.title": "Vielen Dank für Ihre Bestellung",
       "purchase.orders.mail.customer.paypal.payment.received.message": "Der Zahlungsvorgang wurde erfolgreich abgeschlossen und Ihre Bestellung ausgeführt.<br><br>Für eventuelle Fragen oder Anmerkungen stehen wir Ihnen jederzeit gerne zur Verfügung.",
