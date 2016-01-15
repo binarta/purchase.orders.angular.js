@@ -101,6 +101,22 @@
             });
         };
 
+        this.disablePaymentIntegration = function(response) {
+            rest({
+                params: {
+                    method: 'POST',
+                    data: {
+                        headers: {usecase: 'disable.payment.integration'},
+                        payload: {paymentProvider: 'paypal-classic'}
+                    },
+                    url: (config.baseUri || '') + 'api/usecase',
+                    withCredentials: true
+                },
+                success: response.success,
+                rejected: response.rejected
+            });
+        };
+
         this.confirmPermissionRequest = function (params, response) {
             rest({
                 params: {
@@ -174,6 +190,20 @@
 
             this.reset = function () {
                 fsm.status = new AwaitingConfiguration(fsm, this.subject);
+            };
+
+            this.disable = function() {
+                fsm.status = new Working(fsm, function () {
+                    paypal.disablePaymentIntegration({
+                        success: function (params) {
+                            fsm.status = new AwaitingConfiguration(fsm);
+                        },
+                        rejected: function(violations) {
+                            fsm.status = new Configured(fsm, self.subject);
+                            fsm.status.violations = violations;
+                        }
+                    });
+                });
             }
         }
 

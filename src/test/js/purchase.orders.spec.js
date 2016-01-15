@@ -1739,6 +1739,54 @@ describe('purchase.orders.angular', function () {
                     it('then state exposes subject', function() {
                         expect(fsm.status.subject).toEqual('vendor@example.org');
                     });
+                });
+
+                describe('when disabling paypal integration', function() {
+                    beforeEach(function() {
+                        fsm.status.disable();
+                    });
+
+                    it('then fsm is in working state', function() {
+                        expect(fsm.status.name).toEqual('working');
+                    });
+
+                    it('then sends disable.payment.integration web service call', function() {
+                        expect(request().params.method).toEqual('POST');
+                        expect(request().params.url).toEqual('api/usecase');
+                        expect(request().params.withCredentials).toEqual(true);
+                        expect(request().params.data).toEqual({
+                            headers:{usecase:'disable.payment.integration'},
+                            payload:{paymentProvider:'paypal-classic'}
+                        });
+                    });
+
+                    describe('and request rejected', function() {
+                        beforeEach(function() {
+                            request().rejected('violations');
+                        });
+
+                        it('then fsm returns to configured state', function() {
+                            expect(fsm.status.name).toEqual('configured');
+                        });
+
+                        it('then state exposes subject', function() {
+                            expect(fsm.status.subject).toEqual('vendor@example.org');
+                        });
+
+                        it('then expose violations on status', function() {
+                            expect(fsm.status.violations).toEqual('violations');
+                        });
+                    });
+
+                    describe('and request accepted', function() {
+                        beforeEach(function() {
+                            request().success();
+                        });
+
+                        it('then fsm is in awaiting configuration state', function() {
+                            expect(fsm.status.name).toEqual('awaiting-configuration');
+                        });
+                    })
                 })
             });
         });
