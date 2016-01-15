@@ -44,6 +44,10 @@
                     templateUrl: 'partials/shop/payment-provider-permission-approved.html',
                     controller: 'ConfirmPaypalPermissionsController'
                 })
+                .when('/:locale/payment-provider/paypal-classic/request-mandate/approve', {
+                    templateUrl: 'partials/shop/payment-provider-permission-approved.html',
+                    controller: 'ConfirmPaypalPermissionsController'
+                })
         }]).filter('toPurchaseOrderStatusLevel', ['config', function (config) {
         return function (status) {
             return config.styling == 'bootstrap2'
