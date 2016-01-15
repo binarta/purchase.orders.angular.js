@@ -608,7 +608,11 @@
                     ctx[it] = $location.search()[it];
                 });
                 ctx.success = function () {
+                    $scope.status = 'approved';
                     //$location.search({}); // TODO - do we really need to do this?
+                };
+                ctx.rejected = function () {
+                    $scope.status = 'canceled';
                 };
                 paypal.confirmPermissionRequest(ctx, ctx);
             } else
