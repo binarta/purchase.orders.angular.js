@@ -149,13 +149,9 @@
                     paypal.getConfig({
                         success: function (json) {
                             var data = json ? JSON.parse(json.value) : undefined;
-                            if (data && data.credentials && data.credentials['acct1.Subject']) {
-                                var subject = data.credentials['acct1.Subject'];
-                                if (data.credentials.accessToken && data.credentials.secretToken)
-                                    fsm.status = new Configured(fsm, subject);
-                                else
-                                    fsm.status = new AwaitingPermission(fsm, subject);
-                            } else
+                            if (data && data.credentials && data.credentials['acct1.Subject'])
+                                fsm.status = new Configured(fsm, data.credentials['acct1.Subject']);
+                            else
                                 fsm.status = new AwaitingConfiguration(fsm);
                         }
                     });
@@ -173,20 +169,6 @@
 
             this.name = 'configured';
             this.subject = subject;
-
-            this.submit = function () {
-                fsm.status = new Working(fsm, function () {
-                    paypal.enablePaymentIntegration({
-                        success: function (params) {
-                            fsm.status = new ConfirmPermissionRequest(fsm, params);
-                        },
-                        rejected: function(violations) {
-                            fsm.status = new Configured(fsm, self.subject);
-                            fsm.status.violations = violations;
-                        }
-                    });
-                });
-            };
 
             this.reset = function () {
                 fsm.status = new AwaitingConfiguration(fsm, this.subject);
@@ -207,27 +189,6 @@
             }
         }
 
-        function AwaitingPermission(fsm, subject) {
-            var self = this;
-
-            this.name = 'awaiting-permission';
-            this.subject = subject;
-
-            this.submit = function () {
-                fsm.status = new Working(fsm, function () {
-                    paypal.enablePaymentIntegration({
-                        success: function (params) {
-                            fsm.status = new ConfirmPermissionRequest(fsm, params);
-                        },
-                        rejected: function(violations) {
-                            fsm.status = new AwaitingPermission(fsm, self.subject);
-                            fsm.status.violations = violations;
-                        }
-                    });
-                });
-            }
-        }
-
         function AwaitingConfiguration(fsm, subject) {
             var self = this;
             if (subject) this.subject = subject;
@@ -238,12 +199,7 @@
                 fsm.status = new Working(fsm, function () {
                     paypal.setSubject(self, {
                         success: function () {
-                            paypal.enablePaymentIntegration({
-                                success: function (params) {
-                                    fsm.status = new ConfirmPermissionRequest(fsm, params);
-                                },
-                                rejected: OnRejection
-                            });
+                            fsm.status = new Configured(fsm, self.subject);
                         },
                         rejected: OnRejection
                     });
@@ -255,11 +211,6 @@
                 fsm.status.violations = violations;
                 fsm.status.subject = self.subject;
             }
-        }
-
-        function ConfirmPermissionRequest(fsm, params) {
-            this.name = 'confirm-permission-request';
-            fsm.ui.confirmPermissionRequest(params);
         }
     }
 

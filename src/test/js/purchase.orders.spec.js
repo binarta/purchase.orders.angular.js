@@ -1531,64 +1531,8 @@ describe('purchase.orders.angular', function () {
                             request().success();
                         });
 
-                        it('then fsm is in working state', function() {
-                            expect(fsm.status.name).toEqual('working');
-                        });
-
-                        it('then sends enable.payment.integration web service call', function() {
-                            expect(request(1).params.method).toEqual('POST');
-                            expect(request(1).params.url).toEqual('api/usecase');
-                            expect(request(1).params.withCredentials).toEqual(true);
-                            expect(request(1).params.data).toEqual({
-                                headers:{usecase:'enable.payment.integration'},
-                                payload:{paymentProvider:'paypal-classic'}
-                            });
-                        });
-
-                        describe('and integration flow started', function() {
-                            beforeEach(function() {
-                                request(1).success('confirmation-params');
-                            });
-
-                            it('then fsm is in confirm permission request state', function() {
-                                expect(fsm.status.name).toEqual('confirm-permission-request');
-                            });
-
-                            it('then the user is asked to confirm the permission request', function() {
-                                expect(fsm.ui.confirmPermissionRequest.calls.count()).toEqual(1);
-                                expect(fsm.ui.confirmPermissionRequest.calls.argsFor(0)[0]).toEqual('confirmation-params');
-                            });
-                        });
-
-                        describe('and request rejected', function() {
-                            var violations;
-
-                            beforeEach(function() {
-                                violations = {
-                                    mandate:[
-                                        {
-                                            code:520002,
-                                            params:{},
-                                            description:'Internal Error',
-                                            level:'ERROR',
-                                            label:null
-                                        }
-                                    ]
-                                };
-                                request(1).rejected(violations);
-                            });
-
-                            it('then fsm returns to awaiting configuration state', function() {
-                                expect(fsm.status.name).toEqual('awaiting-configuration');
-                            });
-
-                            it('then state exposes subject', function() {
-                                expect(fsm.status.subject).toEqual('subject');
-                            });
-
-                            it('then expose violations on status', function() {
-                                expect(fsm.status.violations).toEqual(violations);
-                            });
+                        it('then fsm is in configured state', function() {
+                            expect(fsm.status.name).toEqual('configured');
                         });
                     });
                 });
@@ -1600,62 +1544,11 @@ describe('purchase.orders.angular', function () {
                 });
 
                 it('then fsm is in awaiting permission state', function() {
-                    expect(fsm.status.name).toEqual('awaiting-permission');
+                    expect(fsm.status.name).toEqual('configured');
                 });
 
                 it('then state exposes subject', function() {
                     expect(fsm.status.subject).toEqual('vendor@example.org');
-                });
-
-                describe('when requesting permission', function() {
-                    beforeEach(function() {
-                        fsm.status.submit();
-                    });
-
-                    it('then fsm is in working state', function() {
-                        expect(fsm.status.name).toEqual('working');
-                    });
-
-                    it('then sends enable.payment.integration web service call', function() {
-                        expect(request().params.method).toEqual('POST');
-                        expect(request().params.url).toEqual('api/usecase');
-                        expect(request().params.withCredentials).toEqual(true);
-                        expect(request().params.data).toEqual({
-                            headers:{usecase:'enable.payment.integration'},
-                            payload:{paymentProvider:'paypal-classic'}
-                        });
-                    });
-
-                    describe('and request rejected', function() {
-                        var violations;
-
-                        beforeEach(function() {
-                            violations = {
-                                mandate:[
-                                    {
-                                        code:520002,
-                                        params:{},
-                                        description:'Internal Error',
-                                        level:'ERROR',
-                                        label:null
-                                    }
-                                ]
-                            };
-                            request().rejected(violations);
-                        });
-
-                        it('then fsm returns to awaiting permission state', function() {
-                            expect(fsm.status.name).toEqual('awaiting-permission');
-                        });
-
-                        it('then state exposes subject', function() {
-                            expect(fsm.status.subject).toEqual('vendor@example.org');
-                        });
-
-                        it('then expose violations on status', function() {
-                            expect(fsm.status.violations).toEqual(violations);
-                        });
-                    })
                 });
             });
 
@@ -1674,57 +1567,6 @@ describe('purchase.orders.angular', function () {
 
                 it('then state exposes subject', function() {
                     expect(fsm.status.subject).toEqual('vendor@example.org');
-                });
-
-                describe('when requesting permission', function() {
-                    beforeEach(function() {
-                        fsm.status.submit();
-                    });
-
-                    it('then fsm is in working state', function() {
-                        expect(fsm.status.name).toEqual('working');
-                    });
-
-                    it('then sends enable.payment.integration web service call', function() {
-                        expect(request().params.method).toEqual('POST');
-                        expect(request().params.url).toEqual('api/usecase');
-                        expect(request().params.withCredentials).toEqual(true);
-                        expect(request().params.data).toEqual({
-                            headers:{usecase:'enable.payment.integration'},
-                            payload:{paymentProvider:'paypal-classic'}
-                        });
-                    });
-
-                    describe('and request rejected', function() {
-                        var violations;
-
-                        beforeEach(function() {
-                            violations = {
-                                mandate:[
-                                    {
-                                        code:520002,
-                                        params:{},
-                                        description:'Internal Error',
-                                        level:'ERROR',
-                                        label:null
-                                    }
-                                ]
-                            };
-                            request().rejected(violations);
-                        });
-
-                        it('then fsm returns to configured state', function() {
-                            expect(fsm.status.name).toEqual('configured');
-                        });
-
-                        it('then state exposes subject', function() {
-                            expect(fsm.status.subject).toEqual('vendor@example.org');
-                        });
-
-                        it('then expose violations on status', function() {
-                            expect(fsm.status.violations).toEqual(violations);
-                        });
-                    })
                 });
 
                 describe('when resetting paypal account', function() {
