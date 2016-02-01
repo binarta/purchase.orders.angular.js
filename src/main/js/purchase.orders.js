@@ -170,6 +170,11 @@
             this.name = 'configured';
             this.subject = subject;
 
+            this.submit = function () {
+                fsm.status = new AwaitingConfiguration(fsm, this.subject);
+                fsm.status.submit();
+            };
+
             this.reset = function () {
                 fsm.status = new AwaitingConfiguration(fsm, this.subject);
             };
