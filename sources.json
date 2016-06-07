@@ -1,0 +1,5 @@
+{
+  "default": {
+    "purchase.orders": "bower_components/binarta.purchase.orders.angular/src/main/js/purchase.orders.js"
+  }
+}
