@@ -153,34 +153,29 @@ ${'%>'}
                                 <tr>
                                     <td>\${it.name}</td>
                                     <td>\${(it.quantity as int)}</td>
-                                    <td>&#8364;&nbsp;\${it.price / 100}</td>
-                                    <td>&#8364;&nbsp;\${it.price * it.quantity /
-                                        100}
-                                    </td>
+                                    <td>\${it.presentableUnitPrice}</td>
+                                    <td>\${it.presentablePrice}</td>
                                 </tr>
                                 ${'<% } %>'}
                                 <tr>
                                     <th colspan="3" align="right">
                                         \${resolver.resolve(key:'purchase.orders.mail.order.subtotal.price.label')}
                                     </th>
-                                    <th align="left">&#8364;&nbsp;\${items.collect {it.price * it.quantity}.sum() / 100}
-                                    </th>
+                                    <th align="left">\${items.presentableSubTotal}</th>
                                 </tr>
                                 ${'<% additionalCharges.each { %>'}
                                 <tr>
                                     <th colspan="3" align="right">
                                         \${resolver.resolve(key:'purchase.orders.mail.order.'+it.label+'.label', default:it.label)}
                                     </th>
-                                    <th align="left">&#8364;&nbsp;\${it.value / 100}
-                                    </th>
+                                    <th align="left">\${it.presentableValue}</th>
                                 </tr>
                                 ${'<% } %>'}
                                 <tr>
                                     <th colspan="3" align="right">
                                         \${resolver.resolve(key:'purchase.orders.mail.order.total.price.label')}
                                     </th>
-                                    <th align="left">&#8364;&nbsp;\${(price as int) / 100}
-                                    </th>
+                                    <th align="left">\${items.presentableTotal}</th>
                                 </tr>
                             </table>
                         </td>
