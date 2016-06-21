@@ -153,15 +153,15 @@ ${'%>'}
                                 <tr>
                                     <td>\${it.name}</td>
                                     <td>\${(it.quantity as int)}</td>
-                                    <td>\${it.presentableUnitPrice}</td>
                                     <td>\${it.presentablePrice}</td>
+                                    <td>\${it.presentableSubTotal}</td>
                                 </tr>
                                 ${'<% } %>'}
                                 <tr>
                                     <th colspan="3" align="right">
                                         \${resolver.resolve(key:'purchase.orders.mail.order.subtotal.price.label')}
                                     </th>
-                                    <th align="left">\${items.presentableSubTotal}</th>
+                                    <th align="left">\${presentableSubTotal}</th>
                                 </tr>
                                 ${'<% additionalCharges.each { %>'}
                                 <tr>
@@ -175,7 +175,7 @@ ${'%>'}
                                     <th colspan="3" align="right">
                                         \${resolver.resolve(key:'purchase.orders.mail.order.total.price.label')}
                                     </th>
-                                    <th align="left">\${items.presentableTotal}</th>
+                                    <th align="left">\${presentableTotal}</th>
                                 </tr>
                             </table>
                         </td>

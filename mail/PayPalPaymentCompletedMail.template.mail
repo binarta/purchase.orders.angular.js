@@ -153,8 +153,8 @@ ${'%>'}
                                 <tr>
                                     <td>\${it.name}</td>
                                     <td>\${(it.quantity as int)}</td>
-                                    <td>\${it.presentableUnitPrice}</td>
                                     <td>\${it.presentablePrice}</td>
+                                    <td>\${it.presentableSubTotal}</td>
                                 </tr>
                                 ${'<% } %>'}
                                 <tr>
