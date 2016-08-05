@@ -8,7 +8,7 @@
         .service('setupPaypalFSM', ['paypal', SetupPaypalFSM])
         .controller('AddressSelectionController', ['$scope', 'addressSelection', 'viewCustomerAddress', '$location', '$routeParams', AddressSelectionController])
         .controller('SelectPaymentProviderController', ['$scope', 'localStorage', 'config', SelectPaymentProviderController])
-        .controller('ApprovePaymentController', ['$scope', 'usecaseAdapterFactory', '$location', '$routeParams', 'restServiceHandler', 'config', ApprovePaymentController])
+        .controller('ApprovePaymentController', ['$scope', '$location', 'i18nLocation', '$routeParams', '$log', ApprovePaymentController])
         .controller('CancelPaymentController', ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', 'i18nLocation', 'topicMessageDispatcher', CancelPaymentController])
         .controller('UpdateOrderStatusController', ['$scope', 'usecaseAdapterFactory', 'config', '$routeParams', 'restServiceHandler', 'topicMessageDispatcher', '$location', UpdateOrderStatusController])
         .controller('SetupPaypalController', ['$window', '$scope', 'setupPaypalFSM', SetupPaypalController])
@@ -470,20 +470,11 @@
         }
     }
 
-    function ApprovePaymentController($scope, usecaseAdapterFactory, $location, $routeParams, restServiceHandler, config) {
+    function ApprovePaymentController($scope, $location, i18nLocation, $routeParams, $log) {
         $scope.init = function () {
-            var ctx = usecaseAdapterFactory($scope);
-            ctx.params = {
-                method: 'POST',
-                url: (config.baseUri || '') + 'api/purchase-order-payment/' + $routeParams.id + '/approve',
-                withCredentials: true,
-                data: $routeParams
-
-            };
-            ctx.success = function () {
-                $location.$$search = {};
-            };
-            restServiceHandler(ctx);
+            $log.warn('@deprecated ApprovePaymentController - modify backend to go directly to /checkout/payment');
+            i18nLocation.path('/checkout/payment');
+            $location.search('id', $routeParams.id);
         }
     }
 

@@ -829,75 +829,75 @@ describe('purchase.orders.angular', function () {
         });
     });
 
-    describe('ApprovePaymentController', function () {
-        beforeEach(inject(function ($controller) {
-            ctrl = $controller('ApprovePaymentController', {$scope: scope, config: config});
-        }));
-
-        describe('given payment params', function () {
-            beforeEach(inject(function ($routeParams) {
-                $routeParams.id = 'payment-id';
-                location.search('PayerID', 'transaction-id');
-            }));
-
-            [null, 'base-uri/'].forEach(function (baseUri) {
-                describe('with base uri = ' + baseUri, function () {
-                    beforeEach(function () {
-                        config.baseUri = baseUri;
-                    });
-
-                    describe('on init', function () {
-                        beforeEach(function () {
-                            scope.init();
-                        });
-
-                        it('then context is created', function () {
-                            expect(usecaseAdapter.calls.mostRecent().args[0]).toEqual(scope);
-                        });
-
-                        it('then a POST request is configured', function () {
-                            expect(presenter.params.method).toEqual('POST');
-                        });
-
-                        it('context is configured to pass along credentials', function () {
-                            expect(presenter.params.withCredentials).toBeTruthy();
-                        });
-
-                        it('payer id is passed along as transaction', inject(function ($routeParams) {
-                            expect(presenter.params.data).toEqual($routeParams);
-                        }));
-
-                        it('destination url takes route params id', function () {
-                            expect(presenter.params.url).toEqual((baseUri || '') + 'api/purchase-order-payment/payment-id/approve')
-                        });
-
-                        it('context is passed to rest service handler', function () {
-                            expect(rest.calls.mostRecent().args[0]).toEqual(presenter);
-                        });
-
-                        [null, 'locale'].forEach(function (locale) {
-                            describe('with locale = ' + locale, function () {
-                                beforeEach(function () {
-                                    scope.locale = locale;
-                                });
-
-                                describe('on success', function () {
-                                    beforeEach(function () {
-                                        presenter.success();
-                                    });
-
-                                    it('redirect to home', function () {
-                                        expect(location.search().PayerID).toBeUndefined();
-                                        expect(location.search().token).toBeUndefined();
-                                    });
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-        });
-    });
+    // describe('ApprovePaymentController', function () {
+    //     beforeEach(inject(function ($controller) {
+    //         ctrl = $controller('ApprovePaymentController', {$scope: scope, config: config});
+    //     }));
+    //
+    //     describe('given payment params', function () {
+    //         beforeEach(inject(function ($routeParams) {
+    //             $routeParams.id = 'payment-id';
+    //             location.search('PayerID', 'transaction-id');
+    //         }));
+    //
+    //         [null, 'base-uri/'].forEach(function (baseUri) {
+    //             describe('with base uri = ' + baseUri, function () {
+    //                 beforeEach(function () {
+    //                     config.baseUri = baseUri;
+    //                 });
+    //
+    //                 describe('on init', function () {
+    //                     beforeEach(function () {
+    //                         scope.init();
+    //                     });
+    //
+    //                     it('then context is created', function () {
+    //                         expect(usecaseAdapter.calls.mostRecent().args[0]).toEqual(scope);
+    //                     });
+    //
+    //                     it('then a POST request is configured', function () {
+    //                         expect(presenter.params.method).toEqual('POST');
+    //                     });
+    //
+    //                     it('context is configured to pass along credentials', function () {
+    //                         expect(presenter.params.withCredentials).toBeTruthy();
+    //                     });
+    //
+    //                     it('payer id is passed along as transaction', inject(function ($routeParams) {
+    //                         expect(presenter.params.data).toEqual($routeParams);
+    //                     }));
+    //
+    //                     it('destination url takes route params id', function () {
+    //                         expect(presenter.params.url).toEqual((baseUri || '') + 'api/purchase-order-payment/payment-id/approve')
+    //                     });
+    //
+    //                     it('context is passed to rest service handler', function () {
+    //                         expect(rest.calls.mostRecent().args[0]).toEqual(presenter);
+    //                     });
+    //
+    //                     [null, 'locale'].forEach(function (locale) {
+    //                         describe('with locale = ' + locale, function () {
+    //                             beforeEach(function () {
+    //                                 scope.locale = locale;
+    //                             });
+    //
+    //                             describe('on success', function () {
+    //                                 beforeEach(function () {
+    //                                     presenter.success();
+    //                                 });
+    //
+    //                                 it('redirect to home', function () {
+    //                                     expect(location.search().PayerID).toBeUndefined();
+    //                                     expect(location.search().token).toBeUndefined();
+    //                                 });
+    //                             });
+    //                         });
+    //                     });
+    //                 });
+    //             });
+    //         });
+    //     });
+    // });
 
     describe('CancelPaymentController', function () {
         beforeEach(inject(function ($controller, $routeParams) {
