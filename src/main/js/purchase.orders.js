@@ -9,7 +9,7 @@
         .controller('AddressSelectionController', ['$scope', 'addressSelection', 'viewCustomerAddress', '$location', '$routeParams', AddressSelectionController])
         .controller('SelectPaymentProviderController', ['$scope', 'localStorage', 'config', SelectPaymentProviderController])
         .controller('ApprovePaymentController', ['$scope', '$location', 'i18nLocation', '$routeParams', '$log', ApprovePaymentController])
-        .controller('CancelPaymentController', ['$scope', 'usecaseAdapterFactory', '$routeParams', 'config', 'restServiceHandler', 'i18nLocation', 'topicMessageDispatcher', CancelPaymentController])
+        .controller('CancelPaymentController', ['$scope', 'i18nLocation', '$log', CancelPaymentController])
         .controller('UpdateOrderStatusController', ['$scope', 'usecaseAdapterFactory', 'config', '$routeParams', 'restServiceHandler', 'topicMessageDispatcher', '$location', UpdateOrderStatusController])
         .controller('SetupPaypalController', ['$window', '$scope', 'setupPaypalFSM', SetupPaypalController])
         .controller('ConfirmPaypalPermissionsController', ['$scope', '$location', 'usecaseAdapterFactory', 'paypal', ConfirmPaypalPermissionsController])
@@ -101,7 +101,7 @@
             });
         };
 
-        this.disablePaymentIntegration = function(response) {
+        this.disablePaymentIntegration = function (response) {
             rest({
                 params: {
                     method: 'POST',
@@ -179,13 +179,13 @@
                 fsm.status = new AwaitingConfiguration(fsm, this.subject);
             };
 
-            this.disable = function() {
+            this.disable = function () {
                 fsm.status = new Working(fsm, function () {
                     paypal.disablePaymentIntegration({
                         success: function (params) {
                             fsm.status = new AwaitingConfiguration(fsm);
                         },
-                        rejected: function(violations) {
+                        rejected: function (violations) {
                             fsm.status = new Configured(fsm, self.subject);
                             fsm.status.violations = violations;
                         }
@@ -473,37 +473,15 @@
     function ApprovePaymentController($scope, $location, i18nLocation, $routeParams, $log) {
         $scope.init = function () {
             $log.warn('@deprecated ApprovePaymentController - modify backend to go directly to /checkout/payment');
-            i18nLocation.path('/checkout/payment');
             $location.search('id', $routeParams.id);
+            i18nLocation.path('/checkout/payment');
         }
     }
 
-    function CancelPaymentController($scope, usecaseAdapterFactory, $routeParams, config, restServiceHandler, i18nLocation, topicMessageDispatcher) {
+    function CancelPaymentController($scope, i18nLocation, $log) {
         $scope.init = function () {
-            var ctx = usecaseAdapterFactory($scope);
-            ctx.params = {
-                method: 'POST',
-                url: (config.baseUri || '') + 'api/entity/purchase-order',
-                data: {
-                    status: 'canceled',
-                    context: 'updateStatusAsCustomer',
-                    id: $routeParams.id,
-                    treatInputAsId: true
-                },
-                withCredentials: true
-            };
-            ctx.success = function () {
-                i18nLocation.search({});
-                i18nLocation.path('/');
-                topicMessageDispatcher.fire('system.info', {
-                    code: 'purchase.order.cancel.success',
-                    default: 'Your purchase order was cancelled'
-                })
-            };
-            ctx.notFound = function () {
-                i18nLocation.path('/404')
-            };
-            restServiceHandler(ctx);
+            $log.warn('@deprecated CancelPaymentController - modify backend to go directly to /checkout/payment');
+            i18nLocation.url('/checkout/payment');
         }
     }
 
