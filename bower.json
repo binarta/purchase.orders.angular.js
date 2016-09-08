@@ -15,12 +15,11 @@
   "dependencies": {
     "binarta.angularx": "0.*.*",
     "binarta.config.angular": "0.*.*",
-    "binarta.checkpoint.angular": "0.*.*",
     "binarta.usecase.adapter.angular": "0.*.*",
     "binarta.rest.client.angular": "0.*.*",
     "binarta.web.storage.angular": "0.*.*",
     "binarta.customer.address": "0.*.*",
-    "binarta.i18n.angular": "1.*.*",
+    "binarta.i18n.angular": "2.*.*",
     "binarta.notifications.angular": "1.*.*",
     "binarta.toggle.edit.mode.angular": "1.*.*"
   },
