@@ -84,6 +84,11 @@ ${'%>'}
                                         <strong>\${resolver.resolve(key:'purchase.orders.mail.order.vat.label')}:</strong> \${order.vat}
                                     </li>
                                     ${'<% } %>'}
+                                    ${'<% if(coupon) { %>'}
+                                    <li style="list-style-position: inside; margin-left: 5px;">
+                                        <strong>\${resolver.resolve(key:'coupon.code.label')}:</strong> \${coupon}
+                                    </li>
+                                    ${'<% } %>'}
                                     ${'<% if(order.comment) { %>'}
                                     <li style="list-style-position: inside; margin-left: 5px;">
                                         <strong>\${resolver.resolve(key:'purchase.orders.mail.order.comment.label')}:</strong> \${order.comment}
