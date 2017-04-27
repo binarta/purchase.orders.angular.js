@@ -166,8 +166,8 @@
       "purchase.orders.mail.clerk.paypal.order.receiver.title": "Une nouvelle commande a été passée",
       "purchase.orders.mail.clerk.paypal.order.receiver.message": "Le mode de paiement par PayPal a été choisi.",
 
-      "purchase.orders.mail.clerk.paypal.review.pending.title": "The payment is pending review",
-      "purchase.orders.mail.clerk.paypal.review.pending.message": "More information about this transaction can be found in your PayPal account.",
+      "purchase.orders.mail.clerk.paypal.review.pending.title": "La commande est en attente d'examen",
+      "purchase.orders.mail.clerk.paypal.review.pending.message": "Plus d'informations sur cette transaction sont disponibles dans votre compte PayPal.",
 
       "purchase.orders.mail.customer.paypal.payment.received.title": "Merci pour votre commande",
       "purchase.orders.mail.customer.paypal.payment.received.message": "Le processus de paiement s'est déroulé avec succès et votre commande est terminée.<br><br>N'hésitez pas à prendre contact avec nous si vous avez des questions ou des remarques.",
@@ -186,15 +186,15 @@
       "purchase.orders.mail.customer.wire.transfer.payment.received.message": "Commande terminée.",
 
       "purchase.orders.mail.customer.wire.transfer.order.received.title": "Merci pour votre commande",
-      "purchase.orders.mail.customer.wire.transfer.order.received.message": "Wire transfer has been chosen as the payment option. We will send all payment details to your e-mail address as soon as possible.",
+      "purchase.orders.mail.customer.wire.transfer.order.received.message": "Paiement par virement bancaire a été choisi. Nous vous enverrons tous les détails de paiement à votre adresse e-mail dès que possible.",
 
       "purchase.orders.mail.status.update.title": "Le statut de votre commande est à présent",
       "purchase.orders.mail.status.update.review.pending.message": "Nos collaborateurs vont vérifier votre paiement. Après vérification, votre commande sera terminée, annulée ou remboursée.",
       "purchase.orders.mail.status.update.canceled.message": "Votre commande est annulée. Si vous avez des questions relatives à cette annulation, n'hésitez pas à prendre contact avec nous.",
       "purchase.orders.mail.status.update.refund.pending.message": "Une procédure de remboursement est en cours. Le montant vous sera versé dans les plus brefs délais.",
       "purchase.orders.mail.status.update.refunded.message": "Le remboursement est terminé et le montant a été versé sur votre compte.",
-      "purchase.orders.mail.status.update.shipping.pending.message": "Your order is now being prepared for shipment. You will receive a notification when it has been shipped.",
-      "purchase.orders.mail.status.update.shipped.message": "Your order has now been shipped.",
+      "purchase.orders.mail.status.update.shipping.pending.message": "Votre commande est en cours de préparation pour l'expédition. Vous recevrez une notification lorsqu'elle a été expédiée.",
+      "purchase.orders.mail.status.update.shipped.message": "Votre commande a été expédiée.",
 
       "purchase.orders.mail.order.view.details.link": "Vous pouvez consulter les détails de la commande ici",
       "purchase.orders.mail.order.information.label": "Données liées à la commande:",
@@ -214,25 +214,25 @@
       "purchase.orders.mail.order.unit.price.label": "Prix unitaire",
       "purchase.orders.mail.order.price.label": "Total",
       "purchase.orders.mail.order.subtotal.price.label": "Sous-total",
-      "purchase.orders.mail.order.total.price.label": "Total price",
+      "purchase.orders.mail.order.total.price.label": "Prix total",
 
-      "purchase.orders.status.pending-approval-by-customer": "Awaiting payment",
-      "purchase.orders.status.paid": "Paid",
-      "purchase.orders.status.shipping-pending": "Awaiting shipment",
-      "purchase.orders.status.shipped": "Shipped",
-      "purchase.orders.status.canceled": "Canceled",
-      "purchase.orders.status.payment-approved-by-customer": "Validating payment",
-      "purchase.orders.status.payment-approved-by-vendor": "Payment validated",
-      "purchase.orders.status.refund-pending": "Awaiting refund",
-      "purchase.orders.status.refunded": "Refunded",
-      "purchase.orders.status.review-pending": "Awaiting review",
+      "purchase.orders.status.pending-approval-by-customer": "En attente de paiement",
+      "purchase.orders.status.paid": "Payé",
+      "purchase.orders.status.shipping-pending": "En attente d'expédition",
+      "purchase.orders.status.shipped": "Expédié",
+      "purchase.orders.status.canceled": "Annulé",
+      "purchase.orders.status.payment-approved-by-customer": "Validation du paiement",
+      "purchase.orders.status.payment-approved-by-vendor": "Paiement validé",
+      "purchase.orders.status.refund-pending": "En attente de remboursement",
+      "purchase.orders.status.refunded": "Remboursé",
+      "purchase.orders.status.review-pending": "En attente d'examen",
 
-      "purchase.orders.payment.method.wire-transfer": "Wire transfer",
+      "purchase.orders.payment.method.wire-transfer": "Virement bancaire",
       "purchase.orders.payment.method.paypal-classic": "PayPal",
 
-      "purchase.orders.cancel.order.confirmation.message": "Are you sure you want to cancel the order? This cannot be undone.",
-      "purchase.orders.cancel.order.button": "Cancel order",
-      "purchase.orders.go.back.button": "Go back"
+      "purchase.orders.cancel.order.confirmation.message": "Êtes-vous sûr de vouloir annuler la commande? L'annulation est irréversible.",
+      "purchase.orders.cancel.order.button": "Annuler la commande",
+      "purchase.orders.go.back.button": "Retourner"
     },
     "de":{
       "purchase.order.cancel.success": "Ihre Bestellung wurde storniert.",
