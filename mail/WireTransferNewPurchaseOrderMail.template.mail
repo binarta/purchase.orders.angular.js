@@ -80,7 +80,7 @@ ${'%>'}
                                     <strong>\${resolver.resolve(key:'purchase.orders.mail.order.mail.label')}:</strong> \${email}
                                 </li>
                                 <li style="list-style-position: inside; margin-left: 5px;">
-                                    <strong>\${resolver.resolve(key:'purchase.orders.mail.payment.method.label')}:</strong> \${resolver.resolve(key:"purchase.orders.payment.method.\${provider}")}
+                                    <strong>\${resolver.resolve(key:'purchase.orders.mail.payment.method.label')}:</strong> \${resolver.resolve(key:"purchase.orders.payment.method." + provider)}
                                 </li>
                                 ${'<% if(vat) { %>'}
                                 <li style="list-style-position: inside; margin-left: 5px;">
