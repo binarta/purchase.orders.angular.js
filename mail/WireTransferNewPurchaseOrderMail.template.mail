@@ -94,7 +94,7 @@ ${'%>'}
                                 ${'<% } %>'}
                                 ${'<% if(comment) { %>'}
                                 <li style="list-style-position: inside; margin-left: 5px;">
-                                    <strong>\${resolver.resolve(key:'purchase.orders.mail.order.comment.label')}:</strong> \${comment}
+                                    <strong>\${resolver.resolve(key:'shop.comment.panel.title')}:</strong> \${comment}
                                 </li>
                                 ${'<% } %>'}
                             </ul>
