@@ -85,7 +85,7 @@
       "purchase.orders.mail.clerk.paypal.payment.completed.message": "Purchase order completed.",
 
       "purchase.orders.mail.clerk.paypal.order.receiver.title": "A new Purchase order was placed",
-      "purchase.orders.mail.clerk.paypal.order.receiver.message": "The chosen payment provider is:",
+      "purchase.orders.mail.clerk.paypal.order.receiver.message": "The chosen payment provider is",
 
       "purchase.orders.mail.clerk.paypal.review.pending.title": "The payment is pending review",
       "purchase.orders.mail.clerk.paypal.review.pending.message": "More information about this transaction can be found in your payment provider's account:",
