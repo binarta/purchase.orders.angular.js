@@ -8,16 +8,16 @@
       "purchase.orders.mail.clerk.paypal.payment.completed.message": "Bestelling voltooid.",
 
       "purchase.orders.mail.clerk.paypal.order.receiver.title": "Een nieuwe bestelling werd geplaatst",
-      "purchase.orders.mail.clerk.paypal.order.receiver.message": "Er werd gekozen voor betaling met PayPal.",
+      "purchase.orders.mail.clerk.paypal.order.receiver.message": "Er werd gekozen voor betaling met",
 
       "purchase.orders.mail.clerk.paypal.review.pending.title": "De betaling is in afwachting van beoordeling",
-      "purchase.orders.mail.clerk.paypal.review.pending.message": "Meer informatie over deze transactie vindt u in uw PayPal-rekening.",
+      "purchase.orders.mail.clerk.paypal.review.pending.message": "Meer informatie over deze transactie vindt u in uw account van",
 
       "purchase.orders.mail.customer.paypal.payment.received.title": "Bedankt voor uw bestelling",
       "purchase.orders.mail.customer.paypal.payment.received.message": "Het betalingsproces is succesvol afgerond en uw bestelling is voltooid.<br><br>Voor vragen of opmerkingen aarzel niet om ons te contacteren.",
 
       "purchase.orders.mail.customer.paypal.order.received.title": "Bedankt voor uw bestelling",
-      "purchase.orders.mail.customer.paypal.order.received.message": "PayPal's goedkeuringsproces is gestart. U zal een bevestigingsmail ontvangen nadat de betaling is goedgekeurd.<br><br>Indien er gedurende het betalingsproces iets misloopt gelieve ons dan te contacteren zodat wij het probleem verder kunnen analyseren.",
+      "purchase.orders.mail.customer.paypal.order.received.message": "Het goedkeuringsproces van de betaling is gestart. U zal een bevestigingsmail ontvangen nadat de betaling is goedgekeurd.<br><br>Indien er gedurende het betalingsproces iets misloopt gelieve ons dan te contacteren zodat wij het probleem verder kunnen analyseren.",
 
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.title": "Bestelling voltooid",
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.message": "Bestelling voltooid.",
@@ -85,16 +85,16 @@
       "purchase.orders.mail.clerk.paypal.payment.completed.message": "Purchase order completed.",
 
       "purchase.orders.mail.clerk.paypal.order.receiver.title": "A new Purchase order was placed",
-      "purchase.orders.mail.clerk.paypal.order.receiver.message": "PayPal has been chosen as payment option.",
+      "purchase.orders.mail.clerk.paypal.order.receiver.message": "The chosen payment provider is:",
 
       "purchase.orders.mail.clerk.paypal.review.pending.title": "The payment is pending review",
-      "purchase.orders.mail.clerk.paypal.review.pending.message": "More information about this transaction can be found in your PayPal account.",
+      "purchase.orders.mail.clerk.paypal.review.pending.message": "More information about this transaction can be found in your payment provider's account:",
 
       "purchase.orders.mail.customer.paypal.payment.received.title": "Thank you for your order",
       "purchase.orders.mail.customer.paypal.payment.received.message": "The payment process has been successfully completed and your order is complete.<br><br>For questions or comments please do not hesitate to contact us.",
 
       "purchase.orders.mail.customer.paypal.order.received.title": "Thank you for your order",
-      "purchase.orders.mail.customer.paypal.order.received.message": "PayPal's approval process has started. You will receive a confirmation email after the payment has been approved.<br><br>If something goes wrong during the payment process please contact us so we can further analyze the problem.",
+      "purchase.orders.mail.customer.paypal.order.received.message": "The payment approval process has started. You will receive a confirmation email after the payment has been approved.<br><br>If something goes wrong during the payment process please contact us so we can further analyze the problem.",
 
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.title": "Purchase order completed",
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.message": "Purchase order completed.",
@@ -164,16 +164,16 @@
       "purchase.orders.mail.clerk.paypal.payment.completed.message": "Commande terminée.",
 
       "purchase.orders.mail.clerk.paypal.order.receiver.title": "Une nouvelle commande a été passée",
-      "purchase.orders.mail.clerk.paypal.order.receiver.message": "Le mode de paiement par PayPal a été choisi.",
+      "purchase.orders.mail.clerk.paypal.order.receiver.message": "Le mode de paiement choisi est",
 
       "purchase.orders.mail.clerk.paypal.review.pending.title": "La commande est en attente d'examen",
-      "purchase.orders.mail.clerk.paypal.review.pending.message": "Plus d'informations sur cette transaction sont disponibles dans votre compte PayPal.",
+      "purchase.orders.mail.clerk.paypal.review.pending.message": "Plus d'informations sur cette transaction sont disponibles dans votre compte de paiement",
 
       "purchase.orders.mail.customer.paypal.payment.received.title": "Merci pour votre commande",
       "purchase.orders.mail.customer.paypal.payment.received.message": "Le processus de paiement s'est déroulé avec succès et votre commande est terminée.<br><br>N'hésitez pas à prendre contact avec nous si vous avez des questions ou des remarques.",
 
       "purchase.orders.mail.customer.paypal.order.received.title": "Merci pour votre commande",
-      "purchase.orders.mail.customer.paypal.order.received.message": "Le processus d'approbation de PayPal est en cours. Vous recevrez un e-mail de confirmation après l'approbation du paiement.<br><br>En cas de problème lors du processus de paiement, veuillez prendre contact avec nous afin que nous puissions examiner le problème.",
+      "purchase.orders.mail.customer.paypal.order.received.message": "Le processus d'approbation du paiement est en cours. Vous recevrez un e-mail de confirmation après l'approbation du paiement.<br><br>En cas de problème lors du processus de paiement, veuillez prendre contact avec nous afin que nous puissions examiner le problème.",
 
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.title": "Commande terminée",
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.message": "Commande terminée.",
@@ -241,16 +241,16 @@
       "purchase.orders.mail.clerk.paypal.payment.completed.message": "Bestellung ausgeführt.",
 
       "purchase.orders.mail.clerk.paypal.order.receiver.title": "Es wurde eine neuen Bestellung aufgegeben",
-      "purchase.orders.mail.clerk.paypal.order.receiver.message": "Es wurde eine Zahlung per PayPal gewählt.",
+      "purchase.orders.mail.clerk.paypal.order.receiver.message": "Es wurde eine Zahlung gewählt.",
 
       "purchase.orders.mail.clerk.paypal.review.pending.title": "The payment is pending review",
-      "purchase.orders.mail.clerk.paypal.review.pending.message": "More information about this transaction can be found in your PayPal account.",
+      "purchase.orders.mail.clerk.paypal.review.pending.message": "More information about this transaction can be found in your payment provider account.",
 
       "purchase.orders.mail.customer.paypal.payment.received.title": "Vielen Dank für Ihre Bestellung",
       "purchase.orders.mail.customer.paypal.payment.received.message": "Der Zahlungsvorgang wurde erfolgreich abgeschlossen und Ihre Bestellung ausgeführt.<br><br>Für eventuelle Fragen oder Anmerkungen stehen wir Ihnen jederzeit gerne zur Verfügung.",
 
       "purchase.orders.mail.customer.paypal.order.received.title": "Vielen Dank für Ihre Bestellung",
-      "purchase.orders.mail.customer.paypal.order.received.message": "Der PayPal-Genehmigungsvorgang wurde gestartet. Nach Genehmigung Ihrer Zahlung erhalten Sie per E-Mail eine Bestätigungsnachricht.<br><br>Sollte während des Zahlungsvorgangs ein Problem eintreten, kontaktieren Sie uns bitte, damit wir dieses Problem näher analysieren können.",
+      "purchase.orders.mail.customer.paypal.order.received.message": "Der genehmigungsvorgang wurde gestartet. Nach Genehmigung Ihrer Zahlung erhalten Sie per E-Mail eine Bestätigungsnachricht.<br><br>Sollte während des Zahlungsvorgangs ein Problem eintreten, kontaktieren Sie uns bitte, damit wir dieses Problem näher analysieren können.",
 
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.title": "Bestellung ausgeführt",
       "purchase.orders.mail.clerk.wire.transfer.payment.completed.message": "Bestellung ausgeführt.",
